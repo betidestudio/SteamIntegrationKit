@@ -6,10 +6,32 @@
 
 - [Discord Support](https://discord.gg/betidestudio)
 - [Mail Support](mailto:support@betide.studio)
-- [Unreal Engine Marketplace Version](https://www.unrealengine.com/marketplace/en-US/product/eos-integration-kit)
+- [Unreal Engine Marketplace Version](https://www.unrealengine.com/marketplace/en-US/product/steam-integration-kit)
 
 <h2>🚀 Setup Information</h2>
 
 - [Video Playlist](https://youtu.be/BhjRKwfacyw)
 - [Documentation](https://sik.betide.studio)
+
+<h2>🧐 SDK Interfaces Exposed</h2>
+
+- Apps
+- Friends
+- Game Server
+- Game Server Stats
+- Inventory
+- Input
+- Matchmaking
+- Matchmaking Servers
+- Music
+- Music Remote
+- Networking
+- Networking Utils
+- Parties
+- Remote Storage
+- Screenshots
+- User Generated Content (UGC)
+- User
+- User Stats
+- Utils
 
