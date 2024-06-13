@@ -1,0 +1,95 @@
+O projeto não pôde ser compilado. Gostaria de abri-lo em Visual Studio Code?
+
+Running /media/sam/Dados/Linux/Aplicativos/Unreal/UnrealEngine 5.4.1/Engine/Build/BatchFiles/Linux/Build.sh Development Linux -Project="/home/sam/Dev/Dev (Dados)/Unreal/Gigabathroom/Projetos/FirstKillProject 5.4/FirstKillProject.uproject" -TargetType=Editor -Progress -NoEngineChanges -NoHotReloadFromIDE
+Setting up bundled DotNet SDK
+Running command : dotnet Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.dll Development Linux -Project=/home/sam/Dev/Dev (Dados)/Unreal/Gigabathroom/Projetos/FirstKillProject 5.4/FirstKillProject.uproject -TargetType=Editor -Progress -NoEngineChanges -NoHotReloadFromIDE
+Log file: /home/sam/.config/Epic/UnrealBuildTool/Log.txt
+Using 'git status' to determine working set for adaptive non-unity build (/home/sam/Dev/Dev (Dados)/Unreal/Gigabathroom/Projetos/FirstKillProject 5.4).
+Creating makefile for FirstKillProjectEditor (no existing makefile)
+libEOSSDK-Linux-Shipping.so
+@progress push 5%
+Parsing headers for FirstKillProjectEditor
+  Running Internal UnrealHeaderTool "/home/sam/Dev/Dev (Dados)/Unreal/Gigabathroom/Projetos/FirstKillProject 5.4/FirstKillProject.uproject" "/home/sam/Dev/Dev (Dados)/Unreal/Gigabathroom/Projetos/FirstKillProject 5.4/Intermediate/Build/Linux/FirstKillProjectEditor/Development/FirstKillProjectEditor.uhtmanifest" -WarningsAsErrors -installed
+Total of 118 written
+Reflection code generated for FirstKillProjectEditor in 1.9321808 seconds
+@progress pop
+------- Build details --------
+Using toolchain located at '/media/sam/Dados/Linux/Aplicativos/Unreal/UnrealEngine 5.4.1/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v22_clang-16.0.6-centos7/x86_64-unknown-linux-gnu'.
+Using clang (/media/sam/Dados/Linux/Aplicativos/Unreal/UnrealEngine 5.4.1/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v22_clang-16.0.6-centos7/x86_64-unknown-linux-gnu/bin/clang++) version 'clang version 16.0.6 (github.com/llvm/llvm-project 7cbf1a2591520c2491aa35339f227775f4d3adf6)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /media/sam/Dados/Linux/Aplicativos/Unreal/UnrealEngine 5.4.1/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v22_clang-16.0.6-centos7/x86_64-unknown-linux-gnu/bin' (string), 16 (major), 0 (minor), 6 (patch)
+Using bundled libc++ standard C++ library.
+Using lld linker
+Using llvm-ar (/media/sam/Dados/Linux/Aplicativos/Unreal/UnrealEngine 5.4.1/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v22_clang-16.0.6-centos7/x86_64-unknown-linux-gnu/bin/llvm-ar) version 'LLVM (http://llvm.org/):
+  LLVM version 16.0.6
+  Optimized build. (string)'
+Using fast way to relink  circularly dependent libraries (no FixDeps).
+Targeted minimum CPU architecture: None
+------------------------------
+Building FirstKillProjectEditor...
+[Upgrade]
+[Upgrade] Using backward-compatible build settings. The latest version of UE sets the following values by default, which may require code changes:
+[Upgrade]     bValidateFormatStrings = true   => Enables compile-time validation of strings+args passed to UE_LOG. (Previously: false).
+[Upgrade] Suppress this message by setting 'DefaultBuildSettings = BuildSettingsVersion.V5;' in FirstKillProjectEditor.Target.cs, and explicitly overriding settings that differ from the new defaults.
+[Upgrade]
+[Upgrade]
+[Upgrade] Using backward-compatible include order. The latest version of UE has changed the order of includes, which may require code changes. The current setting is:
+[Upgrade]     IncludeOrderVersion = EngineIncludeOrderVersion.Oldest
+[Upgrade] Suppress this message by setting 'IncludeOrderVersion = EngineIncludeOrderVersion.Latest;' in FirstKillProjectEditor.Target.cs.
+[Upgrade] Alternatively you can set this to 'EngineIncludeOrderVersion.Latest' to always use the latest include order. This will potentially cause compile errors when integrating new versions of the engine.
+[Upgrade]
+Determining max actions to execute in parallel (4 physical cores, 8 logical cores)
+  Executing up to 4 processes, one per physical core
+Using Parallel executor to run 23 action(s)
+------ Building 23 action(s) started ------
+[1/23] Compile SharedPCH.CoreUObject.Project.NoValFmtStr.ValApi.Cpp20.InclOrderOldest.h
+[2/23] Compile Module.EIKShared.cpp
+[3/23] Link (lld) libUnrealEditor-EIKShared.so
+[4/23] Compile SharedPCH.Engine.Project.NoValFmtStr.ValApi.Cpp20.InclOrderOldest.h
+[5/23] Compile Module.EOSIntegrationKit.cpp
+[6/23] Link (lld) libUnrealEditor-EOSIntegrationKit.so
+[7/23] Compile Module.SocketSubsystemEIK.cpp
+[8/23] Link (lld) libUnrealEditor-SocketSubsystemEIK.so
+[9/23] Compile Module.OnlineSubsystemEIK.1.cpp
+[10/23] Compile Module.OnlineSubsystemEIK.2.cpp
+[11/23] Compile Module.OnlineSubsystemEIK.3.cpp
+[12/23] Compile Module.OnlineSubsystemEIK.4.cpp
+[13/23] Compile CustomToAddCPP.cpp
+[14/23] Compile FirstKillProject.cpp
+[15/23] Link (lld) libUnrealEditor-FirstKillProject.so
+[16/23] Compile Module.EIKLoginMethods.cpp
+[17/23] Compile Module.OnlineSubsystemEIK.5.cpp
+In file included from /home/sam/Dev/Dev (Dados)/Unreal/Gigabathroom/Projetos/FirstKillProject 5.4/Plugins/EOSIntegrationKit/Intermediate/Build/Linux/x64/UnrealEditor/Development/OnlineSubsystemEIK/Module.OnlineSubsystemEIK.5.cpp:7:
+/media/sam/Dados/Linux/Dev/Unreal/Gigabathroom/Projetos/FirstKillProject 5.4/Plugins/EOSIntegrationKit/Source/OnlineSubsystemEIK/AsyncFunctions/Extra/EIK_BlueprintFunctions.cpp:218:31: error: temporary whose address is used as value of local variable 'InviteIdChar' will be destroyed at the end of the full-expression [-Werror,-Wdangling]
+                        const char* InviteIdChar = TCHAR_TO_ANSI(*InviteId);
+                                                   ^~~~~~~~~~~~~~~~~~~~~~~~
+/media/sam/Dados/Linux/Aplicativos/Unreal/UnrealEngine 5.4.1/Engine/Source/Runtime/Core/Public/Containers/StringConv.h:1000:159: note: expanded from macro 'TCHAR_TO_ANSI'
+#define TCHAR_TO_ANSI(str) /*UE_DEPRECATED_MACRO(5.xx, "TCHAR_TO_ANSI(Ptr) is deprecated, please use StringCast<ANSICHAR>(PtrToTChar) instead.")*/ (ANSICHAR*)StringCast<ANSICHAR>(static_cast<const TCHAR*>(str)).Get()
+                                                                                                                                                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/sam/Dev/Dev (Dados)/Unreal/Gigabathroom/Projetos/FirstKillProject 5.4/Plugins/EOSIntegrationKit/Intermediate/Build/Linux/x64/UnrealEditor/Development/OnlineSubsystemEIK/Module.OnlineSubsystemEIK.5.cpp:7:
+/media/sam/Dados/Linux/Dev/Unreal/Gigabathroom/Projetos/FirstKillProject 5.4/Plugins/EOSIntegrationKit/Source/OnlineSubsystemEIK/AsyncFunctions/Extra/EIK_BlueprintFunctions.cpp:233:31: error: temporary whose address is used as value of local variable 'InviteIdChar' will be destroyed at the end of the full-expression [-Werror,-Wdangling]
+                        const char* InviteIdChar = TCHAR_TO_ANSI(*InviteId);
+                                                   ^~~~~~~~~~~~~~~~~~~~~~~~
+/media/sam/Dados/Linux/Aplicativos/Unreal/UnrealEngine 5.4.1/Engine/Source/Runtime/Core/Public/Containers/StringConv.h:1000:159: note: expanded from macro 'TCHAR_TO_ANSI'
+#define TCHAR_TO_ANSI(str) /*UE_DEPRECATED_MACRO(5.xx, "TCHAR_TO_ANSI(Ptr) is deprecated, please use StringCast<ANSICHAR>(PtrToTChar) instead.")*/ (ANSICHAR*)StringCast<ANSICHAR>(static_cast<const TCHAR*>(str)).Get()
+                                                                                                                                                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2 errors generated.
+[18/23] Compile Module.EIKVoiceChat.cpp
+In file included from /home/sam/Dev/Dev (Dados)/Unreal/Gigabathroom/Projetos/FirstKillProject 5.4/Plugins/EOSIntegrationKit/Intermediate/Build/Linux/x64/UnrealEditor/Development/EIKVoiceChat/Module.EIKVoiceChat.cpp:5:
+/media/sam/Dados/Linux/Dev/Unreal/Gigabathroom/Projetos/FirstKillProject 5.4/Plugins/EOSIntegrationKit/Source/EIKVoiceChat/Functions/EVIK_Functions.cpp:331:31: warning: 'TryGetField' is deprecated: Passing an ANSI string to TryGetField has been deprecated outside of UTF-8 mode. Please use the overload that takes a TCHAR string. Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile. [-Wdeprecated-declarations]
+                                                                TokenString = Object->TryGetField("token")->AsString();
+                                                                                      ^
+/media/sam/Dados/Linux/Aplicativos/Unreal/UnrealEngine 5.4.1/Engine/Source/Runtime/Json/Public/Dom/JsonObject.h:279:2: note: 'TryGetField' has been explicitly marked deprecated here
+        UE_DEPRECATED(5.4, "Passing an ANSI string to TryGetField has been deprecated outside of UTF-8 mode. Please use the overload that takes a TCHAR string.")
+        ^
+/media/sam/Dados/Linux/Aplicativos/Unreal/UnrealEngine 5.4.1/Engine/Source/Runtime/Core/Public/Misc/CoreMiscDefines.h:274:43: note: expanded from macro 'UE_DEPRECATED'
+#define UE_DEPRECATED(Version, Message) [[deprecated(Message " Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.")]]
+                                          ^
+1 warning generated.
+[19/23] Link (lld) libUnrealEditor-EIKVoiceChat.so
+/home/sam/.config/Epic/UnrealEngine/Common/DerivedDataCache: Maintenance finished in +00:00:08.319 and deleted 0 files with total size 0 MiB and 0 empty folders. Scanned 5043 files in 6178 folders with total size 81 MiB.
+[20/23] Compile Module.OnlineSubsystemEIK.6.cpp
+Total time in Parallel executor: 69.51 seconds
+Total execution time: 79.05 seconds
+
