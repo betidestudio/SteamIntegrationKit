@@ -9,7 +9,7 @@ public class SteamIntegrationKit : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
-		bool bUseEngineSteam = false;
+		bool bUseEngineSteam = true;
 		
 		PublicIncludePaths.AddRange(
 			new string[] {
