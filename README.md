@@ -35,3 +35,22 @@
 - User Stats
 - Utils
 
+<h2>🛠️ Installation Steps:</h2>
+
+Please check the docs for updated Installation Steps
+
+<h2>🍰 Contribution Guidelines:</h2>
+
+Being a open-source project it's important for the people to contribute to the plugin. Just make sure to write clean code and include all the required headers.
+  
+<h2>💻 Built with</h2>
+
+Technologies used in the project:
+
+*   Unreal Engine
+*   C++
+
+<h2>🛡️ License:</h2>
+
+This project is licensed under the MIT License
+
