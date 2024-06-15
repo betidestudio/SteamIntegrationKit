@@ -3,7 +3,6 @@
 
 #include "HostMigrationSubsystem.h"
 
-#include "isteamuser.h"
 #include "Async/Async.h"
 
 

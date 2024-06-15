@@ -18,6 +18,7 @@ THIRD_PARTY_INCLUDES_START
 #endif
 THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "SIK_GameServerLibrary.generated.h"
 

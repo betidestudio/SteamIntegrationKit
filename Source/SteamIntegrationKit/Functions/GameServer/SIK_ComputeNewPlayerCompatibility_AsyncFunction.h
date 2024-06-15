@@ -8,17 +8,19 @@ THIRD_PARTY_INCLUDES_START
 #include <steam/steamtypes.h>
 #include <steam/isteamuserstats.h>
 #include <steam/steam_api_common.h>
+#include <steam/steam_gameserver.h>
 #else
 #include <steamtypes.h>
 #include <isteamuserstats.h>
 #include <steam_api_common.h>
+#include <steam_gameserver.h>
 #endif
 THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "SIK_ComputeNewPlayerCompatibility_AsyncFunction.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FComputeNewPlayerCompatibilityDelegate, TEnumAsByte<ESIK_Result>, Result, int32, PlayersThatDontLikeCandidate, int32, PlayersThatCandidateDoesntLike, int32, ClanPlayersThatDontLikeCandidate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FComputeNewPlayerCompatibilityDelegate, const TEnumAsByte<ESIK_Result>&, Result, int32, PlayersThatDontLikeCandidate, int32, PlayersThatCandidateDoesntLike, int32, ClanPlayersThatDontLikeCandidate);
 UCLASS()
 class STEAMINTEGRATIONKIT_API USIK_ComputeNewPlayerCompatibility_AsyncFunction : public UBlueprintAsyncActionBase
 {
