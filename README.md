@@ -8,8 +8,11 @@
 - [Mail Support](mailto:support@betide.studio)
 - [Unreal Engine Marketplace Version](https://www.unrealengine.com/marketplace/en-US/product/steam-integration-kit)
 
+- ✨Staring the repo is always a good thing, for us and you ;)
+
 <h2>🚀 Setup Information</h2>
 
+- [Building from Github](https://youtu.be/ClfForiuUeo)
 - [Video Playlist](https://youtu.be/BhjRKwfacyw)
 - [Documentation](https://sik.betide.studio)
 
