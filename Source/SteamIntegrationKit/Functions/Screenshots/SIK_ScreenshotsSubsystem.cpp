@@ -8,19 +8,23 @@
 
 USIK_ScreenshotsSubsystem::USIK_ScreenshotsSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackScreenshotReady.Register(this, &USIK_ScreenshotsSubsystem::OnScreenshotReadyCallback);
 	m_CallbackScreenshotRequested.Register(this, &USIK_ScreenshotsSubsystem::OnScreenshotRequestedCallback);
  	if(IsRunningDedicatedServer())
  	{
 	m_CallbackScreenshotReady.SetGameserverFlag();
-	m_CallbackScreenshotRequested.SetGameserverFlag();	
+	m_CallbackScreenshotRequested.SetGameserverFlag();
 }
+#endif
 }
 
 USIK_ScreenshotsSubsystem::~USIK_ScreenshotsSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackScreenshotReady.Unregister();
 	m_CallbackScreenshotRequested.Unregister();
+#endif
 }
 
 void USIK_ScreenshotsSubsystem::OnScreenshotReadyCallback(ScreenshotReady_t* Callback)

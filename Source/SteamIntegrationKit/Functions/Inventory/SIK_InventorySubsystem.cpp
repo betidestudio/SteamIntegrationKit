@@ -7,6 +7,7 @@
 
 USIK_InventorySubsystem::USIK_InventorySubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackSteamInventoryDefinitionUpdate.Register(this, &USIK_InventorySubsystem::OnSteamInventoryDefinitionUpdateCallback);
 	m_CallbackSteamInventoryEligiblePromoItemDefIDs.Register(this, &USIK_InventorySubsystem::OnSteamInventoryEligiblePromoItemDefIDsCallback);
 	m_CallbackSteamInventoryFullUpdate.Register(this, &USIK_InventorySubsystem::OnSteamInventoryFullUpdateCallback);
@@ -23,16 +24,19 @@ USIK_InventorySubsystem::USIK_InventorySubsystem()
 	m_CallbackSteamInventoryStartPurchaseResult.SetGameserverFlag();
 	m_CallbackSteamInventoryRequestPricesResult.SetGameserverFlag();
 }
+#endif
 }
 
 USIK_InventorySubsystem::~USIK_InventorySubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackSteamInventoryDefinitionUpdate.Unregister();
 	m_CallbackSteamInventoryEligiblePromoItemDefIDs.Unregister();
 	m_CallbackSteamInventoryFullUpdate.Unregister();
 	m_CallbackSteamInventoryResultReady.Unregister();
 	m_CallbackSteamInventoryStartPurchaseResult.Unregister();
 	m_CallbackSteamInventoryRequestPricesResult.Unregister();
+#endif
 }
 
 void USIK_InventorySubsystem::OnSteamInventoryDefinitionUpdateCallback(SteamInventoryDefinitionUpdate_t* pParam)

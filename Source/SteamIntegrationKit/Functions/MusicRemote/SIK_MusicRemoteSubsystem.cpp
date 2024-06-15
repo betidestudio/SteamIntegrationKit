@@ -8,6 +8,7 @@
 
 USIK_MusicRemoteSubsystem::USIK_MusicRemoteSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackMusicPlayerRemoteToFront.Register(this, &USIK_MusicRemoteSubsystem::OnMusicPlayerRemoteToFrontCallbck);
 	m_CallbackMusicPlayerRemoteWillActivate.Register(this, &USIK_MusicRemoteSubsystem::OnMusicPlayerRemoteWillActivateCallbck);
 	m_CallbackMusicPlayerRemoteWillDeactivate.Register(this, &USIK_MusicRemoteSubsystem::OnMusicPlayerRemoteWillDeactivateCallbck);
@@ -40,11 +41,13 @@ USIK_MusicRemoteSubsystem::USIK_MusicRemoteSubsystem()
 	m_CallbackMusicPlayerWantsVolume.SetGameserverFlag();
 	m_CallbackMusicPlayerWillQuit.SetGameserverFlag();
 }
+#endif
 }
 
 
 USIK_MusicRemoteSubsystem::~USIK_MusicRemoteSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackMusicPlayerRemoteToFront.Unregister();
 	m_CallbackMusicPlayerRemoteWillActivate.Unregister();
 	m_CallbackMusicPlayerRemoteWillDeactivate.Unregister();
@@ -59,6 +62,7 @@ USIK_MusicRemoteSubsystem::~USIK_MusicRemoteSubsystem()
 	m_CallbackMusicPlayerWantsShuffled.Unregister();
 	m_CallbackMusicPlayerWantsVolume.Unregister();
 	m_CallbackMusicPlayerWillQuit.Unregister();
+#endif
 }
 
 void USIK_MusicRemoteSubsystem::OnMusicPlayerRemoteToFrontCallbck(MusicPlayerRemoteToFront_t* pParam)

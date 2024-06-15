@@ -7,6 +7,7 @@
 
 USIK_AppSubsystem::USIK_AppSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackDlcInstalled.Register(this, &USIK_AppSubsystem::OnDlcInstalledCallbck);
 	m_CallbackFileDetails.Register(this, &USIK_AppSubsystem::OnFileDetailsCallbck);
 	m_CallbackNewUrlLaunchParameters.Register(this, &USIK_AppSubsystem::OnNewUrlLaunchParametersCallbck);
@@ -19,14 +20,17 @@ USIK_AppSubsystem::USIK_AppSubsystem()
  		m_CallbackNewUrlLaunchParameters.SetGameserverFlag();
  		m_CallbackTimedTrialStatus.SetGameserverFlag();
  	}
+#endif
 }
 
 USIK_AppSubsystem::~USIK_AppSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackDlcInstalled.Unregister();
 	m_CallbackFileDetails.Unregister();
 	m_CallbackNewUrlLaunchParameters.Unregister();
 	m_CallbackTimedTrialStatus.Unregister();
+#endif
 }
 
 void USIK_AppSubsystem::OnDlcInstalledCallbck(DlcInstalled_t* pParam)

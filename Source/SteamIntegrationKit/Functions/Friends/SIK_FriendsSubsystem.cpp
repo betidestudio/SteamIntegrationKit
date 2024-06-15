@@ -8,6 +8,7 @@
 
 USIK_FriendsSubsystem::USIK_FriendsSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackAvatarImageLoaded.Register(this, &USIK_FriendsSubsystem::OnAvatarImageLoadedCallback);
 	m_CallbackFriendRichPresenceUpdate.Register(this, &USIK_FriendsSubsystem::OnFriendRichPresenceUpdateCallback);
 	m_CallbackDownloadClanActivityCountsResult.Register(this, &USIK_FriendsSubsystem::OnDownloadClanActivityCountsResultCallback);
@@ -48,10 +49,12 @@ USIK_FriendsSubsystem::USIK_FriendsSubsystem()
  		m_CallbackSetPersonaNameResponse.SetGameserverFlag();
  		m_CallbackClanOfficerList.SetGameserverFlag();
  	}
+#endif
 }
 
 USIK_FriendsSubsystem::~USIK_FriendsSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackAvatarImageLoaded.Unregister();
 	m_CallbackFriendRichPresenceUpdate.Unregister();
 	m_CallbackDownloadClanActivityCountsResult.Unregister();
@@ -70,6 +73,7 @@ USIK_FriendsSubsystem::~USIK_FriendsSubsystem()
 	m_CallbackPersonaStateChange.Unregister();
 	m_CallbackSetPersonaNameResponse.Unregister();
 	m_CallbackClanOfficerList.Unregister();
+#endif
 }
 
 void USIK_FriendsSubsystem::OnAvatarImageLoadedCallback(AvatarImageLoaded_t* pParam)

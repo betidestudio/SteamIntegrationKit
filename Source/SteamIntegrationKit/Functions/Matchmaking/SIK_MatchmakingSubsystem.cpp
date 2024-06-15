@@ -9,6 +9,7 @@
 
 USIK_MatchmakingSubsystem::USIK_MatchmakingSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackFavoritesListAccountsUpdated.Register(this, &USIK_MatchmakingSubsystem::OnFavoritesListAccountsCallbck);
 	m_CallbackFavoritesListChanged.Register(this, &USIK_MatchmakingSubsystem::OnFavoritesListChangedCallback);
 	m_CallbackLobbyChatMsg.Register(this, &USIK_MatchmakingSubsystem::OnLobbyChatMsgCallback);
@@ -35,10 +36,12 @@ USIK_MatchmakingSubsystem::USIK_MatchmakingSubsystem()
 	m_CallbackLobbyKicked.SetGameserverFlag();
 	m_CallbackLobbyMatchList.SetGameserverFlag();
 }
+#endif
 }
 
 USIK_MatchmakingSubsystem::~USIK_MatchmakingSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackFavoritesListAccountsUpdated.Unregister();
 	m_CallbackFavoritesListChanged.Unregister();
 	m_CallbackLobbyChatMsg.Unregister();
@@ -50,6 +53,7 @@ USIK_MatchmakingSubsystem::~USIK_MatchmakingSubsystem()
 	m_CallbackLobbyInvite.Unregister();
 	m_CallbackLobbyKicked.Unregister();
 	m_CallbackLobbyMatchList.Unregister();
+#endif
 }
 
 void USIK_MatchmakingSubsystem::OnFavoritesListAccountsCallbck(FavoritesListAccountsUpdated_t* pParam)

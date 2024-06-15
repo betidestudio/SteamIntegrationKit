@@ -7,6 +7,7 @@
 
 USIK_GameServerSubsystem::USIK_GameServerSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackAssociateWithClanResult.Register(this, &USIK_GameServerSubsystem::OnAssociateWithClanResultCallbck);
 	m_CallbackComputeNewPlayerCompatibilityResult.Register(this, &USIK_GameServerSubsystem::OnComputeNewPlayerCompatibilityResultCallbck);
 	m_CallbackGSClientApprove.Register(this, &USIK_GameServerSubsystem::OnGSClientApproveCallbck);
@@ -18,19 +19,20 @@ USIK_GameServerSubsystem::USIK_GameServerSubsystem()
 
  	if(IsRunningDedicatedServer())
  	{
-	m_CallbackAssociateWithClanResult.SetGameserverFlag();
-	m_CallbackGSClientApprove.SetGameserverFlag();
-	m_CallbackComputeNewPlayerCompatibilityResult.SetGameserverFlag();
-	m_CallbackGSClientDeny.SetGameserverFlag();
-	m_CallbackGSClientGroupStatus.SetGameserverFlag();
-	m_CallbackGSClientKick.SetGameserverFlag();
-	m_CallbackGSPolicyResponse.SetGameserverFlag();
-}
-	
+ 		m_CallbackAssociateWithClanResult.SetGameserverFlag();
+ 		m_CallbackGSClientApprove.SetGameserverFlag();
+ 		m_CallbackComputeNewPlayerCompatibilityResult.SetGameserverFlag();
+ 		m_CallbackGSClientDeny.SetGameserverFlag();
+ 		m_CallbackGSClientGroupStatus.SetGameserverFlag();
+ 		m_CallbackGSClientKick.SetGameserverFlag();
+ 		m_CallbackGSPolicyResponse.SetGameserverFlag();
+ 	}
+#endif
 }
 
 USIK_GameServerSubsystem::~USIK_GameServerSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackAssociateWithClanResult.Unregister();
 	m_CallbackComputeNewPlayerCompatibilityResult.Unregister();
 	m_CallbackGSClientApprove.Unregister();
@@ -38,6 +40,7 @@ USIK_GameServerSubsystem::~USIK_GameServerSubsystem()
 	m_CallbackGSClientGroupStatus.Unregister();
 	m_CallbackGSClientKick.Unregister();
 	m_CallbackGSPolicyResponse.Unregister();
+#endif
 }
 
 void USIK_GameServerSubsystem::OnAssociateWithClanResultCallbck(AssociateWithClanResult_t* pCallback)

@@ -8,6 +8,7 @@
 
 USIK_UGCSubsystem::USIK_UGCSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackAddAppDependencyResult.Register(this, &USIK_UGCSubsystem::OnAddAppDependencyResultCallback);
 	m_CallbackAddUGCDependencyResult.Register(this, &USIK_UGCSubsystem::OnAddUGCDependencyResultCallback);
 	m_CallbackCreateItemResult.Register(this, &USIK_UGCSubsystem::OnCreateItemResultCallback);
@@ -48,10 +49,12 @@ USIK_UGCSubsystem::USIK_UGCSubsystem()
 	m_CallbackUserSubscribedItemsListChanged.SetGameserverFlag();
 	m_CallbackWorkshopEULAStatus.SetGameserverFlag();
 }
+#endif
 }
 
 USIK_UGCSubsystem::~USIK_UGCSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackAddAppDependencyResult.Unregister();
 	m_CallbackAddUGCDependencyResult.Unregister();
 	m_CallbackCreateItemResult.Unregister();
@@ -70,6 +73,7 @@ USIK_UGCSubsystem::~USIK_UGCSubsystem()
 	m_CallbackUserFavoriteItemsListChanged.Unregister();
 	m_CallbackUserSubscribedItemsListChanged.Unregister();
 	m_CallbackWorkshopEULAStatus.Unregister();
+#endif
 }
 
 void USIK_UGCSubsystem::OnAddAppDependencyResultCallback(AddAppDependencyResult_t* pParam)

@@ -26,6 +26,8 @@ class STEAMINTEGRATIONKIT_API USIK_VideoSubsystem : public UGameInstanceSubsyste
 	GENERATED_BODY()
 
 public:
+	USIK_VideoSubsystem();
+	~USIK_VideoSubsystem();
 	UPROPERTY(BlueprintAssignable, Category = "Steam Integration Kit | SDK Functions | Video")
 	FOnGetOPFSettingsResult OnGetOPFSettingsResult;
 	

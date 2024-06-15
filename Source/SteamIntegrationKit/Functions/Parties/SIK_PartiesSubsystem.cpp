@@ -7,6 +7,7 @@
 
 USIK_PartiesSubsystem::USIK_PartiesSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackJoinParty.Register(this, &USIK_PartiesSubsystem::OnJoinPartyCallback);
 	m_CallbackCreateBeacon.Register(this, &USIK_PartiesSubsystem::OnCreateBeaconCallback);
 	m_CallbackReservationNotification.Register(this, &USIK_PartiesSubsystem::OnReservationNotificationCallback);
@@ -24,16 +25,19 @@ USIK_PartiesSubsystem::USIK_PartiesSubsystem()
 	m_CallbackActiveBeaconsUpdated.SetGameserverFlag();
 
 }
+#endif
 }
 
 USIK_PartiesSubsystem::~USIK_PartiesSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackJoinParty.Unregister();
 	m_CallbackCreateBeacon.Unregister();
 	m_CallbackReservationNotification.Unregister();
 	m_CallbackChangeNumOpenSlots.Unregister();
 	m_CallbackAvailableBeaconLocationsUpdated.Unregister();
 	m_CallbackActiveBeaconsUpdated.Unregister();
+#endif
 }
 
 void USIK_PartiesSubsystem::OnJoinPartyCallback(JoinPartyCallback_t* pParam)

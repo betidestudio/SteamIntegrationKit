@@ -29,6 +29,9 @@ class STEAMINTEGRATIONKIT_API USIK_GameServerStatsSubsystem : public UGameInstan
 	GENERATED_BODY()
 
 public:
+
+	USIK_GameServerStatsSubsystem();
+	~USIK_GameServerStatsSubsystem();
 	UPROPERTY(BlueprintAssignable, Category = "Steam Integration Kit || Game Server Stats")
 	FGSStatsReceivedDelegate OnGSStatsReceived;
 

@@ -8,6 +8,7 @@
 
  USIK_UserStatsSubsystem::USIK_UserStatsSubsystem()
  {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
  	m_CallbackGlobalAchievementPercentagesReady.Register(this, &USIK_UserStatsSubsystem::OnGlobalAchievementPercentagesReadyCallbck);
  	m_CallbackGlobalStatsReceived.Register(this, &USIK_UserStatsSubsystem::OnGlobalStatsReceivedCallbck);
  	m_CallbackLeaderboardFindResult.Register(this, &USIK_UserStatsSubsystem::OnLeaderboardFindResultCallbck);
@@ -34,10 +35,12 @@
  		m_CallbackUserStatsStored.SetGameserverFlag();
  		m_CallbackUserStatsUnloaded.SetGameserverFlag();
  	}
+#endif
  }
 
  USIK_UserStatsSubsystem::~USIK_UserStatsSubsystem()
  {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
  	m_CallbackGlobalAchievementPercentagesReady.Unregister();
  	m_CallbackGlobalStatsReceived.Unregister();
  	m_CallbackLeaderboardFindResult.Unregister();
@@ -49,6 +52,7 @@
  	m_CallbackUserStatsReceived.Unregister();
  	m_CallbackUserStatsStored.Unregister();
  	m_CallbackUserStatsUnloaded.Unregister();
+#endif
  }
 
 void USIK_UserStatsSubsystem::OnGlobalAchievementPercentagesReadyCallbck(GlobalAchievementPercentagesReady_t* pCallback)

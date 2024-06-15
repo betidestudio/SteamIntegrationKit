@@ -18,16 +18,20 @@ void UHostMigrationSubsystem::StartHostMigration(FSIK_SteamId LobbyId)
 
 UHostMigrationSubsystem::UHostMigrationSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackLobbyDataUpdate.Register(this, &UHostMigrationSubsystem::OnLobbyDataUpdateCallback);
 	if(IsRunningDedicatedServer())
 	{
 		m_CallbackLobbyDataUpdate.SetGameserverFlag();
 	}
+#endif
 }
 
 UHostMigrationSubsystem::~UHostMigrationSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackLobbyDataUpdate.Unregister();
+#endif
 }
 
 void UHostMigrationSubsystem::OnLobbyDataUpdateCallback(LobbyDataUpdate_t* pParam)

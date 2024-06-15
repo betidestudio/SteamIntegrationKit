@@ -4,6 +4,30 @@
 #include "SIK_GameServerStatsSubsystem.h"
 
 
+USIK_GameServerStatsSubsystem::USIK_GameServerStatsSubsystem()
+{
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+	m_CallbackGSStatsReceived.Register(this, &USIK_GameServerStatsSubsystem::OnGSStatsReceivedCallbck);
+	m_CallbackGSStatsStored.Register(this, &USIK_GameServerStatsSubsystem::OnGSStatsStoredCallbck);
+	m_CallbackGSStatsUnloaded.Register(this, &USIK_GameServerStatsSubsystem::OnGSStatsUnloadedCallbck);
+
+	if (IsRunningDedicatedServer())
+	{
+		m_CallbackGSStatsReceived.SetGameserverFlag();
+		m_CallbackGSStatsStored.SetGameserverFlag();
+		m_CallbackGSStatsUnloaded.SetGameserverFlag();
+	}
+#endif
+}
+
+USIK_GameServerStatsSubsystem::~USIK_GameServerStatsSubsystem()
+{
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+	m_CallbackGSStatsReceived.Unregister();
+	m_CallbackGSStatsStored.Unregister();
+	m_CallbackGSStatsUnloaded.Unregister();
+#endif
+}
 void USIK_GameServerStatsSubsystem::OnGSStatsReceivedCallbck(GSStatsReceived_t* pCallback)
 {
 	FSIK_SteamId SteamID = pCallback->m_steamIDUser;

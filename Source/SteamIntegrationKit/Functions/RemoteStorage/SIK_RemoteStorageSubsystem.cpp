@@ -5,6 +5,7 @@
 
 USIK_RemoteStorageSubsystem::USIK_RemoteStorageSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackUGCDownloadResult.Register(this, &USIK_RemoteStorageSubsystem::RemoteStorageDownloadUGCResutCallbck);
 	m_CallbackFileShareResult.Register(this, &USIK_RemoteStorageSubsystem::RemoteStorageFileShareResultCallback);
 	m_CallbackFileWriteAsyncComplete.Register(this, &USIK_RemoteStorageSubsystem::RemoteStorageFileWriteAsyncCompleteCallback);
@@ -21,17 +22,20 @@ USIK_RemoteStorageSubsystem::USIK_RemoteStorageSubsystem()
 	m_CallbackPublishedFileSubscribedComplete.SetGameserverFlag();
 	m_CallbackPublishedFileUnsubscribedComplete.SetGameserverFlag();
 }
+#endif
 
 }
 
 USIK_RemoteStorageSubsystem::~USIK_RemoteStorageSubsystem()
 {
+#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackUGCDownloadResult.Unregister();
 	m_CallbackFileShareResult.Unregister();
 	m_CallbackFileWriteAsyncComplete.Unregister();
 	m_CallbackLocalFileChange.Unregister();
 	m_CallbackPublishedFileSubscribedComplete.Unregister();
 	m_CallbackPublishedFileUnsubscribedComplete.Unregister();
+#endif
 }
 
 void USIK_RemoteStorageSubsystem::RemoteStorageDownloadUGCResutCallbck(RemoteStorageDownloadUGCResult_t* Callback)
