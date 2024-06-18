@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2024 Betide Studio. All Rights Reserved.
+// Copyright (c) 2024 Betide Studio. All Rights Reserved.
 
 
 #include "SIK_UtilsLibrary.h"
@@ -53,31 +53,43 @@ int32 USIK_UtilsLibrary::GetEnteredGamepadTextLength()
 	return SteamUtils()->GetEnteredGamepadTextLength();
 }
 
-bool USIK_UtilsLibrary::GetImageRGBA(int32 Image, TArray<FColor>& OutData)
-{
-	if(!SteamUtils())
+UTexture2D* USIK_UtilsLibrary:: GetFriendAvatarImage(int32 Image)
+{	
+	if (!SteamUtils())
 	{
-		return false;
+		return nullptr;
 	}
+
 	uint32 Width, Height;
-	if(!SteamUtils()->GetImageSize(Image, &Width, &Height))
+	if (!SteamUtils()->GetImageSize(Image, &Width, &Height))
 	{
-		return false;
+		return nullptr;
 	}
+
 	uint32 Size = Width * Height * 4;
-	uint8 *rgubDest = new uint8[Size];
-	if(!SteamUtils()->GetImageRGBA(Image, rgubDest, Size))
+	uint8* rgubDest = new uint8[Size];
+	if (!SteamUtils()->GetImageRGBA(Image, rgubDest, Size))
 	{
 		delete[] rgubDest;
-		return false;
+		return nullptr;
 	}
-	OutData.Empty(Width * Height);
-	for(uint32 i = 0; i < Size; i += 4)
+
+	UTexture2D* Texture = UTexture2D::CreateTransient(Width, Height);
+	if (!Texture)
 	{
-		OutData.Add(FColor(rgubDest[i], rgubDest[i + 1], rgubDest[i + 2], rgubDest[i + 3]));
+		delete[] rgubDest;
+		return nullptr;
 	}
+
+	uint8* MipData = static_cast<uint8*>(Texture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
+	FMemory::Memcpy(MipData, rgubDest, Height * Width * 4);
+	Texture->GetPlatformData()->Mips[0].BulkData.Unlock();
+
+	Texture->NeverStream = true;
+	Texture->UpdateResource();
+
 	delete[] rgubDest;
-	return true;
+	return Texture;
 }	
 
 FString USIK_UtilsLibrary::GetIPCountry()
