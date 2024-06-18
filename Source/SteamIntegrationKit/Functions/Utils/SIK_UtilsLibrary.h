@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2024 Betide Studio. All Rights Reserved.
+// Copyright (c) 2024 Betide Studio. All Rights Reserved.
 
 #pragma once
 
@@ -38,8 +38,8 @@ public:
 	UFUNCTION(BlueprintCallable, DisplayName = "Get Entered Gamepad Text Length", meta=(Keywords="GetEnteredGamepadTextLength"), Category="Steam Integration Kit || SDK Functions || Utils")
 	static int32 GetEnteredGamepadTextLength();
 
-	UFUNCTION(BlueprintCallable, DisplayName = "Get Image RGBA", meta=(Keywords="GetImageRGBA"), Category="Steam Integration Kit || SDK Functions || Utils")
-	static bool GetImageRGBA(int32 Image, TArray<FColor>& OutData);
+	UFUNCTION(BlueprintCallable, DisplayName = "Get FriendAvatar Image", meta=(Keywords="GetFriendAvatarImage"), Category="Steam Integration Kit || SDK Functions || Utils")
+	static UTexture2D* GetFriendAvatarImage(int32 Image);
 
 	UFUNCTION(BlueprintCallable, DisplayName = "Get IP Country", meta=(Keywords="GetIPCountry"), Category="Steam Integration Kit || SDK Functions || Utils")
 	static FString GetIPCountry();
