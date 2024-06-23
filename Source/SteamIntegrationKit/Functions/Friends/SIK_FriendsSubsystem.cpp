@@ -8,53 +8,55 @@
 
 USIK_FriendsSubsystem::USIK_FriendsSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
-	m_CallbackAvatarImageLoaded.Register(this, &USIK_FriendsSubsystem::OnAvatarImageLoadedCallback);
-	m_CallbackFriendRichPresenceUpdate.Register(this, &USIK_FriendsSubsystem::OnFriendRichPresenceUpdateCallback);
-	m_CallbackDownloadClanActivityCountsResult.Register(this, &USIK_FriendsSubsystem::OnDownloadClanActivityCountsResultCallback);
-	m_CallbackFriendEnumerateFollowingList.Register(this, &USIK_FriendsSubsystem::OnFriendEnumerateFollowingListCallback);
-	m_CallbackFriendsGetFollowerCount.Register(this, &USIK_FriendsSubsystem::OnFriendsGetFollowerCountCallback);
-	m_CallbackFriendsIsFollowing.Register(this, &USIK_FriendsSubsystem::OnFriendsIsFollowingCallback);
-	m_CallbackGameConnectedChatJoin.Register(this, &USIK_FriendsSubsystem::OnGameConnectedChatJoinCallback);
-	m_CallbackGameConnectedChatLeave.Register(this, &USIK_FriendsSubsystem::OnGameConnectedChatLeaveCallback);
-	m_CallbackGameConnectedClanChatMsg.Register(this, &USIK_FriendsSubsystem::OnGameConnectedClanChatMsgCallback);
-	m_CallbackGameConnectedFriendChatMsg.Register(this, &USIK_FriendsSubsystem::OnGameConnectedFriendChatMsgCallback);
-	m_CallbackGameLobbyJoinRequested.Register(this, &USIK_FriendsSubsystem::OnGameLobbyJoinRequestedCallback);
-	m_CallbackGameOverlayActivated.Register(this, &USIK_FriendsSubsystem::OnGameOverlayActivatedCallback);
-	m_CallbackGameRichPresenceJoinRequested.Register(this, &USIK_FriendsSubsystem::OnGameRichPresenceJoinRequestedCallback);
-	m_CallbackGameServerChangeRequested.Register(this, &USIK_FriendsSubsystem::OnGameServerChangeRequestedCallback);
-	m_CallbackJoinClanChatRoomCompletionResult.Register(this, &USIK_FriendsSubsystem::OnJoinClanChatRoomCompletionResultCallback);
-	m_CallbackPersonaStateChange.Register(this, &USIK_FriendsSubsystem::OnPersonaStateChangeCallback);
-	m_CallbackSetPersonaNameResponse.Register(this, &USIK_FriendsSubsystem::OnSetPersonaNameResponseCallback);
-	m_CallbackClanOfficerList.Register(this, &USIK_FriendsSubsystem::OnClanOfficerListCallback);
+//#if ONLINESUBSYSTEMSTEAM_PACKAGE
+	if(SteamFriends() != nullptr)
+	{
+		m_CallbackAvatarImageLoaded.Register(this, &USIK_FriendsSubsystem::OnAvatarImageLoadedCallback);
+		m_CallbackFriendRichPresenceUpdate.Register(this, &USIK_FriendsSubsystem::OnFriendRichPresenceUpdateCallback);
+		m_CallbackDownloadClanActivityCountsResult.Register(this, &USIK_FriendsSubsystem::OnDownloadClanActivityCountsResultCallback);
+		m_CallbackFriendEnumerateFollowingList.Register(this, &USIK_FriendsSubsystem::OnFriendEnumerateFollowingListCallback);
+		m_CallbackFriendsGetFollowerCount.Register(this, &USIK_FriendsSubsystem::OnFriendsGetFollowerCountCallback);
+		m_CallbackFriendsIsFollowing.Register(this, &USIK_FriendsSubsystem::OnFriendsIsFollowingCallback);
+		m_CallbackGameConnectedChatJoin.Register(this, &USIK_FriendsSubsystem::OnGameConnectedChatJoinCallback);
+		m_CallbackGameConnectedChatLeave.Register(this, &USIK_FriendsSubsystem::OnGameConnectedChatLeaveCallback);
+		m_CallbackGameConnectedClanChatMsg.Register(this, &USIK_FriendsSubsystem::OnGameConnectedClanChatMsgCallback);
+		m_CallbackGameConnectedFriendChatMsg.Register(this, &USIK_FriendsSubsystem::OnGameConnectedFriendChatMsgCallback);
+		m_CallbackGameLobbyJoinRequested.Register(this, &USIK_FriendsSubsystem::OnGameLobbyJoinRequestedCallback);
+		m_CallbackGameOverlayActivated.Register(this, &USIK_FriendsSubsystem::OnGameOverlayActivatedCallback);
+		m_CallbackGameRichPresenceJoinRequested.Register(this, &USIK_FriendsSubsystem::OnGameRichPresenceJoinRequestedCallback);
+		m_CallbackGameServerChangeRequested.Register(this, &USIK_FriendsSubsystem::OnGameServerChangeRequestedCallback);
+		m_CallbackJoinClanChatRoomCompletionResult.Register(this, &USIK_FriendsSubsystem::OnJoinClanChatRoomCompletionResultCallback);
+		m_CallbackPersonaStateChange.Register(this, &USIK_FriendsSubsystem::OnPersonaStateChangeCallback);
+		m_CallbackSetPersonaNameResponse.Register(this, &USIK_FriendsSubsystem::OnSetPersonaNameResponseCallback);
+		m_CallbackClanOfficerList.Register(this, &USIK_FriendsSubsystem::OnClanOfficerListCallback);
 
- 	if(IsRunningDedicatedServer())
- 	{
- 		m_CallbackAvatarImageLoaded.SetGameserverFlag();
- 		m_CallbackFriendRichPresenceUpdate.SetGameserverFlag();
- 		m_CallbackDownloadClanActivityCountsResult.SetGameserverFlag();
- 		m_CallbackFriendEnumerateFollowingList.SetGameserverFlag();
- 		m_CallbackFriendsGetFollowerCount.SetGameserverFlag();
- 		m_CallbackFriendsIsFollowing.SetGameserverFlag();
- 		m_CallbackGameConnectedChatJoin.SetGameserverFlag();
- 		m_CallbackGameConnectedChatLeave.SetGameserverFlag();
- 		m_CallbackGameConnectedClanChatMsg.SetGameserverFlag();
- 		m_CallbackGameConnectedFriendChatMsg.SetGameserverFlag();
- 		m_CallbackGameLobbyJoinRequested.SetGameserverFlag();
- 		m_CallbackGameOverlayActivated.SetGameserverFlag();
- 		m_CallbackGameRichPresenceJoinRequested.SetGameserverFlag();
- 		m_CallbackGameServerChangeRequested.SetGameserverFlag();
- 		m_CallbackJoinClanChatRoomCompletionResult.SetGameserverFlag();
- 		m_CallbackPersonaStateChange.SetGameserverFlag();
- 		m_CallbackSetPersonaNameResponse.SetGameserverFlag();
- 		m_CallbackClanOfficerList.SetGameserverFlag();
- 	}
-#endif
+		if(IsRunningDedicatedServer())
+		{
+			m_CallbackAvatarImageLoaded.SetGameserverFlag();
+			m_CallbackFriendRichPresenceUpdate.SetGameserverFlag();
+			m_CallbackDownloadClanActivityCountsResult.SetGameserverFlag();
+			m_CallbackFriendEnumerateFollowingList.SetGameserverFlag();
+			m_CallbackFriendsGetFollowerCount.SetGameserverFlag();
+			m_CallbackFriendsIsFollowing.SetGameserverFlag();
+			m_CallbackGameConnectedChatJoin.SetGameserverFlag();
+			m_CallbackGameConnectedChatLeave.SetGameserverFlag();
+			m_CallbackGameConnectedClanChatMsg.SetGameserverFlag();
+			m_CallbackGameConnectedFriendChatMsg.SetGameserverFlag();
+			m_CallbackGameLobbyJoinRequested.SetGameserverFlag();
+			m_CallbackGameOverlayActivated.SetGameserverFlag();
+			m_CallbackGameRichPresenceJoinRequested.SetGameserverFlag();
+			m_CallbackGameServerChangeRequested.SetGameserverFlag();
+			m_CallbackJoinClanChatRoomCompletionResult.SetGameserverFlag();
+			m_CallbackPersonaStateChange.SetGameserverFlag();
+			m_CallbackSetPersonaNameResponse.SetGameserverFlag();
+			m_CallbackClanOfficerList.SetGameserverFlag();
+		}
+	}
 }
 
 USIK_FriendsSubsystem::~USIK_FriendsSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackAvatarImageLoaded.Unregister();
 	m_CallbackFriendRichPresenceUpdate.Unregister();
 	m_CallbackDownloadClanActivityCountsResult.Unregister();

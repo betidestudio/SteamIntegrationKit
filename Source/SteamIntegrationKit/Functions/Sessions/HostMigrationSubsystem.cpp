@@ -18,7 +18,7 @@ void UHostMigrationSubsystem::StartHostMigration(FSIK_SteamId LobbyId)
 
 UHostMigrationSubsystem::UHostMigrationSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackLobbyDataUpdate.Register(this, &UHostMigrationSubsystem::OnLobbyDataUpdateCallback);
 	if(IsRunningDedicatedServer())
 	{
@@ -29,7 +29,7 @@ UHostMigrationSubsystem::UHostMigrationSubsystem()
 
 UHostMigrationSubsystem::~UHostMigrationSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackLobbyDataUpdate.Unregister();
 #endif
 }

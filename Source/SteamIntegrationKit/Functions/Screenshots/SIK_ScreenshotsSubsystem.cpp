@@ -8,7 +8,7 @@
 
 USIK_ScreenshotsSubsystem::USIK_ScreenshotsSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackScreenshotReady.Register(this, &USIK_ScreenshotsSubsystem::OnScreenshotReadyCallback);
 	m_CallbackScreenshotRequested.Register(this, &USIK_ScreenshotsSubsystem::OnScreenshotRequestedCallback);
  	if(IsRunningDedicatedServer())
@@ -21,7 +21,7 @@ USIK_ScreenshotsSubsystem::USIK_ScreenshotsSubsystem()
 
 USIK_ScreenshotsSubsystem::~USIK_ScreenshotsSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackScreenshotReady.Unregister();
 	m_CallbackScreenshotRequested.Unregister();
 #endif

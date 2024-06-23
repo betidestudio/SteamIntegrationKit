@@ -8,7 +8,7 @@
 
 USIK_MusicSubsystem::USIK_MusicSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackPlaybackStatusHasChanged.Register(this, &USIK_MusicSubsystem::OnPlaybackStatusHasChanged);
 	m_CallbackVolumeHasChanged.Register(this, &USIK_MusicSubsystem::OnVolumeHasChanged);
 
@@ -22,7 +22,7 @@ USIK_MusicSubsystem::USIK_MusicSubsystem()
 
 USIK_MusicSubsystem::~USIK_MusicSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackPlaybackStatusHasChanged.Unregister();
 	m_CallbackVolumeHasChanged.Unregister();
 #endif

@@ -7,7 +7,7 @@
 
 USIK_GameServerSubsystem::USIK_GameServerSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackAssociateWithClanResult.Register(this, &USIK_GameServerSubsystem::OnAssociateWithClanResultCallbck);
 	m_CallbackComputeNewPlayerCompatibilityResult.Register(this, &USIK_GameServerSubsystem::OnComputeNewPlayerCompatibilityResultCallbck);
 	m_CallbackGSClientApprove.Register(this, &USIK_GameServerSubsystem::OnGSClientApproveCallbck);
@@ -32,7 +32,7 @@ USIK_GameServerSubsystem::USIK_GameServerSubsystem()
 
 USIK_GameServerSubsystem::~USIK_GameServerSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackAssociateWithClanResult.Unregister();
 	m_CallbackComputeNewPlayerCompatibilityResult.Unregister();
 	m_CallbackGSClientApprove.Unregister();

@@ -7,7 +7,7 @@
 
 USIK_AppSubsystem::USIK_AppSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackDlcInstalled.Register(this, &USIK_AppSubsystem::OnDlcInstalledCallbck);
 	m_CallbackFileDetails.Register(this, &USIK_AppSubsystem::OnFileDetailsCallbck);
 	m_CallbackNewUrlLaunchParameters.Register(this, &USIK_AppSubsystem::OnNewUrlLaunchParametersCallbck);
@@ -25,7 +25,7 @@ USIK_AppSubsystem::USIK_AppSubsystem()
 
 USIK_AppSubsystem::~USIK_AppSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackDlcInstalled.Unregister();
 	m_CallbackFileDetails.Unregister();
 	m_CallbackNewUrlLaunchParameters.Unregister();

@@ -8,7 +8,7 @@
 
 USIK_UGCSubsystem::USIK_UGCSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackAddAppDependencyResult.Register(this, &USIK_UGCSubsystem::OnAddAppDependencyResultCallback);
 	m_CallbackAddUGCDependencyResult.Register(this, &USIK_UGCSubsystem::OnAddUGCDependencyResultCallback);
 	m_CallbackCreateItemResult.Register(this, &USIK_UGCSubsystem::OnCreateItemResultCallback);
@@ -54,7 +54,7 @@ USIK_UGCSubsystem::USIK_UGCSubsystem()
 
 USIK_UGCSubsystem::~USIK_UGCSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackAddAppDependencyResult.Unregister();
 	m_CallbackAddUGCDependencyResult.Unregister();
 	m_CallbackCreateItemResult.Unregister();

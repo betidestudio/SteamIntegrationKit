@@ -8,7 +8,7 @@
 
 USIK_UtilsSubsystem::USIK_UtilsSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackGamepadTextInputDismissed.Register(this, &USIK_UtilsSubsystem::OnGamepadTextInputDismissedCallbck);
 	m_CallbackIPCountry.Register(this, &USIK_UtilsSubsystem::OnIPCountryCallbck);
 	m_CallbackLowBatteryPower.Register(this, &USIK_UtilsSubsystem::OnLowBatteryPowerCallbck);
@@ -28,7 +28,7 @@ USIK_UtilsSubsystem::USIK_UtilsSubsystem()
 
 USIK_UtilsSubsystem::~USIK_UtilsSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackGamepadTextInputDismissed.SetGameserverFlag();
 	m_CallbackIPCountry.SetGameserverFlag();
 	m_CallbackLowBatteryPower.SetGameserverFlag();

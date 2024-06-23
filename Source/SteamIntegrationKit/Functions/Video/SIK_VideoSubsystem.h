@@ -38,7 +38,7 @@ public:
 	
 private:
 	//GetOPFSettingsResult_t
-	STEAM_CALLBACK_MANUAL(USIK_VideoSubsystem, OnGetOPFSettingsResultCallbck, GetOPFSettingsResult_t, OnGetOPFSettingsResultCallback);
+	STEAM_CALLBACK_MANUAL(USIK_VideoSubsystem, OnGetOPFSettingsResultCallbck, GetOPFSettingsResult_t, m_CallbackGetOPFSettingsResult);
 	//GetVideoURLResult_t
-	STEAM_CALLBACK_MANUAL(USIK_VideoSubsystem, OnGetVideoURLResultCallbck, GetVideoURLResult_t, OnGetVideoURLResultCallback);
+	STEAM_CALLBACK_MANUAL(USIK_VideoSubsystem, OnGetVideoURLResultCallbck, GetVideoURLResult_t, m_CallbackGetVideoURLResult);
 };

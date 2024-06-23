@@ -8,7 +8,7 @@
 
  USIK_UserStatsSubsystem::USIK_UserStatsSubsystem()
  {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
  	m_CallbackGlobalAchievementPercentagesReady.Register(this, &USIK_UserStatsSubsystem::OnGlobalAchievementPercentagesReadyCallbck);
  	m_CallbackGlobalStatsReceived.Register(this, &USIK_UserStatsSubsystem::OnGlobalStatsReceivedCallbck);
  	m_CallbackLeaderboardFindResult.Register(this, &USIK_UserStatsSubsystem::OnLeaderboardFindResultCallbck);
@@ -40,7 +40,7 @@
 
  USIK_UserStatsSubsystem::~USIK_UserStatsSubsystem()
  {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
  	m_CallbackGlobalAchievementPercentagesReady.Unregister();
  	m_CallbackGlobalStatsReceived.Unregister();
  	m_CallbackLeaderboardFindResult.Unregister();

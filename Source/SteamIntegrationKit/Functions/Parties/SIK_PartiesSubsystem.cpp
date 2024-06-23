@@ -7,7 +7,7 @@
 
 USIK_PartiesSubsystem::USIK_PartiesSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackJoinParty.Register(this, &USIK_PartiesSubsystem::OnJoinPartyCallback);
 	m_CallbackCreateBeacon.Register(this, &USIK_PartiesSubsystem::OnCreateBeaconCallback);
 	m_CallbackReservationNotification.Register(this, &USIK_PartiesSubsystem::OnReservationNotificationCallback);
@@ -30,7 +30,7 @@ USIK_PartiesSubsystem::USIK_PartiesSubsystem()
 
 USIK_PartiesSubsystem::~USIK_PartiesSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackJoinParty.Unregister();
 	m_CallbackCreateBeacon.Unregister();
 	m_CallbackReservationNotification.Unregister();

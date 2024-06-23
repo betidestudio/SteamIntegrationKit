@@ -8,7 +8,7 @@
 
 USIK_MusicRemoteSubsystem::USIK_MusicRemoteSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackMusicPlayerRemoteToFront.Register(this, &USIK_MusicRemoteSubsystem::OnMusicPlayerRemoteToFrontCallbck);
 	m_CallbackMusicPlayerRemoteWillActivate.Register(this, &USIK_MusicRemoteSubsystem::OnMusicPlayerRemoteWillActivateCallbck);
 	m_CallbackMusicPlayerRemoteWillDeactivate.Register(this, &USIK_MusicRemoteSubsystem::OnMusicPlayerRemoteWillDeactivateCallbck);
@@ -47,7 +47,7 @@ USIK_MusicRemoteSubsystem::USIK_MusicRemoteSubsystem()
 
 USIK_MusicRemoteSubsystem::~USIK_MusicRemoteSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackMusicPlayerRemoteToFront.Unregister();
 	m_CallbackMusicPlayerRemoteWillActivate.Unregister();
 	m_CallbackMusicPlayerRemoteWillDeactivate.Unregister();

@@ -8,7 +8,7 @@
 
 USIK_NetworkingSubsystem::USIK_NetworkingSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackP2PSessionConnectFail.Register(this, &USIK_NetworkingSubsystem::OnP2PSessionConnectFailCallbck);
 	m_CallbackP2PSessionRequest.Register(this, &USIK_NetworkingSubsystem::OnP2PSessionRequestCallback);
 
@@ -22,7 +22,7 @@ USIK_NetworkingSubsystem::USIK_NetworkingSubsystem()
 
 USIK_NetworkingSubsystem::~USIK_NetworkingSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackP2PSessionConnectFail.Unregister();
 	m_CallbackP2PSessionRequest.Unregister();
 #endif

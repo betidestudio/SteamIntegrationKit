@@ -6,10 +6,10 @@
 
 USIK_VideoSubsystem::USIK_VideoSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackGetOPFSettingsResult.Register(this, &USIK_VideoSubsystem::OnGetOPFSettingsResultCallbck);
 	m_CallbackGetVideoURLResult.Register(this, &USIK_VideoSubsystem::OnGetVideoURLResultCallbck);
-	if (IsRunningDedicatedServer())
+	if(IsRunningDedicatedServer())
 	{
 		m_CallbackGetOPFSettingsResult.SetGameserverFlag();
 		m_CallbackGetVideoURLResult.SetGameserverFlag();
@@ -18,7 +18,7 @@ USIK_VideoSubsystem::USIK_VideoSubsystem()
 }
 USIK_VideoSubsystem::~USIK_VideoSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackGetOPFSettingsResult.Unregister();
 	m_CallbackGetVideoURLResult.Unregister();
 #endif

@@ -6,7 +6,7 @@
 
 USIK_GameServerStatsSubsystem::USIK_GameServerStatsSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackGSStatsReceived.Register(this, &USIK_GameServerStatsSubsystem::OnGSStatsReceivedCallbck);
 	m_CallbackGSStatsStored.Register(this, &USIK_GameServerStatsSubsystem::OnGSStatsStoredCallbck);
 	m_CallbackGSStatsUnloaded.Register(this, &USIK_GameServerStatsSubsystem::OnGSStatsUnloadedCallbck);
@@ -22,7 +22,7 @@ USIK_GameServerStatsSubsystem::USIK_GameServerStatsSubsystem()
 
 USIK_GameServerStatsSubsystem::~USIK_GameServerStatsSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackGSStatsReceived.Unregister();
 	m_CallbackGSStatsStored.Unregister();
 	m_CallbackGSStatsUnloaded.Unregister();

@@ -7,7 +7,7 @@
 	"Category": "Betide Studio",
 	"CreatedBy": "Betide Studio",
 	"CreatedByURL": "https://betide.studio",
-	"EngineVersion": "5.2.0",
+	"EngineVersion": "5.4.0",
 	"DocsURL": "https://sik.betide.studio",
 	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/122c9894af2649c8a9c2a25452562547",
 	"SupportURL": "https://discord.gg/betidestudio",
@@ -34,6 +34,10 @@
 		},
 		{
 			"Name": "OnlineSubsystemUtils",
+			"Enabled": true
+		},
+		{
+			"Name": "OnlineSubsystemSteam",
 			"Enabled": true
 		}
 	]

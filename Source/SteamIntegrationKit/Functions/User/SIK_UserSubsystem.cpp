@@ -7,7 +7,7 @@
 
 USIK_UserSubsystem::USIK_UserSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackClientGameServerDeny.Register(this, &USIK_UserSubsystem::OnClientGameServerDeny);
 	m_CallbackDurationControl.Register(this, &USIK_UserSubsystem::OnDurationControl);
 	m_CallbackGameWebCallback.Register(this, &USIK_UserSubsystem::OnGameWebCallback);
@@ -48,7 +48,7 @@ USIK_UserSubsystem::USIK_UserSubsystem()
 
 USIK_UserSubsystem::~USIK_UserSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackClientGameServerDeny.Unregister();
 	m_CallbackDurationControl.Unregister();
 	m_CallbackGameWebCallback.Unregister();

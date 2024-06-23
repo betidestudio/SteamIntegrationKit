@@ -5,7 +5,7 @@
 
 USIK_RemoteStorageSubsystem::USIK_RemoteStorageSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackUGCDownloadResult.Register(this, &USIK_RemoteStorageSubsystem::RemoteStorageDownloadUGCResutCallbck);
 	m_CallbackFileShareResult.Register(this, &USIK_RemoteStorageSubsystem::RemoteStorageFileShareResultCallback);
 	m_CallbackFileWriteAsyncComplete.Register(this, &USIK_RemoteStorageSubsystem::RemoteStorageFileWriteAsyncCompleteCallback);
@@ -28,7 +28,7 @@ USIK_RemoteStorageSubsystem::USIK_RemoteStorageSubsystem()
 
 USIK_RemoteStorageSubsystem::~USIK_RemoteStorageSubsystem()
 {
-#ifdef ONLINESUBSYSTEMSTEAM_PACKAGE
+#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackUGCDownloadResult.Unregister();
 	m_CallbackFileShareResult.Unregister();
 	m_CallbackFileWriteAsyncComplete.Unregister();
