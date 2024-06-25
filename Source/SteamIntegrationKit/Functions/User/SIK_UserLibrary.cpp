@@ -131,7 +131,7 @@ int32 USIK_UserLibrary::GetAuthSessionTicket(TArray<uint8>& Ticket, FSIK_SteamNe
 	uint32 TicketLength = 0;
 	HAuthTicket Result;
 	SteamNetworkingIdentity SteamNetworkingIdentity = Identity.GetSteamNetworkingIdentity();
-#if !WITH_ENGINE_STEAM || ENGINE_MINOR_VERSION > 3
+#if !WITH_ENGINE_STEAM
 	Result = SteamUser()->GetAuthSessionTicket(Ticket.GetData(), Ticket.Num(), &TicketLength, &SteamNetworkingIdentity);
 #else
 	Result = SteamUser()->GetAuthSessionTicket(Ticket.GetData(), Ticket.Num(), &TicketLength);

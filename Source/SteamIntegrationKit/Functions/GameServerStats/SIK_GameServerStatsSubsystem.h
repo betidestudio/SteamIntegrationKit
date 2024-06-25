@@ -8,13 +8,11 @@ THIRD_PARTY_INCLUDES_START
 #if WITH_ENGINE_STEAM
 #include <steam/steam_api.h>
 #include <steam/isteamgameserver.h>
-#include <steam/isteamgameserverstats.h>
 #include <steam/steam_api_common.h>
 #else
 #include <steam_api_common.h>
 #include <steam_gameserver.h>
 #include <isteamgameserver.h>
-#include <isteamgameserverstats.h>
 #endif
 THIRD_PARTY_INCLUDES_END
 #include "Subsystems/GameInstanceSubsystem.h"
@@ -29,9 +27,6 @@ class STEAMINTEGRATIONKIT_API USIK_GameServerStatsSubsystem : public UGameInstan
 	GENERATED_BODY()
 
 public:
-
-	USIK_GameServerStatsSubsystem();
-	~USIK_GameServerStatsSubsystem();
 	UPROPERTY(BlueprintAssignable, Category = "Steam Integration Kit || Game Server Stats")
 	FGSStatsReceivedDelegate OnGSStatsReceived;
 

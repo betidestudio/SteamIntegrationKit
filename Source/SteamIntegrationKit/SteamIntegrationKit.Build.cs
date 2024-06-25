@@ -9,7 +9,7 @@ public class SteamIntegrationKit : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
-		bool bUseEngineSteam = true;
+		bool bUseEngineSteam = false;
 		
 		PublicIncludePaths.AddRange(
 			new string[] {
@@ -68,17 +68,7 @@ public class SteamIntegrationKit : ModuleRules
 		{
 			PublicDefinitions.Add("WITH_ENGINE_STEAM=1");
 			PublicDefinitions.Add("WITH_STEAMKIT=1");
-			if (Target.Platform == UnrealTargetPlatform.Win64 || Target.Platform == UnrealTargetPlatform.Linux)
-			{
-				Console.WriteLine("SteamIntegrationKit: Game build, enabling ONLINESUBSYSTEMSTEAM_PACKAGE");
-				PublicDefinitions.Add("ONLINESUBSYSTEMSTEAM_PACKAGE=1");
-				AddEngineThirdPartyPrivateStaticDependencies(Target, "Steamworks");
-			}
-			else
-			{
-				Console.WriteLine("SteamIntegrationKit: Editor build, disabling ONLINESUBSYSTEMSTEAM_PACKAGE");
-				PublicDefinitions.Add("ONLINESUBSYSTEMSTEAM_PACKAGE=0");
-			}
+			AddEngineThirdPartyPrivateStaticDependencies(Target, "Steamworks");
 		}
 		else
 		{

@@ -7,7 +7,6 @@
 
 USIK_UserSubsystem::USIK_UserSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackClientGameServerDeny.Register(this, &USIK_UserSubsystem::OnClientGameServerDeny);
 	m_CallbackDurationControl.Register(this, &USIK_UserSubsystem::OnDurationControl);
 	m_CallbackGameWebCallback.Register(this, &USIK_UserSubsystem::OnGameWebCallback);
@@ -42,13 +41,11 @@ USIK_UserSubsystem::USIK_UserSubsystem()
 	m_CallbackStoreAuthURLResponse.SetGameserverFlag();
 	m_CallbackValidateAuthTicketResponse.SetGameserverFlag();
 }
-#endif
 	
 }
 
 USIK_UserSubsystem::~USIK_UserSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
 	m_CallbackClientGameServerDeny.Unregister();
 	m_CallbackDurationControl.Unregister();
 	m_CallbackGameWebCallback.Unregister();
@@ -64,7 +61,6 @@ USIK_UserSubsystem::~USIK_UserSubsystem()
 	m_CallbackSteamServersDisconnected.Unregister();
 	m_CallbackStoreAuthURLResponse.Unregister();
 	m_CallbackValidateAuthTicketResponse.Unregister();
-#endif
 }
 
 void USIK_UserSubsystem::OnClientGameServerDeny(ClientGameServerDeny_t *pParam)
