@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "SIK_SharedFile.h"
 #include "SteamIntegrationKit/Functions/GameServer/SIK_GameServerLibrary.h"
 

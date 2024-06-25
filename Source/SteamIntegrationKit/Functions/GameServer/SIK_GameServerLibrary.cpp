@@ -106,9 +106,10 @@ TArray<uint8> USIK_GameServerLibrary::GetAuthSessionTicket()
 	IPAddr.SetIPv4(0,0);
 	Identity.SetIPAddr(IPAddr);
 	uint32 TicketSize;
-#if !WITH_ENGINE_STEAM
+#if !WITH_ENGINE_STEAM || ENGINE_MINOR_VERSION > 3
 	TicketSize = SteamGameServer()->GetAuthSessionTicket(Ticket, cbMaxTicket, pcbTicket, &Identity);
-#else
+#endif
+#if ENGINE_MINOR_VERSION < 4
 	TicketSize = SteamGameServer()->GetAuthSessionTicket(Ticket, cbMaxTicket, &TicketSize);
 #endif
 	TArray<uint8> TicketArray;
