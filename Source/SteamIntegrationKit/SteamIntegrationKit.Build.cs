@@ -83,6 +83,7 @@ public class SteamIntegrationKit : ModuleRules
 		}
 		else
 		{
+			PublicDefinitions.Add("ONLINESUBSYSTEMSTEAM_PACKAGE=1");
 			PublicDefinitions.Add("WITH_ENGINE_STEAM=0");
 			PublicDependencyModuleNames.Add("SteamSdk");
 		}

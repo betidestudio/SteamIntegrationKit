@@ -108,8 +108,7 @@ TArray<uint8> USIK_GameServerLibrary::GetAuthSessionTicket()
 	uint32 TicketSize;
 #if !WITH_ENGINE_STEAM || ENGINE_MINOR_VERSION > 3
 	TicketSize = SteamGameServer()->GetAuthSessionTicket(Ticket, cbMaxTicket, pcbTicket, &Identity);
-#endif
-#if ENGINE_MINOR_VERSION < 4
+#else
 	TicketSize = SteamGameServer()->GetAuthSessionTicket(Ticket, cbMaxTicket, &TicketSize);
 #endif
 	TArray<uint8> TicketArray;
