@@ -9,7 +9,8 @@ public class SteamIntegrationKit : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
-		bool bUseEngineSteam = true;
+		//Always change this to true if you want to use the engine steam subsystem which you would need normally for using the Github version of the plugin
+		bool bUseEngineSteam = false;
 		
 		PublicIncludePaths.AddRange(
 			new string[] {
