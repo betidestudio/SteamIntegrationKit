@@ -7,7 +7,7 @@
 	"Category": "Betide Studio",
 	"CreatedBy": "Betide Studio",
 	"CreatedByURL": "https://betide.studio",
-	"EngineVersion": "5.4.0",
+	"EngineVersion": "5.2.0",
 	"DocsURL": "https://sik.betide.studio",
 	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/122c9894af2649c8a9c2a25452562547",
 	"SupportURL": "https://discord.gg/betidestudio",
@@ -25,6 +25,58 @@
 				"Mac",
 				"Linux"
 			]
+		},
+		{
+			"Name": "OnlineSubsystemSteam",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64",
+				"Mac",
+				"Linux"
+			]
+		},
+		{
+			"Name": "SteamSockets",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64",
+				"Mac",
+				"Linux"
+			]
+		},
+		{
+			"Name": "SteamShared",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault",
+			"PlatformAllowList": [
+				"Win64",
+				"Mac",
+				"Linux"
+			]
+		},
+		{
+			"Name": "SteamController",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64",
+				"Linux",
+				"Mac"
+			]
+		},
+		{
+			"Name": "SteamEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64"
+			],
+			"BlacklistPlatforms": [
+				"Mac",
+				"Linux"
+			]
 		}
 	],
 	"Plugins": [
@@ -34,10 +86,6 @@
 		},
 		{
 			"Name": "OnlineSubsystemUtils",
-			"Enabled": true
-		},
-		{
-			"Name": "OnlineSubsystemSteam",
 			"Enabled": true
 		}
 	]

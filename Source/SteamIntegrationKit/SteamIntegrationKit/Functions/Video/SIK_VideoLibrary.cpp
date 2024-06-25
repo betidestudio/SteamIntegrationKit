@@ -1,0 +1,46 @@
+﻿// Copyright (c) 2024 Betide Studio. All Rights Reserved.
+
+
+#include "SIK_VideoLibrary.h"
+
+
+void USIK_VideoLibrary::GetOPFSettings(FSIK_AppId AppID)
+{
+	if(!SteamVideo())
+	{
+		return;
+	}
+	SteamVideo()->GetOPFSettings(AppID.GetAppID());
+}
+
+bool USIK_VideoLibrary::GetOPFStringForApp(FSIK_AppId AppID, FString& OutString)
+{
+	if(!SteamVideo())
+	{
+		return false;
+	}
+	char* Buffer = new char[1024];
+	int* BufferSize = new int(1024);
+	bool bResult = SteamVideo()->GetOPFStringForApp(AppID.GetAppID(), Buffer, BufferSize);
+	OutString = Buffer;
+	delete[] Buffer;
+	return bResult;
+}
+
+void USIK_VideoLibrary::GetVideoURL(FSIK_AppId AppID)
+{
+	if(!SteamVideo())
+	{
+		return;
+	}
+	SteamVideo()->GetVideoURL(AppID.GetAppID());
+}
+
+bool USIK_VideoLibrary::IsBroadcasting(int32& OutNumViewers)
+{
+	if(!SteamVideo())
+	{
+		return false;
+	}
+	return SteamVideo()->IsBroadcasting(&OutNumViewers);
+}
