@@ -80,6 +80,16 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Deployer Account Information")
 	FString Password;
 
+	UPROPERTY(EditAnywhere, Category = "Game Server Settings")
+	FString ServerName;
+
+	UPROPERTY(EditAnywhere, Category = "Game Server Settings")
+	FString ServerDescription;
+
+	UPROPERTY(EditAnywhere, Category = "Game Server Settings")
+	FString ServerModDir;
+	
+
 
 private:
 #if WITH_EDITOR
