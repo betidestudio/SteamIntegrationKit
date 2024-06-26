@@ -30,7 +30,6 @@ public class SteamIntegrationKit : ModuleRules
 			{
 				"Core",
 				"OnlineSubsystem",
-				"OnlineSubsystemSteam",
 				"OnlineSubsystemUtils",
 				"Networking"
 				// ... add other public dependencies that you statically link with here ...
@@ -49,7 +48,8 @@ public class SteamIntegrationKit : ModuleRules
 				"Projects",
 				"HTTP",
 				"Json",
-				"JsonUtilities"
+				"JsonUtilities",
+				"OnlineSubsystemSteam",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
