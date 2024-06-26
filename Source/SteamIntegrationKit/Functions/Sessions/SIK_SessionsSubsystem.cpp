@@ -9,6 +9,43 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "OnlineSubsystemSteam/Private/OnlineSessionInterfaceSteam.h"
 
+void USIK_SessionsSubsystem::Func_OnSessionUserInviteAccepted(bool bWasSuccessful, int ControllerId, TSharedPtr<const FUniqueNetId> UniqueNetId,
+	const FOnlineSessionSearchResult& OnlineSessionSearchResult)
+{
+	FBlueprintSessionResult Result;
+	Result.OnlineResult = OnlineSessionSearchResult;
+	OnSessionUserInviteAccepted.Broadcast(bWasSuccessful, Result);
+}
+
+USIK_SessionsSubsystem::USIK_SessionsSubsystem()
+{
+	if(	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get(STEAM_SUBSYSTEM))
+	{
+		if (FOnlineSubsystemSteam* SteamRef = static_cast<FOnlineSubsystemSteam*>(OnlineSub))
+		{
+			if(FOnlineSessionSteamPtr SteamSessionPtr = StaticCastSharedPtr<FOnlineSessionSteam>(SteamRef->GetSessionInterface()))
+			{
+				SteamSessionPtr->AddOnSessionUserInviteAcceptedDelegate_Handle(FOnSessionUserInviteAcceptedDelegate::CreateUObject(this, &USIK_SessionsSubsystem::Func_OnSessionUserInviteAccepted));
+			}
+		}
+	}
+}
+
+USIK_SessionsSubsystem::~USIK_SessionsSubsystem()
+{
+	if(	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get(STEAM_SUBSYSTEM))
+	{
+		if (FOnlineSubsystemSteam* SteamRef = static_cast<FOnlineSubsystemSteam*>(OnlineSub))
+		{
+			if(FOnlineSessionSteamPtr SteamSessionPtr = StaticCastSharedPtr<FOnlineSessionSteam>(SteamRef->GetSessionInterface()))
+			{
+				SteamSessionPtr->ClearOnSessionUserInviteAcceptedDelegate_Handle(OnSessionUserInviteAcceptedDelegateHandle);
+			}
+		}
+	}
+}
+
+
 TArray<FEIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndLobbies(UObject* Context)
 {
 	if(Context)

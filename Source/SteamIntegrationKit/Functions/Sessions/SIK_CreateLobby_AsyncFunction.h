@@ -34,22 +34,7 @@ struct FSIKCreateLobbySettings
 	bool bAllowJoinInProgress = true;
 
 	UPROPERTY(BlueprintReadWrite, Category="Steam Integration Kit")
-	bool bUseVoiceChat = false;
-
-	UPROPERTY(BlueprintReadWrite, Category="Steam Integration Kit")
-	bool bUsePresence = false;
-
-	UPROPERTY(BlueprintReadWrite, Category="Steam Integration Kit")
-	FString BucketID = "";
-
-	UPROPERTY(BlueprintReadWrite, Category="Steam Integration Kit")
-	bool bSupportHostMigration = false;
-
-	UPROPERTY(BlueprintReadWrite, Category="Steam Integration Kit")
-	bool bEnableJoinViaID = false;
-
-	UPROPERTY(BlueprintReadWrite, Category="Steam Integration Kit")
-	FString LobbyIDOverride = "";
+	bool bUsePresence = true;
 	
 };
 
@@ -81,10 +66,7 @@ public:
 
 	/*
 	This function is used to create a lobby with the given settings and returns a result delegate which can be used to determine if the lobby was created successfully or not.
-	@param SessionSettings - A map of session settings to be used when creating the lobby.
-	@param NumberOfPublicConnections - The number of public connections to be used when creating the lobby.
-	@param ExtraSettings - A struct containing extra settings to be used when creating the lobby which is completely optional.
-	Documentation link: https://eik.betide.studio/multiplayer/sessions/lobbies/
+
 	*/
 	UFUNCTION(BlueprintCallable, DisplayName="Create Listen Server Session",meta = (BlueprintInternalUseOnly = "true",AutoCreateRefTerm=SessionSettings), Category="Steam Integration Kit || Game Functions || Sessions")
 	static USIK_CreateLobby_AsyncFunction* CreateSIKLobby(
