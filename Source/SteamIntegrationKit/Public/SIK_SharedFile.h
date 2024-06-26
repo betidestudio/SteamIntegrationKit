@@ -407,8 +407,6 @@ struct FSIK_SteamId
 
 	FSIK_SteamId(FString SteamID)
 	{
-		CSteamID LocalSteamID;
-		LocalSteamID.SetFromString(TCHAR_TO_ANSI(*SteamID), k_EUniversePublic);
 		Result = FCString::Atoi64(*SteamID);
 	}
 
