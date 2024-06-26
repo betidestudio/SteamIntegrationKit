@@ -39,7 +39,8 @@ public:
 	UFUNCTION(BlueprintCallable, DisplayName="Get All Joined Sessions And Lobbies", Category="Steam Integration Kit || Game Functions || Sessions", meta=( WorldContext = "Context" ))
 	static TArray<FEIK_CurrentSessionInfo> GetAllJoinedSessionsAndLobbies(UObject* Context);
 
-	
+	UFUNCTION(BlueprintCallable, DisplayName="Is SIK Active", Category="Steam Integration Kit || Game Functions || Sessions", meta=( WorldContext = "Context" ))
+	static bool IsSIKActive(UObject* Context);
 
 	
 };

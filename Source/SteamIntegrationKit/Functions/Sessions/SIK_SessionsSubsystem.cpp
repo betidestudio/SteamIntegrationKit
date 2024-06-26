@@ -35,3 +35,19 @@ TArray<FEIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndL
 	}
 	return TArray<FEIK_CurrentSessionInfo>();
 }
+
+bool USIK_SessionsSubsystem::IsSIKActive(UObject* Context)
+{
+	if (const IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get())
+	{
+		if(OnlineSubsystem->GetSubsystemName() == STEAM_SUBSYSTEM)
+		{
+			return true;
+		}
+	}
+	if(const IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get(STEAM_SUBSYSTEM))
+	{
+		return true;
+	}
+	return false;
+}
