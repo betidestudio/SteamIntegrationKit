@@ -25,13 +25,6 @@ void USIK_CreateSession_AsyncFunction::CreateSession()
 			SessionCreationInfo.bAllowJoinViaPresence = ExtraSettings.bAllowJoinViaPresence;
 			SessionCreationInfo.bAllowJoinViaPresenceFriendsOnly = ExtraSettings.bAllowJoinViaPresenceFriendsOnly;
 			SessionCreationInfo.bAllowInvites = true;
-			if(DedicatedServerSettings.bIsDedicatedServer)
-			{
-				SessionCreationInfo.bUsesPresence = false;
-				SessionCreationInfo.bAllowJoinViaPresence = false;
-				SessionCreationInfo.bAllowJoinViaPresenceFriendsOnly = false;
-				SessionCreationInfo.bAllowInvites = false;
-			}
 			SessionCreationInfo.bIsLANMatch = ExtraSettings.bIsLanMatch;
 			SessionCreationInfo.NumPublicConnections = NumberOfPublicConnections;
 			SessionCreationInfo.NumPrivateConnections = ExtraSettings.NumberOfPrivateConnections;
@@ -39,12 +32,6 @@ void USIK_CreateSession_AsyncFunction::CreateSession()
 			SessionCreationInfo.bUseLobbiesVoiceChatIfAvailable = false;
 			SessionCreationInfo.bShouldAdvertise = ExtraSettings.bShouldAdvertise;
 			SessionCreationInfo.bAllowJoinInProgress = ExtraSettings.bAllowJoinInProgress;
-			if(DedicatedServerSettings.bIsDedicatedServer)
-			{
-				FString Port = FString::FromInt(DedicatedServerSettings.PortInfo);				
-				SessionCreationInfo.Settings.Add( FName(TEXT("PortInfo")), FOnlineSessionSetting(Port, EOnlineDataAdvertisementType::ViaOnlineService));
-				SessionCreationInfo.Settings.Add( FName(TEXT("IsDedicatedServer")), FOnlineSessionSetting(true, EOnlineDataAdvertisementType::ViaOnlineService));
-			}
 			for (auto& Settings_SingleValue : SessionSettings)
 			{
 				if (Settings_SingleValue.Key.Len() == 0)
