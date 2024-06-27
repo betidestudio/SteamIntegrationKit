@@ -87,7 +87,7 @@ public:
 	FString ServerDescription;
 
 	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Server Settings")
-	FString ServerModDir;
+	FString ServerGameDir;
 
 	
 	

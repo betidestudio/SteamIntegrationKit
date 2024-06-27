@@ -35,6 +35,9 @@ USIKSettings::USIKSettings()
 		{
 			DepotIds.Add(FCString::Atoi(*StringDepotId));
 		}
+		GConfig->GetString(TEXT("OnlineSubsystemSteam"), TEXT("ServerName"), ServerName, ProjectEngineIniPath);
+		GConfig->GetString(TEXT("OnlineSubsystemSteam"), TEXT("ServerDescription"), ServerDescription, ProjectEngineIniPath);
+		GConfig->GetString(TEXT("OnlineSubsystemSteam"), TEXT("ServerGameDir"), ServerGameDir, ProjectEngineIniPath);
 		GConfig->GetString(TEXT("OnlineSubsystemSteam"), TEXT("BranchName"), BranchName, ProjectEngineIniPath);
 	}
 }
@@ -64,6 +67,9 @@ void USIKSettings::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
 		}
 		GConfig->SetArray(TEXT("OnlineSubsystemSteam"), TEXT("DepotIds"), StringDepotIds, ProjectEngineIniPath);
 		GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("BranchName"), *BranchName, ProjectEngineIniPath);
+		GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("ServerName"), *ServerName, ProjectEngineIniPath);
+		GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("ServerDescription"), *ServerDescription, ProjectEngineIniPath);
+		GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("ServerGameDir"), *ServerGameDir, ProjectEngineIniPath);
 		GConfig->Flush(false, ProjectEngineIniPath);
 		SaveConfig(CPF_Config, *ProjectEngineIniPath);
 	}
