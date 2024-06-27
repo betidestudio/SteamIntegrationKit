@@ -19,7 +19,7 @@ enum class ESIKJoinResult : uint8 {
 	UnknownError              UMETA(DisplayName="UnknownError"),
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FJoinSession_Delegate, ESIKJoinResult, Result, FString, SessionJoinAddress);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSIK_JoinSession_Delegate, ESIKJoinResult, Result, FString, SessionJoinAddress);
 /**
  * 
  */
@@ -34,10 +34,10 @@ public:
 	FName Var_SessionName;
 	
 	UPROPERTY(BlueprintAssignable, DisplayName="Success")
-	FJoinSession_Delegate OnSuccess;
+	FSIK_JoinSession_Delegate OnSuccess;
 	
 	UPROPERTY(BlueprintAssignable, DisplayName="Failure")
-	FJoinSession_Delegate OnFail;
+	FSIK_JoinSession_Delegate OnFail;
 
 	UFUNCTION(BlueprintCallable, DisplayName="Join SIK Session",meta = (BlueprintInternalUseOnly = "true",  WorldContext = "WorldContextObject"), Category="Steam Integration Kit || Game Functions || Sessions")
 	static USIK_JoinSession_AsyncFunction* JoinSIKSessions(UObject* WorldContextObject,

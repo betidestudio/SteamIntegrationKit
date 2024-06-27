@@ -39,7 +39,7 @@ struct FSIKCreateLobbySettings
 };
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCreateLobby_Delegate, const FSIK_SteamId&, LobbyID);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSIK_CreateLobby_Delegate, const FSIK_SteamId&, LobbyID);
 
 UCLASS()
 class STEAMINTEGRATIONKIT_API USIK_CreateLobby_AsyncFunction : public UBlueprintAsyncActionBase
@@ -54,9 +54,9 @@ public:
 	FName VSessionName;
 	
 	UPROPERTY(BlueprintAssignable, DisplayName="Success")
-	FCreateLobby_Delegate OnSuccess;
+	FSIK_CreateLobby_Delegate OnSuccess;
 	UPROPERTY(BlueprintAssignable, DisplayName="Failure")
-	FCreateLobby_Delegate OnFail;
+	FSIK_CreateLobby_Delegate OnFail;
 
 	virtual void Activate() override;
 

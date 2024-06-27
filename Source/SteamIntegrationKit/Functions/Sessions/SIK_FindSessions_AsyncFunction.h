@@ -8,7 +8,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "SIK_FindSessions_AsyncFunction.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FFindSession_Delegate, const TArray<FSSessionFindStruct>&, SessionResults);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSIK_FindSession_Delegate, const TArray<FSSessionFindStruct>&, SessionResults);
 
 /**
  * 
@@ -21,9 +21,9 @@ class STEAMINTEGRATIONKIT_API USIK_FindSessions_AsyncFunction : public UBlueprin
 public:
 
 	UPROPERTY(BlueprintAssignable, DisplayName="Success")
-	FFindSession_Delegate OnSuccess;
+	FSIK_FindSession_Delegate OnSuccess;
 	UPROPERTY(BlueprintAssignable, DisplayName="Failure")
-	FFindSession_Delegate OnFail;
+	FSIK_FindSession_Delegate OnFail;
 	/*
 	This C++ method searches for sessions in an online subsystem using the selected method and sets up a callback function to handle the search response.
 	Documentation link: https://betide-studio.gitbook.io/eos-integration-kit/sessions/

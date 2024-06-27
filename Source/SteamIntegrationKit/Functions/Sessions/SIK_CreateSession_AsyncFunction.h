@@ -13,7 +13,7 @@
 #include "SIK_SharedFile.h"
 #include "SIK_CreateSession_AsyncFunction.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCreateSession_Delegate, const FString&, SessionID);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSIK_CreateSession_Delegate, const FString&, SessionID);
 
 USTRUCT(BlueprintType)
 struct FSIKDedicatedServerSettings
@@ -68,9 +68,9 @@ public:
 
 	bool bDelegateCalled = false;
 	UPROPERTY(BlueprintAssignable)
-	FCreateSession_Delegate OnSuccess;
+	FSIK_CreateSession_Delegate OnSuccess;
 	UPROPERTY(BlueprintAssignable)
-	FCreateSession_Delegate OnFail;
+	FSIK_CreateSession_Delegate OnFail;
 
 	virtual void Activate() override;
 

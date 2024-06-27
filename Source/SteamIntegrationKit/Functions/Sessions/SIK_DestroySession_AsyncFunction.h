@@ -7,7 +7,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "SIK_DestroySession_AsyncFunction.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDestroySession_Delegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSIK_DestroySession_Delegate);
 
 UCLASS()
 class STEAMINTEGRATIONKIT_API USIK_DestroySession_AsyncFunction : public UBlueprintAsyncActionBase
@@ -19,10 +19,10 @@ public:
 	FName Var_SessionName;
 	
 	UPROPERTY(BlueprintAssignable, DisplayName="Success")
-	FDestroySession_Delegate OnSuccess;
+	FSIK_DestroySession_Delegate OnSuccess;
 	
 	UPROPERTY(BlueprintAssignable, DisplayName="Failure")
-	FDestroySession_Delegate OnFail;
+	FSIK_DestroySession_Delegate OnFail;
 	
 	UFUNCTION(BlueprintCallable, DisplayName="Destroy SIK Session",meta = (BlueprintInternalUseOnly = "true"), Category="Steam Integration Kit || Game Functions || Sessions")
 	static USIK_DestroySession_AsyncFunction* DestroySIKSessions(FName SessionName = "GameSession");
