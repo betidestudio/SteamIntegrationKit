@@ -9,7 +9,7 @@
 #include "SIK_SessionsSubsystem.generated.h"
 
 USTRUCT(BlueprintType)
-struct FEIK_CurrentSessionInfo
+struct FSIK_CurrentSessionInfo
 {
 	GENERATED_BODY()
 
@@ -19,12 +19,12 @@ struct FEIK_CurrentSessionInfo
 	UPROPERTY(BlueprintReadWrite, Category="Steam Integration Kit || Game Functions || Sessions")
 	FSIK_SteamId LobbyId;
 
-	FEIK_CurrentSessionInfo()
+	FSIK_CurrentSessionInfo()
 	{
 		SessionName = "";
 		LobbyId = FSIK_SteamId();
 	}
-	FEIK_CurrentSessionInfo(FString InSessionName, FSIK_SteamId InLobbyId)
+	FSIK_CurrentSessionInfo(FString InSessionName, FSIK_SteamId InLobbyId)
 	{
 		SessionName = InSessionName;
 		LobbyId = InLobbyId;
@@ -51,7 +51,7 @@ public:
 	
 	
 	UFUNCTION(BlueprintCallable, DisplayName="Get All Joined Sessions And Lobbies", Category="Steam Integration Kit || Game Functions || Sessions", meta=( WorldContext = "Context" ))
-	static TArray<FEIK_CurrentSessionInfo> GetAllJoinedSessionsAndLobbies(UObject* Context);
+	static TArray<FSIK_CurrentSessionInfo> GetAllJoinedSessionsAndLobbies(UObject* Context);
 
 	UFUNCTION(BlueprintCallable, DisplayName="Is SIK Active", Category="Steam Integration Kit || Game Functions || Sessions", meta=( WorldContext = "Context" ))
 	static bool IsSIKActive(UObject* Context);

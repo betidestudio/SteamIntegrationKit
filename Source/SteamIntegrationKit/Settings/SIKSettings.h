@@ -80,12 +80,15 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Deployer Account Information")
 	FString Password;
 
+	//Valve recommends that this be a build ID, although it is typical to use your AppID (as a string), or a light product name without any extra symbols.
 	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Server Settings")
 	FString ServerName;
 
+	//Valve recommends that you set this as the full name of your product.
 	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Server Settings")
 	FString ServerDescription;
 
+	//This is usually the folder name of your game, and cannot contain spaces or symbols. It is not required for this to be a folder name at all, as long as it is a name without spaces or symbols.
 	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Server Settings")
 	FString ServerGameDir;
 

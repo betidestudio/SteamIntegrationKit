@@ -46,13 +46,13 @@ USIK_SessionsSubsystem::~USIK_SessionsSubsystem()
 }
 
 
-TArray<FEIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndLobbies(UObject* Context)
+TArray<FSIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndLobbies(UObject* Context)
 {
 	if(Context)
 	{
 		if(!Context->GetWorld())
 		{
-			return TArray<FEIK_CurrentSessionInfo>();
+			return TArray<FSIK_CurrentSessionInfo>();
 		}
 		if(	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get())
 		{
@@ -60,17 +60,17 @@ TArray<FEIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndL
 			{
 				if(FOnlineSessionSteamPtr SteamSessionPtr = StaticCastSharedPtr<FOnlineSessionSteam>(SteamRef->GetSessionInterface()))
 				{
-					TArray<FEIK_CurrentSessionInfo> SessionNames;
+					TArray<FSIK_CurrentSessionInfo> SessionNames;
 					for(auto& SessionEntry : SteamSessionPtr->Sessions)
 					{
-						SessionNames.Add(FEIK_CurrentSessionInfo(SessionEntry.SessionName.ToString(), SessionEntry.SessionInfo.Get()->ToString()));
+						SessionNames.Add(FSIK_CurrentSessionInfo(SessionEntry.SessionName.ToString(), SessionEntry.SessionInfo.Get()->ToString()));
 					}
 					return SessionNames;
 				}
 			}
 		}
 	}
-	return TArray<FEIK_CurrentSessionInfo>();
+	return TArray<FSIK_CurrentSessionInfo>();
 }
 
 bool USIK_SessionsSubsystem::IsSIKActive(UObject* Context)
