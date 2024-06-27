@@ -47,7 +47,7 @@ void USIK_CreateLobby_AsyncFunction::CreateLobby()
 			if(bDelegateCalled == false)
 			{
 				UE_LOG(LogOnline, Warning, TEXT("EIK: SessionPtrRef is null"));
-				OnFail.Broadcast("");
+				OnFail.Broadcast(FSIK_SteamId());
 				SetReadyToDestroy();
 				MarkAsGarbage();
 				bDelegateCalled = true;
@@ -59,7 +59,7 @@ void USIK_CreateLobby_AsyncFunction::CreateLobby()
 		if(bDelegateCalled == false)
 		{
 			UE_LOG(LogOnline, Warning, TEXT("EIK: SubsystemRef is null"));
-			OnFail.Broadcast("");
+			OnFail.Broadcast(FSIK_SteamId());
 			SetReadyToDestroy();
 			MarkAsGarbage();
 			bDelegateCalled = true;
@@ -83,7 +83,7 @@ void USIK_CreateLobby_AsyncFunction::OnCreateLobbyCompleted(FName SessionName, b
 			}
 			else
 			{
-				OnSuccess.Broadcast("");
+				OnSuccess.Broadcast(FSIK_SteamId());
 				bDelegateCalled = true;
 				SetReadyToDestroy();
 				MarkAsGarbage();
@@ -95,7 +95,7 @@ void USIK_CreateLobby_AsyncFunction::OnCreateLobbyCompleted(FName SessionName, b
 		if(bDelegateCalled == false)
 		{
 			UE_LOG(LogOnline, Warning, TEXT("EIK: CreateLobby failed and response was false. Check logs for more information."));
-			OnFail.Broadcast("");
+			OnFail.Broadcast(FSIK_SteamId());
 			SetReadyToDestroy();
 			MarkAsGarbage();
 			bDelegateCalled = true;

@@ -39,7 +39,7 @@ struct FSIKCreateLobbySettings
 };
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCreateLobby_Delegate, const FString&, LobbyID);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCreateLobby_Delegate, const FSIK_SteamId&, LobbyID);
 
 UCLASS()
 class STEAMINTEGRATIONKIT_API USIK_CreateLobby_AsyncFunction : public UBlueprintAsyncActionBase
