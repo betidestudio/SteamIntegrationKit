@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CoreMinimal.h"
 THIRD_PARTY_INCLUDES_START
 #if WITH_ENGINE_STEAM
 #include <steam/steam_api.h>
@@ -12,7 +13,6 @@ THIRD_PARTY_INCLUDES_START
 #include <steam_api_common.h>
 #endif
 THIRD_PARTY_INCLUDES_END
-#include "CoreMinimal.h"
 #include "SIK_SharedFile.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SIK_AppSubsystem.generated.h"
