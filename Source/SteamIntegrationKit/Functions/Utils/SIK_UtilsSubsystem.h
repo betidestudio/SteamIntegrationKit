@@ -13,7 +13,7 @@ THIRD_PARTY_INCLUDES_START
 #include "steam_api_common.h"
 #endif
 THIRD_PARTY_INCLUDES_END
-#include "UObject/Object.h"
+#include "Subsystems/GameInstanceSubsystem.h"
 #include "SIK_UtilsSubsystem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnGamepadTextInputDismissed, bool, bSubmitted, int32, nSubmittedText);
@@ -23,7 +23,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAppResumingFromSuspend);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSteamShutdown);
 
 UCLASS()
-class STEAMINTEGRATIONKIT_API USIK_UtilsSubsystem : public UObject
+class STEAMINTEGRATIONKIT_API USIK_UtilsSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 

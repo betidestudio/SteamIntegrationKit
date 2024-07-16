@@ -38,8 +38,9 @@ public:
 	UFUNCTION(BlueprintCallable, DisplayName = "Get Entered Gamepad Text Length", meta=(Keywords="GetEnteredGamepadTextLength"), Category="Steam Integration Kit || SDK Functions || Utils")
 	static int32 GetEnteredGamepadTextLength();
 
+	//Thanks to @marown for fixing this function
 	UFUNCTION(BlueprintCallable, DisplayName = "Get Image RGBA", meta=(Keywords="GetImageRGBA"), Category="Steam Integration Kit || SDK Functions || Utils")
-	static bool GetImageRGBA(int32 Image, TArray<FColor>& OutData);
+	static bool GetImageRGBA(int32 Image, TArray<FColor>& OutData, int32& OutWidth, int32& OutHeight);
 
 	UFUNCTION(BlueprintCallable, DisplayName = "Get IP Country", meta=(Keywords="GetIPCountry"), Category="Steam Integration Kit || SDK Functions || Utils")
 	static FString GetIPCountry();
@@ -85,6 +86,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, DisplayName = "Set VR Headset Streaming Enabled", meta=(Keywords="SetVRHeadsetStreamingEnabled"), Category="Steam Integration Kit || SDK Functions || Utils")
 	static void SetVRHeadsetStreamingEnabled(bool bEnabled);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Show Gamepad Text Input", meta=(Keywords="ShowGamepadTextInput"), Category="Steam Integration Kit || SDK Functions || Utils")
+	static bool ShowGamepadTextInput(TEnumAsByte<ESIK_EGamepadTextInputMode> InputMode, TEnumAsByte<ESIK_EGamepadTextInputLineMode> LineInputMode, const FString& Description, int32 CharMax, const FString& ExistingText);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Show Floating Gamepad Text Input", meta=(Keywords="ShowFloatingGamepadTextInput"), Category="Steam Integration Kit || SDK Functions || Utils")
+	static bool ShowFloatingGamepadTextInput(TEnumAsByte<ESIK_EFloatingGamepadTextInputMode> KeyboardMode, int32 TextFieldXPosition, int32 TextFieldYPosition, int32 TextFieldWidth, int32 TextFieldHeight);
+
 
 	UFUNCTION(BlueprintCallable, DisplayName = "Start Vr Dashboard", meta=(Keywords="StartVrDashboard"), Category="Steam Integration Kit || SDK Functions || Utils")
 	static void StartVrDashboard();

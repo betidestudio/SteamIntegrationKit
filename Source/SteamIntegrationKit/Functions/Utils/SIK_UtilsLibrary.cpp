@@ -53,32 +53,38 @@ int32 USIK_UtilsLibrary::GetEnteredGamepadTextLength()
 	return SteamUtils()->GetEnteredGamepadTextLength();
 }
 
-bool USIK_UtilsLibrary::GetImageRGBA(int32 Image, TArray<FColor>& OutData)
+bool USIK_UtilsLibrary::GetImageRGBA(int32 Image, TArray<FColor>& OutData, int32& OutWidth, int32& OutHeight)
 {
-	if(!SteamUtils())
+	if (!SteamUtils())
 	{
 		return false;
 	}
 	uint32 Width, Height;
-	if(!SteamUtils()->GetImageSize(Image, &Width, &Height))
+	if (!SteamUtils()->GetImageSize(Image, &Width, &Height))
 	{
 		return false;
 	}
 	uint32 Size = Width * Height * 4;
-	uint8 *rgubDest = new uint8[Size];
-	if(!SteamUtils()->GetImageRGBA(Image, rgubDest, Size))
+	uint8* rgubDest = new uint8[Size];
+	if (!SteamUtils()->GetImageRGBA(Image, rgubDest, Size))
 	{
 		delete[] rgubDest;
 		return false;
 	}
 	OutData.Empty(Width * Height);
-	for(uint32 i = 0; i < Size; i += 4)
+	for (uint32 i = 0; i < Size; i += 4)
 	{
-		OutData.Add(FColor(rgubDest[i], rgubDest[i + 1], rgubDest[i + 2], rgubDest[i + 3]));
+		// Rearrange the color channels from BGRA to RGBA
+		OutData.Add(FColor(rgubDest[i + 2], rgubDest[i + 1], rgubDest[i], rgubDest[i + 3]));
 	}
 	delete[] rgubDest;
+
+	// Assign the width and height to the output parameters
+	OutWidth = static_cast<int32>(Width);
+	OutHeight = static_cast<int32>(Height);
+	
 	return true;
-}	
+}
 
 FString USIK_UtilsLibrary::GetIPCountry()
 {
@@ -86,7 +92,7 @@ FString USIK_UtilsLibrary::GetIPCountry()
 	{
 		return FString();
 	}
-	return FString(UTF8_TO_TCHAR(SteamUtils()->GetIPCountry()));
+	return UTF8_TO_TCHAR(SteamUtils()->GetIPCountry());
 }
 
 int32 USIK_UtilsLibrary::GetSecondsSinceAppActive()
@@ -213,6 +219,27 @@ void USIK_UtilsLibrary::SetVRHeadsetStreamingEnabled(bool bEnabled)
 		return;
 	}
 	SteamUtils()->SetVRHeadsetStreamingEnabled(bEnabled);
+}
+
+bool USIK_UtilsLibrary::ShowGamepadTextInput(TEnumAsByte<ESIK_EGamepadTextInputMode> InputMode,
+	TEnumAsByte<ESIK_EGamepadTextInputLineMode> LineInputMode, const FString& Description, int32 CharMax,
+	const FString& ExistingText)
+{
+	if(!SteamUtils())
+	{
+		return false;
+	}
+	return SteamUtils()->ShowGamepadTextInput(static_cast<EGamepadTextInputMode>(InputMode.GetValue()), static_cast<EGamepadTextInputLineMode>(LineInputMode.GetValue()), TCHAR_TO_ANSI(*Description), CharMax, TCHAR_TO_ANSI(*ExistingText));
+}
+
+bool USIK_UtilsLibrary::ShowFloatingGamepadTextInput(TEnumAsByte<ESIK_EFloatingGamepadTextInputMode> KeyboardMode,
+	int32 TextFieldXPosition, int32 TextFieldYPosition, int32 TextFieldWidth, int32 TextFieldHeight)
+{
+	if(!SteamUtils())
+	{
+		return false;
+	}
+	return SteamUtils()->ShowFloatingGamepadTextInput(static_cast<EFloatingGamepadTextInputMode>(KeyboardMode.GetValue()), TextFieldXPosition, TextFieldYPosition, TextFieldWidth, TextFieldHeight);
 }
 
 void USIK_UtilsLibrary::StartVrDashboard()

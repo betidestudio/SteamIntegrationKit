@@ -85,8 +85,8 @@ void USIK_RequestInternetServerList_AsyncFunction::RefreshComplete(HServerListRe
 			}
 			OnSuccess.Broadcast(static_cast<TEnumAsByte<ESIK_MatchMakingServerResponse>>(Param), FoundServers);
 		}
-	});
 	SteamMatchmakingServers()->ReleaseRequest(input);
 	SetReadyToDestroy();
 	MarkAsGarbage();
+	});
 }

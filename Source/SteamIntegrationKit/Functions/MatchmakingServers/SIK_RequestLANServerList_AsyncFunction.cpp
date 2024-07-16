@@ -58,7 +58,7 @@ void USIK_RequestLANServerList_AsyncFunction::RefreshComplete(HServerListRequest
 {
 	auto Param = response;
 	auto hRequestInput = hRequest;
-	AsyncTask(ENamedThreads::GameThread, [this, Param, hRequestInput]()
+	AsyncTask(ENamedThreads::GameThread, [this, Param, hRequestInput, hRequest]()
 	{
 		if(SteamMatchmakingServers()->GetServerCount(hRequestInput) == 0)
 		{
@@ -76,8 +76,8 @@ void USIK_RequestLANServerList_AsyncFunction::RefreshComplete(HServerListRequest
 			}
 			OnSuccess.Broadcast(static_cast<TEnumAsByte<ESIK_MatchMakingServerResponse>>(Param), FoundServers);
 		}
-	});
 	SteamMatchmakingServers()->ReleaseRequest(hRequest);
 	SetReadyToDestroy();
 	MarkAsGarbage();
+	});
 }

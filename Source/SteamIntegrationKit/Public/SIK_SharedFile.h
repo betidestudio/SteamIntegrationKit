@@ -1900,6 +1900,33 @@ enum ESIK_FriendFlags
 	FriendFlagFlagAll = 0xFFFF UMETA(DisplayName = "Flag All"),
 };
 
+UENUM(BlueprintType)
+enum ESIK_EGamepadTextInputLineMode
+{
+	ESIK_EGamepadTextInputLineModeSingleLine = 0 UMETA(DisplayName = "Single Line"),
+	ESIK_EGamepadTextInputLineModeMultipleLines = 1 UMETA(DisplayName = "Multiple Lines"),
+};
+
+UENUM(BlueprintType)
+enum ESIK_EGamepadTextInputMode
+{
+	ESIK_EGamepadTextInputModeNormal = 0 UMETA(DisplayName = "Normal"),
+	ESIK_EGamepadTextInputModePassword = 1 UMETA(DisplayName = "Password"),
+};
+
+UENUM(BlueprintType)
+enum ESIK_EFloatingGamepadTextInputMode
+{
+	//Enter dismisses the keyboard
+	ESIK_EFloatingGamepadTextInputModeModeSingleLine = 0 UMETA(DisplayName = "Single Line"),
+	//User needs to explicitly dismiss the keyboard
+	ESIK_EFloatingGamepadTextInputModeModeMultipleLines = 1 UMETA(DisplayName = "Multiple Lines"),
+	//Keyboard is displayed in a special mode that makes it easier to enter emails
+	ESIK_EFloatingGamepadTextInputModeModeEmail = 2 UMETA(DisplayName = "Email"),
+	//Numeric keypad is shown
+	ESIK_EFloatingGamepadTextInputModeModeNumeric = 3 UMETA(DisplayName = "Numeric"),
+};
+
 
 UCLASS()
 class STEAMINTEGRATIONKIT_API USIK_SharedFile : public UObject

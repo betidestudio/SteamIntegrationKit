@@ -443,7 +443,7 @@ FString USIK_FriendsLibrary::GetPersonaName()
 {
 	if(SteamFriends() != nullptr)
 	{
-		return SteamFriends()->GetPersonaName();
+		return UTF8_TO_TCHAR(SteamFriends()->GetPersonaName());
 	}
 	return FString();
 }
@@ -461,7 +461,7 @@ FString USIK_FriendsLibrary::GetPlayerNickname(FSIK_SteamId SteamIdPlayer)
 {
 	if(SteamFriends() != nullptr)
 	{
-		return SteamFriends()->GetPlayerNickname(SteamIdPlayer.GetSteamID());
+		return UTF8_TO_TCHAR(SteamFriends()->GetPlayerNickname(SteamIdPlayer.GetSteamID()));
 	}
 	return FString();
 }
