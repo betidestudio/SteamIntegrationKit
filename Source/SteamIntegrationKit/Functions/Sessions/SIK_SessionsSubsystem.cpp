@@ -7,7 +7,7 @@
 #include "OnlineSubsystemSteam.h"
 #include "SIK_SharedFile.h"
 #include "Interfaces/OnlineSessionInterface.h"
-#include "OnlineSubsystemSteam/Private/OnlineSessionInterfaceSteam.h"
+#include "OnlineSubsystemSteam.h"
 
 void USIK_SessionsSubsystem::Func_OnSessionUserInviteAccepted(bool bWasSuccessful, int ControllerId, TSharedPtr<const FUniqueNetId> UniqueNetId,
 	const FOnlineSessionSearchResult& OnlineSessionSearchResult)
@@ -21,12 +21,9 @@ USIK_SessionsSubsystem::USIK_SessionsSubsystem()
 {
 	if(	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get(STEAM_SUBSYSTEM))
 	{
-		if (FOnlineSubsystemSteam* SteamRef = static_cast<FOnlineSubsystemSteam*>(OnlineSub))
+		if(IOnlineSessionPtr SessionPtr = OnlineSub->GetSessionInterface())
 		{
-			if(FOnlineSessionSteamPtr SteamSessionPtr = StaticCastSharedPtr<FOnlineSessionSteam>(SteamRef->GetSessionInterface()))
-			{
-				SteamSessionPtr->AddOnSessionUserInviteAcceptedDelegate_Handle(FOnSessionUserInviteAcceptedDelegate::CreateUObject(this, &USIK_SessionsSubsystem::Func_OnSessionUserInviteAccepted));
-			}
+			OnSessionUserInviteAcceptedDelegateHandle = SessionPtr->AddOnSessionUserInviteAcceptedDelegate_Handle(FOnSessionUserInviteAcceptedDelegate::CreateUObject(this, &USIK_SessionsSubsystem::Func_OnSessionUserInviteAccepted));
 		}
 	}
 }
@@ -35,12 +32,9 @@ USIK_SessionsSubsystem::~USIK_SessionsSubsystem()
 {
 	if(	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get(STEAM_SUBSYSTEM))
 	{
-		if (FOnlineSubsystemSteam* SteamRef = static_cast<FOnlineSubsystemSteam*>(OnlineSub))
+		if(IOnlineSessionPtr SessionPtr = OnlineSub->GetSessionInterface())
 		{
-			if(FOnlineSessionSteamPtr SteamSessionPtr = StaticCastSharedPtr<FOnlineSessionSteam>(SteamRef->GetSessionInterface()))
-			{
-				SteamSessionPtr->ClearOnSessionUserInviteAcceptedDelegate_Handle(OnSessionUserInviteAcceptedDelegateHandle);
-			}
+			SessionPtr->ClearOnSessionUserInviteAcceptedDelegate_Handle(OnSessionUserInviteAcceptedDelegateHandle);
 		}
 	}
 }
@@ -48,6 +42,10 @@ USIK_SessionsSubsystem::~USIK_SessionsSubsystem()
 
 TArray<FSIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndLobbies(UObject* Context)
 {
+#if WITH_ENGINE_STEAM
+	UE_LOG(LogTemp, Error, TEXT("Steam Subsystem is not supported with GitHub version of the plugin"));
+	return TArray<FSIK_CurrentSessionInfo>();
+#else
 	if(Context)
 	{
 		if(!Context->GetWorld())
@@ -71,6 +69,7 @@ TArray<FSIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndL
 		}
 	}
 	return TArray<FSIK_CurrentSessionInfo>();
+#endif
 }
 
 bool USIK_SessionsSubsystem::IsSIKActive(UObject* Context)
