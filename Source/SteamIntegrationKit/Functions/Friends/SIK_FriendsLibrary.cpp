@@ -672,18 +672,41 @@ bool USIK_FriendsLibrary::SetRichPresence(const FString& Key, const FString& Val
 bool USIK_FriendsLibrary::BHasEquippedProfileItem(FSIK_SteamId SteamIdUser,
 	TEnumAsByte<ESIK_ECommunityProfileItemType> ItemType)
 {
+#if WITH_ENGINE_STEAM
 	return false;
+#else
+	if(SteamFriends() != nullptr)
+	{
+		return SteamFriends()->BHasEquippedProfileItem(SteamIdUser.GetSteamID(), static_cast<ECommunityProfileItemType>(ItemType.GetValue()));
+	}
+	return false;
+#endif
 }
 
-bool USIK_FriendsLibrary::GetProfileItemPropertyString(FSIK_SteamId SteamIdUser,
+FString USIK_FriendsLibrary::GetProfileItemPropertyString(FSIK_SteamId SteamIdUser,
 	TEnumAsByte<ESIK_ECommunityProfileItemType> ItemType, TEnumAsByte<ESIK_ECommunityProfileItemProperty> Property)
 {
-	return false;
+#if WITH_ENGINE_STEAM
+	return FString();
+#else
+	if(SteamFriends() != nullptr)
+	{
+		return SteamFriends()->GetProfileItemPropertyString(SteamIdUser.GetSteamID(), static_cast<ECommunityProfileItemType>(ItemType.GetValue()), static_cast<ECommunityProfileItemProperty>(Property.GetValue()));
+	}
+	return FString();
+#endif
 }
 
-bool USIK_FriendsLibrary::GetProfileItemPropertyUint(FSIK_SteamId SteamIdUser,
+int32 USIK_FriendsLibrary::GetProfileItemPropertyUint(FSIK_SteamId SteamIdUser,
 	TEnumAsByte<ESIK_ECommunityProfileItemType> ItemType, TEnumAsByte<ESIK_ECommunityProfileItemProperty> Property)
 {
-	return false;
+#if WITH_ENGINE_STEAM
+	return -1;
+#else
+	if(SteamFriends() != nullptr)
+	{
+		return SteamFriends()->GetProfileItemPropertyUint(SteamIdUser.GetSteamID(), static_cast<ECommunityProfileItemType>(ItemType.GetValue()), static_cast<ECommunityProfileItemProperty>(Property.GetValue()));
+	}
+	return -1;
+#endif
 }
-

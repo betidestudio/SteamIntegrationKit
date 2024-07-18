@@ -1947,12 +1947,13 @@ enum ESIK_ECommunityProfileItemProperty
 	ESIK_ECommunityProfileItemProperty_Description = 4 UMETA(DisplayName = "Localized description of the item"),
 	ESIK_ECommunityProfileItemProperty_AppID = 5 UMETA(DisplayName = "AppID of the item (unsigned integer)"),
 	ESIK_ECommunityProfileItemProperty_TypeID = 6 UMETA(DisplayName = "Type id of the item, unique to the appid (unsigned integer)"),
-	ESIK_ECommunityProfileItemProperty_Class = 7 UMETA(DisplayName = "\"Class\" or type of item (internal value, unsigned integer)"),
+	ESIK_ECommunityProfileItemProperty_Class = 7 UMETA(DisplayName = "Class or type of item (internal value, unsigned integer)"),
 	ESIK_ECommunityProfileItemProperty_MovieWebM = 8 UMETA(DisplayName = "URL to the webm video file"),
 	ESIK_ECommunityProfileItemProperty_MovieMP4 = 9 UMETA(DisplayName = "URL to the mp4 video file"),
 	ESIK_ECommunityProfileItemProperty_MovieWebMSmall = 10 UMETA(DisplayName = "URL to the small webm video file"),
 	ESIK_ECommunityProfileItemProperty_MovieMP4Small = 11 UMETA(DisplayName = "URL to the small mp4 video file"),
 };
+
 
 UCLASS()
 class STEAMINTEGRATIONKIT_API USIK_SharedFile : public UObject
