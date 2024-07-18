@@ -607,4 +607,47 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable, DisplayName = "Set Steam Listen For Friend Message", meta=(Keywords="SetListenForFriendMessage"), Category = "Steam Integration Kit || SDK Functions || Friends")
 	static void SetListenForFriendMessage(bool bInterceptEnabled = true);
+
+	/*
+	
+	*Mark a target user as 'played with'.
+
+	NOTE: The current user must be in game with the other player for the association to work.
+
+	You can view the players you have recently played with here on the Steam community and in the Steam Overlay.
+	*/
+	UFUNCTION(BlueprintCallable, DisplayName = "Set Steam Played With", meta=(Keywords="SetPlayedWith"), Category = "Steam Integration Kit || SDK Functions || Friends")
+	static void SetPlayedWith(FSIK_SteamId SteamIdUser);
+
+	/*
+	*
+	Sets a Rich Presence key/value for the current user that is automatically shared to all friends playing the same game.
+
+	Each user can have up to 20 keys set as defined by k_cchMaxRichPresenceKeys.
+
+	There are two special keys used for viewing/joining games:
+	"status" - A UTF-8 string that will show up in the 'view game info' dialog in the Steam friends list.
+	"connect" - A UTF-8 string that contains the command-line for how a friend can connect to a game. This enables the 'join game' button in the 'view game info' dialog, in the steam friends list right click menu, and on the players Steam community profile. Be sure your app implements ISteamApps::GetLaunchCommandLine so you can disable the popup warning when launched via a command line.
+
+	There are three additional special keys used by the new Steam Chat:
+	"steam_display" - Names a rich presence localization token that will be displayed in the viewing user's selected language in the Steam client UI. See Rich Presence Localization for more info, including a link to a page for testing this rich presence data. If steam_display is not set to a valid localization tag, then rich presence will not be displayed in the Steam client.
+	"steam_player_group" - When set, indicates to the Steam client that the player is a member of a particular group. Players in the same group may be organized together in various places in the Steam UI. This string could identify a party, a server, or whatever grouping is relevant for your game. The string itself is not displayed to users.
+	"steam_player_group_size" - When set, indicates the total number of players in the steam_player_group. The Steam client may use this number to display additional information about a group when all of the members are not part of a user's friends list. (For example, "Bob, Pete, and 4 more".)
+
+	You can clear all of the keys for the current user with ClearRichPresence.
+	*/
+	UFUNCTION(BlueprintCallable, DisplayName = "Set Steam Rich Presence", meta=(Keywords="SetRichPresence"), Category = "Steam Integration Kit || SDK Functions || Friends")
+	static bool SetRichPresence(const FString& Key, const FString& Value);
+
+	//After calling RequestEquippedProfileItems, you can use this function to check if the user has a type of profile item equipped or not
+	UFUNCTION(BlueprintCallable, DisplayName = "B Has Equipped Profile Item", meta=(Keywords="BHasEquippedProfileItem"), Category = "Steam Integration Kit || SDK Functions || Friends")
+	static bool BHasEquippedProfileItem(FSIK_SteamId SteamIdUser, TEnumAsByte<ESIK_ECommunityProfileItemType> ItemType);
+
+	//Returns a string property for a user's equipped profile item
+	UFUNCTION(BlueprintCallable, DisplayName = "Get Profile Item Property String", meta=(Keywords="GetProfileItemPropertyString"), Category = "Steam Integration Kit || SDK Functions || Friends")
+	static bool GetProfileItemPropertyString(FSIK_SteamId SteamIdUser, TEnumAsByte<ESIK_ECommunityProfileItemType> ItemType, TEnumAsByte<ESIK_ECommunityProfileItemProperty> Property);
+
+	//Returns an unsigned integer property for a user's equipped profile item.
+	UFUNCTION(BlueprintCallable, DisplayName = "Get Profile Item Property Uint", meta=(Keywords="GetProfileItemPropertyUint"), Category = "Steam Integration Kit || SDK Functions || Friends")
+	static bool GetProfileItemPropertyUint(FSIK_SteamId SteamIdUser, TEnumAsByte<ESIK_ECommunityProfileItemType> ItemType, TEnumAsByte<ESIK_ECommunityProfileItemProperty> Property);
 };

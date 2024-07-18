@@ -1927,6 +1927,32 @@ enum ESIK_EFloatingGamepadTextInputMode
 	ESIK_EFloatingGamepadTextInputModeModeNumeric = 3 UMETA(DisplayName = "Numeric"),
 };
 
+UENUM(BlueprintType)
+enum ESIK_ECommunityProfileItemType
+{
+	ESIK_ECommunityProfileItemType_AnimatedAvatar = 0 UMETA(DisplayName = "Animated avatar image (GIF)"),
+	ESIK_ECommunityProfileItemType_AvatarFrame = 1 UMETA(DisplayName = "Avatar frame (may or may not be an animated PNG)"),
+	ESIK_ECommunityProfileItemType_ProfileModifier = 2 UMETA(DisplayName = "Special profile modifier item, like Seasonal Profile or Artist Profile"),
+	ESIK_ECommunityProfileItemType_ProfileBackground = 3 UMETA(DisplayName = "Profile background image or movie"),
+	ESIK_ECommunityProfileItemType_MiniProfileBackground = 4 UMETA(DisplayName = "Background image or movie for the hover flyout for a user"),
+};
+
+UENUM(BlueprintType)
+enum ESIK_ECommunityProfileItemProperty
+{
+	ESIK_ECommunityProfileItemProperty_ImageSmall = 0 UMETA(DisplayName = "URL to the small or animated version of the image"),
+	ESIK_ECommunityProfileItemProperty_ImageLarge = 1 UMETA(DisplayName = "URL to the large or static version of the image"),
+	ESIK_ECommunityProfileItemProperty_InternalName = 2 UMETA(DisplayName = "Internal name entered on the partner site (for debugging)"),
+	ESIK_ECommunityProfileItemProperty_Title = 3 UMETA(DisplayName = "Localized name of the item"),
+	ESIK_ECommunityProfileItemProperty_Description = 4 UMETA(DisplayName = "Localized description of the item"),
+	ESIK_ECommunityProfileItemProperty_AppID = 5 UMETA(DisplayName = "AppID of the item (unsigned integer)"),
+	ESIK_ECommunityProfileItemProperty_TypeID = 6 UMETA(DisplayName = "Type id of the item, unique to the appid (unsigned integer)"),
+	ESIK_ECommunityProfileItemProperty_Class = 7 UMETA(DisplayName = "\"Class\" or type of item (internal value, unsigned integer)"),
+	ESIK_ECommunityProfileItemProperty_MovieWebM = 8 UMETA(DisplayName = "URL to the webm video file"),
+	ESIK_ECommunityProfileItemProperty_MovieMP4 = 9 UMETA(DisplayName = "URL to the mp4 video file"),
+	ESIK_ECommunityProfileItemProperty_MovieWebMSmall = 10 UMETA(DisplayName = "URL to the small webm video file"),
+	ESIK_ECommunityProfileItemProperty_MovieMP4Small = 11 UMETA(DisplayName = "URL to the small mp4 video file"),
+};
 
 UCLASS()
 class STEAMINTEGRATIONKIT_API USIK_SharedFile : public UObject

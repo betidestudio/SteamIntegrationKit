@@ -651,3 +651,39 @@ void USIK_FriendsLibrary::SetListenForFriendMessage(bool bInterceptEnabled)
 	}
 }
 
+void USIK_FriendsLibrary::SetPlayedWith(FSIK_SteamId SteamIdUser)
+{
+	if(SteamFriends() != nullptr)
+	{
+		CSteamID SteamId = SteamIdUser.GetSteamID();
+		SteamFriends()->SetPlayedWith(SteamId);
+	}
+}
+
+bool USIK_FriendsLibrary::SetRichPresence(const FString& Key, const FString& Value)
+{
+	if(SteamFriends() != nullptr)
+	{
+		return SteamFriends()->SetRichPresence(TCHAR_TO_ANSI(*Key), TCHAR_TO_ANSI(*Value));
+	}
+	return false;
+}
+
+bool USIK_FriendsLibrary::BHasEquippedProfileItem(FSIK_SteamId SteamIdUser,
+	TEnumAsByte<ESIK_ECommunityProfileItemType> ItemType)
+{
+	return false;
+}
+
+bool USIK_FriendsLibrary::GetProfileItemPropertyString(FSIK_SteamId SteamIdUser,
+	TEnumAsByte<ESIK_ECommunityProfileItemType> ItemType, TEnumAsByte<ESIK_ECommunityProfileItemProperty> Property)
+{
+	return false;
+}
+
+bool USIK_FriendsLibrary::GetProfileItemPropertyUint(FSIK_SteamId SteamIdUser,
+	TEnumAsByte<ESIK_ECommunityProfileItemType> ItemType, TEnumAsByte<ESIK_ECommunityProfileItemProperty> Property)
+{
+	return false;
+}
+
