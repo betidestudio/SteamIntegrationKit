@@ -27,6 +27,8 @@ private:
 	FSIK_SteamId m_SteamId;
 	virtual void Activate() override;
 	SteamAPICall_t m_CallbackHandle;
+#if !WITH_ENGINE_STEAM
 	CCallResult<USIK_RequestEquippedProfileItems, EquippedProfileItems_t> m_Callback;
 	void OnRequestEquippedProfileItems(EquippedProfileItems_t* EquippedProfileItemsResponse, bool bIOFailure);
+#endif
 };

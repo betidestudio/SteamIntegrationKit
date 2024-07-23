@@ -29,9 +29,12 @@ void USIK_RequestEquippedProfileItems::Activate()
 		MarkAsGarbage();
 		return;
 	}
+#if !WITH_ENGINE_STEAM
 	m_Callback.Set(m_CallbackHandle, this, &USIK_RequestEquippedProfileItems::OnRequestEquippedProfileItems);
+#endif
 }
 
+#if !WITH_ENGINE_STEAM
 void USIK_RequestEquippedProfileItems::OnRequestEquippedProfileItems(EquippedProfileItems_t* EquippedProfileItemsResponse, bool bIOFailure)
 {
 	auto Param = *EquippedProfileItemsResponse;
@@ -57,4 +60,4 @@ void USIK_RequestEquippedProfileItems::OnRequestEquippedProfileItems(EquippedPro
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
-	
+#endif

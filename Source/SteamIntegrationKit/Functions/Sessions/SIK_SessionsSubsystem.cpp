@@ -7,7 +7,9 @@
 #include "OnlineSubsystemSteam.h"
 #include "SIK_SharedFile.h"
 #include "Interfaces/OnlineSessionInterface.h"
+#if !WITH_ENGINE_STEAM
 #include "OnlineSubsystemSteam/Private/OnlineSessionInterfaceSteam.h"
+#endif
 
 void USIK_SessionsSubsystem::Func_OnSessionUserInviteAccepted(bool bWasSuccessful, int ControllerId, TSharedPtr<const FUniqueNetId> UniqueNetId,
 	const FOnlineSessionSearchResult& OnlineSessionSearchResult)
@@ -21,18 +23,16 @@ USIK_SessionsSubsystem::USIK_SessionsSubsystem()
 {
 	if(	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get(STEAM_SUBSYSTEM))
 	{
-		if (FOnlineSubsystemSteam* SteamRef = static_cast<FOnlineSubsystemSteam*>(OnlineSub))
+		if (IOnlineSessionPtr SessionPtr = OnlineSub->GetSessionInterface())
 		{
-			if(FOnlineSessionSteamPtr SteamSessionPtr = StaticCastSharedPtr<FOnlineSessionSteam>(SteamRef->GetSessionInterface()))
-			{
-				SteamSessionPtr->AddOnSessionUserInviteAcceptedDelegate_Handle(FOnSessionUserInviteAcceptedDelegate::CreateUObject(this, &USIK_SessionsSubsystem::Func_OnSessionUserInviteAccepted));
-			}
+			SessionPtr->AddOnSessionUserInviteAcceptedDelegate_Handle(FOnSessionUserInviteAcceptedDelegate::CreateUObject(this, &USIK_SessionsSubsystem::Func_OnSessionUserInviteAccepted));
 		}
 	}
 }
 
 USIK_SessionsSubsystem::~USIK_SessionsSubsystem()
 {
+#if !WITH_ENGINE_STEAM
 	if(	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get(STEAM_SUBSYSTEM))
 	{
 		if (FOnlineSubsystemSteam* SteamRef = static_cast<FOnlineSubsystemSteam*>(OnlineSub))
@@ -43,11 +43,13 @@ USIK_SessionsSubsystem::~USIK_SessionsSubsystem()
 			}
 		}
 	}
+#endif
 }
 
 
 TArray<FSIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndLobbies(UObject* Context)
 {
+#if !WITH_ENGINE_STEAM
 	if(Context)
 	{
 		if(!Context->GetWorld())
@@ -71,6 +73,10 @@ TArray<FSIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndL
 		}
 	}
 	return TArray<FSIK_CurrentSessionInfo>();
+#else
+	UE_LOG(LogTemp, Error, TEXT("GetAllJoinedSessionsAndLobbies is not supported in GitHub version"));
+	return TArray<FSIK_CurrentSessionInfo>();
+#endif
 }
 
 bool USIK_SessionsSubsystem::IsSIKActive(UObject* Context)
