@@ -1,8 +1,46 @@
 ﻿// Copyright (c) 2024 Betide Studio. All Rights Reserved.
-
+// OpenSteamKeyboard & IsControllerConnected + Repairing the Get Image RGBA function by @MarOwNFR
 
 #include "SIK_UtilsLibrary.h"
+#include <isteamcontroller.h>
+#include <isteaminput.h>
+#include <steam_api_common.h>
+#include <steamtypes.h>
 
+bool USIK_UtilsLibrary::IsControllerConnected()
+{
+
+	ISteamInput* SteamInputInterface = SteamInput();
+	if (!SteamInputInterface)
+	{
+		return false;
+	}
+
+	if (!SteamInputInterface->Init(false))
+	{
+		return false;
+	}
+
+	SteamInputInterface->RunFrame();
+
+	InputHandle_t handlesOut[STEAM_INPUT_MAX_COUNT] = { 0 };
+
+	int numControllers = SteamInputInterface->GetConnectedControllers(handlesOut);
+
+	if (numControllers > 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+void USIK_UtilsLibrary::OpenSteamKeyboard(int32 KeyboardMode, int32 TextFieldXPosition, int32 TextFieldYPosition, int32 TextFieldWidth, int32 TextFieldHeight)
+{
+	if (SteamUtils())
+	{
+		SteamUtils()->ShowFloatingGamepadTextInput(static_cast<EFloatingGamepadTextInputMode>(KeyboardMode), TextFieldXPosition, TextFieldYPosition, TextFieldWidth, TextFieldHeight);
+	}
+}
 
 bool USIK_UtilsLibrary::OverlayNeedsPresent()
 {
@@ -259,6 +297,3 @@ void USIK_UtilsLibrary::SetGameLauncherMode(bool bLauncherMode)
 	}
 	SteamUtils()->SetGameLauncherMode(bLauncherMode);
 }
-
-
-
