@@ -2,10 +2,18 @@
 // OpenSteamKeyboard & IsControllerConnected + Repairing the Get Image RGBA function by @MarOwNFR
 
 #include "SIK_UtilsLibrary.h"
+
+#if WITH_ENGINE_STEAM
+#include <steam/isteamcontroller.h>
+#include <steam/isteaminput.h>
+#include <steam/steam_api_common.h>
+#include <steam/steamtypes.h>
+#else
 #include <isteamcontroller.h>
 #include <isteaminput.h>
 #include <steam_api_common.h>
 #include <steamtypes.h>
+#endif
 
 bool USIK_UtilsLibrary::IsControllerConnected()
 {
