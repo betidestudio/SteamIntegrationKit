@@ -10,7 +10,6 @@
 USIK_MatchmakingSubsystem::USIK_MatchmakingSubsystem()
 {
 #if ONLINESUBSYSTEMSTEAM_PACKAGE
-	UE_LOG(LogTemp, Warning, TEXT("USIK_MatchmakingSubsystem::USIK_MatchmakingSubsystem"));
 	m_CallbackFavoritesListAccountsUpdated.Register(this, &USIK_MatchmakingSubsystem::OnFavoritesListAccountsCallbck);
 	m_CallbackFavoritesListChanged.Register(this, &USIK_MatchmakingSubsystem::OnFavoritesListChangedCallback);
 	m_CallbackLobbyChatMsg.Register(this, &USIK_MatchmakingSubsystem::OnLobbyChatMsgCallback);
