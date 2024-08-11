@@ -17,8 +17,25 @@ USIKSettings::USIKSettings()
 	SectionName = TEXT("Steam Integration Kit");
 	if(GConfig)
 	{
-		GConfig->GetInt(TEXT("OnlineSubsystemSteam"), TEXT("SteamDevAppId"), SteamDevAppId, ProjectEngineIniPath);
-		GConfig->GetInt(TEXT("OnlineSubsystemSteam"), TEXT("SteamAppId"), SteamAppId, ProjectEngineIniPath);
+		bool bIsSteamEnabled = false;
+		if(!GConfig->GetBool(TEXT("OnlineSubsystemSteam"), TEXT("bEnabled"), bIsSteamEnabled, ProjectEngineIniPath))
+		{
+			GConfig->SetBool(TEXT("OnlineSubsystemSteam"), TEXT("bEnabled"), true, ProjectEngineIniPath);
+			GConfig->Flush(false, ProjectEngineIniPath);
+			SaveConfig(CPF_Config, *ProjectEngineIniPath);
+		}
+		if(!GConfig->GetInt(TEXT("OnlineSubsystemSteam"), TEXT("SteamDevAppId"), SteamDevAppId, ProjectEngineIniPath))
+		{
+			GConfig->SetInt(TEXT("OnlineSubsystemSteam"), TEXT("SteamDevAppId"), SteamDevAppId, ProjectEngineIniPath);
+			GConfig->Flush(false, ProjectEngineIniPath);
+			SaveConfig(CPF_Config, *ProjectEngineIniPath);
+		}
+		if(!GConfig->GetInt(TEXT("OnlineSubsystemSteam"), TEXT("SteamAppId"), SteamAppId, ProjectEngineIniPath))
+		{
+			GConfig->SetInt(TEXT("OnlineSubsystemSteam"), TEXT("SteamAppId"), SteamAppId, ProjectEngineIniPath);
+			GConfig->Flush(false, ProjectEngineIniPath);
+			SaveConfig(CPF_Config, *ProjectEngineIniPath);
+		}
 		GConfig->GetString(TEXT("OnlineSubsystemSteam"), TEXT("GameVersion"), GameVersion, ProjectEngineIniPath);
 		GConfig->GetBool(TEXT("OnlineSubsystemSteam"), TEXT("bRelaunchInSteam"), bRelaunchInSteam, ProjectEngineIniPath);
 		GConfig->GetInt(TEXT("OnlineSubsystemSteam"), TEXT("GameServerPort"), GameServerPort, ProjectEngineIniPath);
