@@ -7,8 +7,10 @@
 THIRD_PARTY_INCLUDES_START
 #if WITH_ENGINE_STEAM
 #include "steam/isteamutils.h"
+#include "steam/isteaminput.h"
 #else
 #include "isteamutils.h"
+#include "isteaminput.h"
 #endif
 THIRD_PARTY_INCLUDES_END
 #include "Kismet/BlueprintFunctionLibrary.h"
@@ -23,6 +25,13 @@ class STEAMINTEGRATIONKIT_API USIK_UtilsLibrary : public UBlueprintFunctionLibra
 	GENERATED_BODY()
 
 public:
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Is Controller Connected", meta = (Keywords = "IsControllerConnected"), Category = "Steam Integration Kit || SDK Functions || Inputs")
+	static bool IsControllerConnected();
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Open Steam Keyboard", meta = (Keywords = "OpenSteamKeyboard"), Category = "Steam Integration Kit || SDK Functions || Utils")
+	static bool OpenSteamKeyboard(int32 KeyboardMode, int32 TextFieldXPosition, int32 TextFieldYPosition, int32 TextFieldWidth, int32 TextFieldHeight);
+	
 	UFUNCTION(BlueprintCallable, DisplayName = "Overlay Needs Present", meta=(Keywords="BOverlayNeedsPresent"), Category="Steam Integration Kit || SDK Functions || Utils")
 	static bool OverlayNeedsPresent();
 	

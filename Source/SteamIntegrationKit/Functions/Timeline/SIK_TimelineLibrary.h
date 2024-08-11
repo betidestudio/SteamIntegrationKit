@@ -70,9 +70,9 @@ public:
 	The game can nominate an event as being suitable for a clip by passing k_ETimelineEventClipPriority_Standard or k_ETimelineEventClipPriority_Featured to ePossibleClip. Players can make clips of their own at any point, but this lets the game suggest some options to Steam to make that process easier for players.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Steam Integration Kit || SDK Functions || Timeline")
-	void AddTimelineEvent(FString pchIcon, FString pchTitle, FString pchDescription, int32 unPriority, float flStartOffsetSeconds, float flDurationSecondsm, TEnumAsByte<ESIK_TimelineEventClipPriority> ePossibleClip);
+	static void AddTimelineEvent(FString pchIcon, FString pchTitle, FString pchDescription, int32 unPriority, float flStartOffsetSeconds, float flDurationSecondsm, TEnumAsByte<ESIK_TimelineEventClipPriority> ePossibleClip);
 
 	//Changes the color of the timeline bar (C). See ETimelineGameMode for how to use each value.
 	UFUNCTION(BlueprintCallable, Category = "Steam Integration Kit || SDK Functions || Timeline")
-	void SetTimelineGameMode(TEnumAsByte<ESIK_TimelineGameMode> eMode);
+	static void SetTimelineGameMode(TEnumAsByte<ESIK_TimelineGameMode> eMode);
 };
