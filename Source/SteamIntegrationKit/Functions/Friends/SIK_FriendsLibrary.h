@@ -436,7 +436,7 @@ public:
 	@return - The large avatar as an int.
 	*/
 	UFUNCTION(BlueprintCallable, DisplayName = "Get Steam Large Friend Avatar", meta=(Keywords="GetLargeFriendAvatar"), Category = "Steam Integration Kit || SDK Functions || Friends")
-	static int32 GetLargeFriendAvatar(FSIK_SteamId SteamIdFriend);
+	static UTexture2D* GetLargeFriendAvatar(FSIK_SteamId SteamIdFriend, int32& Avatar);
 
 	/*
 	Gets the medium avatar of a friend.
@@ -444,7 +444,7 @@ public:
 	@return - The medium avatar as an int.
 	*/
 	UFUNCTION(BlueprintCallable, DisplayName = "Get Steam Medium Friend Avatar", meta=(Keywords="GetMediumFriendAvatar"), Category = "Steam Integration Kit || SDK Functions || Friends")
-	static int32 GetMediumFriendAvatar(FSIK_SteamId SteamIdFriend);
+	static UTexture2D* GetMediumFriendAvatar(FSIK_SteamId SteamIdFriend, int32& Avatar);
 
 	/*
 	Gets the current persona name of the local user.
@@ -474,7 +474,7 @@ public:
 	@return - The small avatar as an int.
 	*/
 	UFUNCTION(BlueprintCallable, DisplayName = "Get Steam Small Friend Avatar", meta=(Keywords="GetSmallFriendAvatar"), Category = "Steam Integration Kit || SDK Functions || Friends")
-	static UTexture2D* GetSmallFriendAvatar(FSIK_SteamId SteamIdFriend);
+	static UTexture2D* GetSmallFriendAvatar(FSIK_SteamId SteamIdFriend, int32& Avatar);
 
 	/*
 	Gets the user restrictions.

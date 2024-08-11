@@ -421,22 +421,64 @@ int32 USIK_FriendsLibrary::GetFriendSteamLevel(FSIK_SteamId SteamIdFriend)
 	return -1;
 }
 
-int32 USIK_FriendsLibrary::GetLargeFriendAvatar(FSIK_SteamId SteamIdFriend)
+UTexture2D* USIK_FriendsLibrary::GetLargeFriendAvatar(FSIK_SteamId SteamIdFriend, int32& Avatar)
 {
-	if(SteamFriends() != nullptr)
+	if(!SteamFriends())
 	{
-		return SteamFriends()->GetLargeFriendAvatar(SteamIdFriend.GetSteamID());
+		return nullptr;
 	}
-	return -1;
+	Avatar = SteamFriends()->GetLargeFriendAvatar(SteamIdFriend.GetSteamID());
+	if(Avatar == -1)
+	{
+		return nullptr;
+	}
+	uint8* AvatarData = new uint8[4 * 128 * 128];
+	bool bSuccess = SteamUtils()->GetImageRGBA(Avatar, AvatarData, 4 * 128 * 128);
+	if(!bSuccess)
+	{
+		delete[] AvatarData;
+		return nullptr;
+	}
+	UTexture2D* Texture = UTexture2D::CreateTransient(128, 128,PF_R8G8B8A8);
+	if(Texture)
+	{
+		uint8* MipData = static_cast<uint8*>(Texture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
+		FMemory::Memcpy(MipData, AvatarData, 4 * 128 * 128);
+		Texture->GetPlatformData()->Mips[0].BulkData.Unlock();
+		Texture->UpdateResource();
+	}
+	delete[] AvatarData;
+	return Texture;
 }
 
-int32 USIK_FriendsLibrary::GetMediumFriendAvatar(FSIK_SteamId SteamIdFriend)
+UTexture2D* USIK_FriendsLibrary::GetMediumFriendAvatar(FSIK_SteamId SteamIdFriend, int32& Avatar)
 {
-	if(SteamFriends() != nullptr)
+	if(!SteamFriends())
 	{
-		return SteamFriends()->GetMediumFriendAvatar(SteamIdFriend.GetSteamID());
+		return nullptr;
 	}
-	return -1;
+	Avatar = SteamFriends()->GetMediumFriendAvatar(SteamIdFriend.GetSteamID());
+	if(Avatar == -1)
+	{
+		return nullptr;
+	}
+	uint8* AvatarData = new uint8[4 * 64 * 64];
+	bool bSuccess = SteamUtils()->GetImageRGBA(Avatar, AvatarData, 4 * 64 * 64);
+	if(!bSuccess)
+	{
+		delete[] AvatarData;
+		return nullptr;
+	}
+	UTexture2D* Texture = UTexture2D::CreateTransient(64, 64,PF_R8G8B8A8);
+	if(Texture)
+	{
+		uint8* MipData = static_cast<uint8*>(Texture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
+		FMemory::Memcpy(MipData, AvatarData, 4 * 64 * 64);
+		Texture->GetPlatformData()->Mips[0].BulkData.Unlock();
+		Texture->UpdateResource();
+	}
+	delete[] AvatarData;
+	return Texture;
 }
 
 FString USIK_FriendsLibrary::GetPersonaName()
@@ -466,13 +508,13 @@ FString USIK_FriendsLibrary::GetPlayerNickname(FSIK_SteamId SteamIdPlayer)
 	return FString();
 }
 
-UTexture2D* USIK_FriendsLibrary::GetSmallFriendAvatar(FSIK_SteamId SteamIdFriend)
+UTexture2D* USIK_FriendsLibrary::GetSmallFriendAvatar(FSIK_SteamId SteamIdFriend, int32& Avatar)
 {
 	if(!SteamFriends())
 	{
 		return nullptr;
 	}
-	int Avatar = SteamFriends()->GetSmallFriendAvatar(SteamIdFriend.GetSteamID());
+	Avatar = SteamFriends()->GetSmallFriendAvatar(SteamIdFriend.GetSteamID());
 	if(Avatar == -1)
 	{
 		return nullptr;
