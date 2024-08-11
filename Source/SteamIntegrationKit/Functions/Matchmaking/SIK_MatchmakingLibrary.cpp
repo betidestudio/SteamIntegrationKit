@@ -154,10 +154,22 @@ void USIK_MatchmakingLibrary::GetLobbyChatEntry(FSIK_SteamId SteamID, int32 Chat
 	}
 	CSteamID Var_SteamIDUser;
 	EChatEntryType Var_ChatEntryType;
-	char Var_ChatEntry[4096];
-	SteamMatchmaking()->GetLobbyChatEntry(SteamID.GetSteamID(), ChatID, &Var_SteamIDUser, Var_ChatEntry, 4096, &Var_ChatEntryType);
+	TArray<uint8> Var_ChatEntry;
+	Var_ChatEntry.SetNum(4096);
+	auto ReturnVal = SteamMatchmaking()->GetLobbyChatEntry(SteamID.GetSteamID(), ChatID, &Var_SteamIDUser, Var_ChatEntry.GetData(), Var_ChatEntry.Num(), &Var_ChatEntryType);
+	Var_ChatEntry.SetNum(ReturnVal);
 	SteamIDUser = Var_SteamIDUser;
-	ChatEntry = FString(Var_ChatEntry);
+	if(Var_ChatEntry.Num() > 0)
+	{
+		// Create a temporary string with the valid length
+		const char* ChatEntryChars = reinterpret_cast<const char*>(Var_ChatEntry.GetData());
+		int32 ValidLength = 0;
+		while (ValidLength < Var_ChatEntry.Num() && ChatEntryChars[ValidLength] != '\0')
+		{
+			++ValidLength;
+		}
+		ChatEntry = FString(ValidLength, ANSI_TO_TCHAR(ChatEntryChars));
+	}
 	ChatEntryType = static_cast<ESIK_LobbyChatEntryType>(Var_ChatEntryType);
 }
 
