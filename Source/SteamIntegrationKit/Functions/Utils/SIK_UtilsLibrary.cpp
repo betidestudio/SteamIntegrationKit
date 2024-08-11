@@ -3,6 +3,41 @@
 
 #include "SIK_UtilsLibrary.h"
 
+bool USIK_UtilsLibrary::IsControllerConnected()
+{
+
+	ISteamInput* SteamInputInterface = SteamInput();
+	if (!SteamInputInterface)
+	{
+		return false;
+	}
+
+	if (!SteamInputInterface->Init(false))
+	{
+		return false;
+	}
+
+	SteamInputInterface->RunFrame();
+
+	InputHandle_t handlesOut[STEAM_INPUT_MAX_COUNT] = { 0 };
+
+	int numControllers = SteamInputInterface->GetConnectedControllers(handlesOut);
+
+	if (numControllers > 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+bool USIK_UtilsLibrary::OpenSteamKeyboard(int32 KeyboardMode, int32 TextFieldXPosition, int32 TextFieldYPosition, int32 TextFieldWidth, int32 TextFieldHeight)
+{
+	if (SteamUtils())
+	{
+		return SteamUtils()->ShowFloatingGamepadTextInput(static_cast<EFloatingGamepadTextInputMode>(KeyboardMode), TextFieldXPosition, TextFieldYPosition, TextFieldWidth, TextFieldHeight);
+	}
+	return false;
+}
 
 bool USIK_UtilsLibrary::OverlayNeedsPresent()
 {
