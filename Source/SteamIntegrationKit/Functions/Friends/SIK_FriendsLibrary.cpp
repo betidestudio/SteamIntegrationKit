@@ -135,7 +135,7 @@ FString USIK_FriendsLibrary::GetClanName(FSIK_SteamId SteamIdClan)
 	if(SteamFriends() != nullptr)
 	{
 		CSteamID SteamId = SteamIdClan.GetSteamID();
-		return SteamFriends()->GetClanName(SteamId);
+		return UTF8_TO_TCHAR(SteamFriends()->GetClanName(SteamId));
 	}
 	return FString();
 }
@@ -205,7 +205,11 @@ FSIK_SteamId USIK_FriendsLibrary::GetFriendByIndex(int32 FriendIndex, TArray<TEn
 		int iFriendFlags = 0;
 		for (int i = 0; i < FriendFlags.Num(); i++)
 		{
+#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION >= 2
 			iFriendFlags |= FriendFlags[i].GetIntValue();
+#else
+			iFriendFlags |= FriendFlags[i].GetValue();
+#endif
 		}
 		return SteamFriends()->GetFriendByIndex(FriendIndex, iFriendFlags);
 	}
@@ -239,8 +243,11 @@ int32 USIK_FriendsLibrary::GetFriendCount(TArray<TEnumAsByte<ESIK_FriendFlags>> 
 		int iFriendFlags = 0;
 		for (int i = 0; i < FriendFlags.Num(); i++)
 		{
+#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION >= 2
 			iFriendFlags |= FriendFlags[i].GetIntValue();
-			UE_LOG(LogTemp, Warning, TEXT("FriendFlags: %d"), iFriendFlags);
+#else
+			iFriendFlags |= FriendFlags[i].GetValue();
+#endif
 		}
 		return SteamFriends()->GetFriendCount(iFriendFlags);
 	}
@@ -300,7 +307,7 @@ FString USIK_FriendsLibrary::GetFriendPersonaName(FSIK_SteamId SteamIdFriend)
 {
 	if(SteamFriends() != nullptr)
 	{
-		return SteamFriends()->GetFriendPersonaName(SteamIdFriend.GetSteamID());
+		return UTF8_TO_TCHAR(SteamFriends()->GetFriendPersonaName(SteamIdFriend.GetSteamID()));
 	}
 	return FString();
 }
@@ -309,7 +316,7 @@ FString USIK_FriendsLibrary::GetFriendPersonaNameHistory(FSIK_SteamId SteamIdFri
 {
 	if(SteamFriends() != nullptr)
 	{
-		return SteamFriends()->GetFriendPersonaNameHistory(SteamIdFriend.GetSteamID(), PersonaNameIndex);
+		return UTF8_TO_TCHAR(SteamFriends()->GetFriendPersonaNameHistory(SteamIdFriend.GetSteamID(), PersonaNameIndex));
 	}
 	return FString();
 }
@@ -336,7 +343,7 @@ FString USIK_FriendsLibrary::GetFriendRichPresence(FSIK_SteamId SteamIdFriend, c
 {
 	if(SteamFriends() != nullptr)
 	{
-		return SteamFriends()->GetFriendRichPresence(SteamIdFriend.GetSteamID(), TCHAR_TO_ANSI(*Key));
+		return UTF8_TO_TCHAR(SteamFriends()->GetFriendRichPresence(SteamIdFriend.GetSteamID(), TCHAR_TO_ANSI(*Key)));
 	}
 	return FString();
 }
@@ -345,7 +352,7 @@ FString USIK_FriendsLibrary::GetFriendRichPresenceKeyByIndex(FSIK_SteamId SteamI
 {
 	if(SteamFriends() != nullptr)
 	{
-		return SteamFriends()->GetFriendRichPresenceKeyByIndex(SteamIdFriend.GetSteamID(), KeyIndex);
+		return UTF8_TO_TCHAR(SteamFriends()->GetFriendRichPresenceKeyByIndex(SteamIdFriend.GetSteamID(), KeyIndex));
 	}
 	return FString();
 }
@@ -554,7 +561,11 @@ bool USIK_FriendsLibrary::HasFriend(FSIK_SteamId SteamIdFriend, TArray<TEnumAsBy
 		int iFriendFlags = 0;
 		for (int i = 0; i < FriendFlags.Num(); i++)
 		{
+#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION >= 2
 			iFriendFlags |= FriendFlags[i].GetIntValue();
+#else
+			iFriendFlags |= FriendFlags[i].GetValue();
+#endif
 		}
 		return SteamFriends()->HasFriend(SteamIdFriend.GetSteamID(), iFriendFlags);
 	}
