@@ -62,7 +62,7 @@ void USIK_DownloadLeaderboardEntries_AsyncFunction::OnDownloadLeaderboardEntries
 				FDownloadedLeaderboardEntry Entry;
 				Entry.GlobalRank = leaderboardEntry.m_nGlobalRank;
 				Entry.Score = leaderboardEntry.m_nScore;
-				Entry.SteamID = FString::Printf(TEXT("%llu"), leaderboardEntry.m_steamIDUser.ConvertToUint64());
+				Entry.SteamID = leaderboardEntry.m_steamIDUser;
 				LeaderboardEntries.Add(Entry);
 			}
 		}

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SIK_SharedFile.h"
 THIRD_PARTY_INCLUDES_START
 #if WITH_ENGINE_STEAM
 #include <steam/steam_api.h>
@@ -33,7 +34,7 @@ struct FDownloadedLeaderboardEntry
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadOnly,Category="Steam Integration Kit || User Stats")
-	FString SteamID = "Empty";
+	FSIK_SteamId SteamID;
 
 	UPROPERTY(BlueprintReadOnly,Category="Steam Integration Kit || User Stats")
 	int32 GlobalRank = 0;
