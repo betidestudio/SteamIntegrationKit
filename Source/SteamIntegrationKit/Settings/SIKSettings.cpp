@@ -44,8 +44,18 @@ USIKSettings::USIKSettings()
 		int32 BuildConfigurationInt = 0;
 		GConfig->GetInt(TEXT("OnlineSubsystemSteam"), TEXT("BuildConfiguration"), BuildConfigurationInt, ProjectEngineIniPath);
 		BuildConfiguration = static_cast<ESIK_BuildConfiguration>(BuildConfigurationInt);
-		GConfig->GetString(TEXT("OnlineSubsystemSteam"), TEXT("Username"), Username, ProjectEngineIniPath);
-		GConfig->GetString(TEXT("OnlineSubsystemSteam"), TEXT("Password"), Password, ProjectEngineIniPath);
+		Username = FPlatformMisc::GetEnvironmentVariable(TEXT("SIK_STEAM_USERNAME"));
+		if(!Username.IsEmpty())
+		{
+			bUseEnvironmentVariables = true;
+			Password = FPlatformMisc::GetEnvironmentVariable(TEXT("SIK_STEAM_PASSWORD"));
+		}
+		else
+		{
+			bUseEnvironmentVariables = false;
+			GConfig->GetString(TEXT("OnlineSubsystemSteam"), TEXT("Username"), Username, ProjectEngineIniPath);
+			GConfig->GetString(TEXT("OnlineSubsystemSteam"), TEXT("Password"), Password, ProjectEngineIniPath);
+		}
 		TArray<FString> StringDepotIds;
 		GConfig->GetArray(TEXT("OnlineSubsystemSteam"), TEXT("DepotIds"), StringDepotIds, ProjectEngineIniPath);
 		for(const FString& StringDepotId : StringDepotIds)
@@ -57,12 +67,14 @@ USIKSettings::USIKSettings()
 		GConfig->GetString(TEXT("OnlineSubsystemSteam"), TEXT("ServerGameDir"), ServerGameDir, ProjectEngineIniPath);
 		GConfig->GetString(TEXT("OnlineSubsystemSteam"), TEXT("BranchName"), BranchName, ProjectEngineIniPath);
 	}
+	bEngineInitialized = true;
+	UE_LOG(LogTemp, Warning, TEXT("bEngqweineInitialized is %d"), bEngineInitialized);
 }
 
 #if WITH_EDITOR
 void USIKSettings::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
-	
+	UE_LOG(LogTemp, Warning, TEXT("PostEditChangeProperty and FnName is %s"), *PropertyChangedEvent.GetPropertyName().ToString());
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 	if(GConfig)
 	{
@@ -75,8 +87,18 @@ void USIKSettings::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
 		GConfig->SetInt(TEXT("OnlineSubsystemSteam"), TEXT("P2PConnectionTimeout"), P2PConnectionTimeout, ProjectEngineIniPath);
 		GConfig->SetArray(TEXT("OnlineSubsystemSteam"), TEXT("MapsToCook"), MapsToCook, ProjectEngineIniPath);
 		GConfig->SetInt(TEXT("OnlineSubsystemSteam"), TEXT("BuildConfiguration"), static_cast<int32>(BuildConfiguration), ProjectEngineIniPath);
-		GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("Username"), *Username, ProjectEngineIniPath);
-		GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("Password"), *Password, ProjectEngineIniPath);
+		if(FPlatformMisc::GetEnvironmentVariable(TEXT("SIK_STEAM_USERNAME")).IsEmpty())
+		{
+			bUseEnvironmentVariables = false;
+			GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("Username"), *Username, ProjectEngineIniPath);
+			GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("Password"), *Password, ProjectEngineIniPath);
+		}
+		else
+		{
+			Username = FPlatformMisc::GetEnvironmentVariable(TEXT("SIK_STEAM_USERNAME"));
+			Password = FPlatformMisc::GetEnvironmentVariable(TEXT("SIK_STEAM_PASSWORD"));
+			bUseEnvironmentVariables = true;
+		}
 		TArray<FString> StringDepotIds;
 		for(int32 DepotId : DepotIds)
 		{
@@ -90,5 +112,14 @@ void USIKSettings::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
 		GConfig->Flush(false, ProjectEngineIniPath);
 		SaveConfig(CPF_Config, *ProjectEngineIniPath);
 	}
+}
+
+bool USIKSettings::CanEditChange(const FProperty* InProperty) const
+{
+	if(!bEngineInitialized)
+	{
+		return Super::CanEditChange(InProperty);	
+	}
+	return Super::CanEditChange(InProperty);
 }
 #endif

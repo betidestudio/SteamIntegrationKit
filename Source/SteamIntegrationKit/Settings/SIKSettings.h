@@ -74,10 +74,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | One Click Deploy")
 	FString BranchName;
 
-	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Deployer Account Information")
+	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Deployer Account Information", meta=(EditCondition="!bUseEnvironmentVariables"))
 	FString Username;
 
-	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Deployer Account Information")
+	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Deployer Account Information", meta=(EditCondition="!bUseEnvironmentVariables"))
 	FString Password;
 
 	//Valve recommends that this be a build ID, although it is typical to use your AppID (as a string), or a light product name without any extra symbols.
@@ -92,12 +92,13 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Server Settings")
 	FString ServerGameDir;
 
-	
-	
-
 private:
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+	virtual bool CanEditChange(const FProperty* InProperty) const override;
 #endif
-	
+	UPROPERTY()
+	bool bUseEnvironmentVariables = false;
+	UPROPERTY()
+	bool bEngineInitialized = false;	
 };
