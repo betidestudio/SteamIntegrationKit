@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Runtime/Launch/Resources/Version.h"
 #include "SIK_SharedFile.h"
+#include "SIK_SoundWaveProcedural.h"
 #include "SteamIntegrationKit/Functions/GameServer/SIK_GameServerLibrary.h"
 
 #include "SIK_UserLibrary.generated.h"
@@ -92,5 +93,6 @@ public:
 	UFUNCTION(BlueprintCallable, DisplayName = "User Has License For App", meta=(Keywords="UserHasLicenseForApp"), Category="Steam Integration Kit || SDK Functions || User")
 	static bool UserHasLicenseForApp(FSIK_SteamId SteamId, int32 AppId);
 
-	
+	UFUNCTION(BlueprintCallable, DisplayName = "Construct SIK Sound Wave Procedural", meta=(Keywords="ConstructSIKSoundWaveProcedural"), Category="Steam Integration Kit || SDK Functions || User")
+	static USIK_SoundWaveProcedural* ConstructSIKSoundWaveProcedural(int32 SampleRate, int32 NumChannels = 1, float Duration = 10000.0f);
 };

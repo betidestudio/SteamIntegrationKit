@@ -274,3 +274,14 @@ bool USIK_UserLibrary::UserHasLicenseForApp(FSIK_SteamId SteamId, int32 AppId)
 	}
 	return false;
 }
+
+USIK_SoundWaveProcedural* USIK_UserLibrary::ConstructSIKSoundWaveProcedural(int32 SampleRate, int32 NumChannels,
+	float Duration)
+{
+	USIK_SoundWaveProcedural* SoundWave = NewObject<USIK_SoundWaveProcedural>();
+	SoundWave->NumChannels = NumChannels;
+	SoundWave->SetSampleRate(SampleRate);
+	SoundWave->Duration = Duration;
+	SoundWave->bCanProcessAsync = true;
+	return SoundWave;
+}

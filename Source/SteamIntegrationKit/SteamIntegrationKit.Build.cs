@@ -50,6 +50,8 @@ public class SteamIntegrationKit : ModuleRules
 				"Json",
 				"JsonUtilities",
 				"OnlineSubsystemSteam",
+				"AudioExtensions",
+				"AudioMixer"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
