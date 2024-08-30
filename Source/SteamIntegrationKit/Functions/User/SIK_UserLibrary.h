@@ -95,4 +95,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, DisplayName = "Construct SIK Sound Wave Procedural", meta=(Keywords="ConstructSIKSoundWaveProcedural"), Category="Steam Integration Kit || SDK Functions || User")
 	static USIK_SoundWaveProcedural* ConstructSIKSoundWaveProcedural(int32 SampleRate, int32 NumChannels = 1, float Duration = 10000.0f);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Destroy SIK Sound Wave Procedural", meta=(Keywords="DestroySIKSoundWaveProcedural"), Category="Steam Integration Kit || SDK Functions || User")
+	static void DestroySIKSoundWaveProcedural(USIK_SoundWaveProcedural* SoundWaveProcedural);
 };

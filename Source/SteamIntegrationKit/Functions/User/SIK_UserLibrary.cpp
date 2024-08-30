@@ -101,17 +101,26 @@ void USIK_UserLibrary::CancelAuthTicket(int32 AuthTicket)
 TEnumAsByte<ESIK_VoiceResult> USIK_UserLibrary::DecompressVoice(const TArray<uint8>& Compressed,
 	int32 DesiredSampleRate, TArray<uint8>& Uncompressed, int32& BytesWritten)
 {
-	if(!SteamUser())
+	if (!SteamUser())
 	{
 		return ESIK_VoiceResult::VoiceResultNoData;
 	}
-	TArray<uint8> UncompressedData;
+
 	uint32 BytesWritten2 = 0;
-	auto Result = static_cast<TEnumAsByte<ESIK_VoiceResult>>(SteamUser()->DecompressVoice(Compressed.GetData(), Compressed.Num(), UncompressedData.GetData(), UncompressedData.Num(), &BytesWritten2, DesiredSampleRate));
+	Uncompressed.SetNum(1024 * 20);
+	auto Result = static_cast<TEnumAsByte<ESIK_VoiceResult>>(SteamUser()->DecompressVoice(Compressed.GetData(), Compressed.Num(), Uncompressed.GetData(), Uncompressed.Num(), &BytesWritten2, DesiredSampleRate));
+
+	if (Result == ESIK_VoiceResult::VoiceResultBufferTooSmall)
+	{
+		// Resize the buffer to the required size and try again
+		Uncompressed.SetNum(BytesWritten2);
+		Result = static_cast<TEnumAsByte<ESIK_VoiceResult>>(SteamUser()->DecompressVoice(Compressed.GetData(), Compressed.Num(),Uncompressed.GetData(), Uncompressed.Num(), &BytesWritten2, DesiredSampleRate));
+	}
 	BytesWritten = BytesWritten2;
-	Uncompressed = UncompressedData;
+	Uncompressed.SetNum(BytesWritten);
 	return Result;
 }
+
 
 void USIK_UserLibrary::EndAuthSession(FSIK_SteamId SteamId)
 {
@@ -218,22 +227,28 @@ FSIK_SteamId USIK_UserLibrary::GetSteamIdPure()
 
 TEnumAsByte<ESIK_VoiceResult> USIK_UserLibrary::GetVoice(bool bWantCompressed, TArray<uint8>& DestBuffer, int32& BytesWritten)
 {
-	if(!SteamUser())
+	if (!SteamUser())
 	{
 		return ESIK_VoiceResult::VoiceResultNoData;
 	}
-	// Create a buffer for the voice data
+
+	uint32 AvailableVoiceBufferSize = 0;
+	SteamUser()->GetAvailableVoice(&AvailableVoiceBufferSize);
+
 	TArray<uint8> VoiceData;
-	VoiceData.SetNumUninitialized(8000); // Start with an 8KiB buffer
-	// Create a variable to hold the number of bytes written
+	VoiceData.SetNumUninitialized(AvailableVoiceBufferSize);
+
 	uint32 BytesWritten2 = 0;
-	// Call the SteamUser()->GetVoice function
 	auto Result = static_cast<TEnumAsByte<ESIK_VoiceResult>>(SteamUser()->GetVoice(bWantCompressed, VoiceData.GetData(), VoiceData.Num(), &BytesWritten2));
+
 	BytesWritten = BytesWritten2;
-	DestBuffer = VoiceData;
+
+	DestBuffer.SetNum(BytesWritten);
+	FMemory::Memcpy(DestBuffer.GetData(), VoiceData.GetData(), BytesWritten);
 
 	return Result;
 }
+
 
 int32 USIK_UserLibrary::GetVoiceOptimalSampleRate()
 {
@@ -279,9 +294,19 @@ USIK_SoundWaveProcedural* USIK_UserLibrary::ConstructSIKSoundWaveProcedural(int3
 	float Duration)
 {
 	USIK_SoundWaveProcedural* SoundWave = NewObject<USIK_SoundWaveProcedural>();
+	SoundWave->AddToRoot();
 	SoundWave->NumChannels = NumChannels;
 	SoundWave->SetSampleRate(SampleRate);
+	SoundWave->bLooping = false;
 	SoundWave->Duration = Duration;
-	SoundWave->bCanProcessAsync = true;
+	SoundWave->SoundGroup = SOUNDGROUP_Voice;
 	return SoundWave;
+}
+
+void USIK_UserLibrary::DestroySIKSoundWaveProcedural(USIK_SoundWaveProcedural* SoundWaveProcedural)
+{
+	if(SoundWaveProcedural)
+	{
+		SoundWaveProcedural->RemoveFromRoot();
+	}
 }

@@ -5,5 +5,9 @@
 
 void USIK_SoundWaveProcedural::SIK_QueueAudio(const TArray<uint8>& AudioData)
 {
-	QueueAudio(AudioData.GetData(), AudioData.Num());
+	ResetAudio();
+	if (AudioData.Num() > 0 && AudioData.GetData())
+	{
+		QueueAudio(AudioData.GetData(), AudioData.Num());
+	}
 }
