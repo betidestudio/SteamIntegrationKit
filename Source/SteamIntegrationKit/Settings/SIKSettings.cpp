@@ -74,7 +74,6 @@ USIKSettings::USIKSettings()
 #if WITH_EDITOR
 void USIKSettings::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
-	UE_LOG(LogTemp, Warning, TEXT("PostEditChangeProperty and FnName is %s"), *PropertyChangedEvent.GetPropertyName().ToString());
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 	if(GConfig)
 	{
