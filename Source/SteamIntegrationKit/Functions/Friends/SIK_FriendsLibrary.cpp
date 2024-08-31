@@ -439,18 +439,18 @@ UTexture2D* USIK_FriendsLibrary::GetLargeFriendAvatar(FSIK_SteamId SteamIdFriend
 	{
 		return nullptr;
 	}
-	uint8* AvatarData = new uint8[4 * 128 * 128];
-	bool bSuccess = SteamUtils()->GetImageRGBA(Avatar, AvatarData, 4 * 128 * 128);
+	uint8* AvatarData = new uint8[4 * 184 * 184];
+	bool bSuccess = SteamUtils()->GetImageRGBA(Avatar, AvatarData, 4 * 184 * 184);
 	if(!bSuccess)
 	{
 		delete[] AvatarData;
 		return nullptr;
 	}
-	UTexture2D* Texture = UTexture2D::CreateTransient(128, 128,PF_R8G8B8A8);
+	UTexture2D* Texture = UTexture2D::CreateTransient(184, 184,PF_R8G8B8A8);
 	if(Texture)
 	{
 		uint8* MipData = static_cast<uint8*>(Texture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
-		FMemory::Memcpy(MipData, AvatarData, 4 * 128 * 128);
+		FMemory::Memcpy(MipData, AvatarData, 4 * 184 * 184);
 		Texture->GetPlatformData()->Mips[0].BulkData.Unlock();
 		Texture->UpdateResource();
 	}
