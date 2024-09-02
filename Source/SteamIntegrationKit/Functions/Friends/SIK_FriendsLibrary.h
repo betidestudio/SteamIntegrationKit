@@ -20,6 +20,7 @@ THIRD_PARTY_INCLUDES_END
 #include "Serialization/BulkData.h"
 #include "Runtime/Core/Public/PixelFormat.h"
 #include "Engine/Texture.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "Async/Async.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "SIK_FriendsLibrary.generated.h"
