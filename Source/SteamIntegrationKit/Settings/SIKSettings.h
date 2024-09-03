@@ -62,9 +62,6 @@ public:
 	int32 P2PConnectionTimeout = 120;
 
 	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | One Click Deploy")
-	TEnumAsByte<ESIK_BuildConfiguration> BuildConfiguration = ESIK_BuildConfiguration::Development1;
-
-	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | One Click Deploy")
 	TArray<FString> MapsToCook;
 
 	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | One Click Deploy")

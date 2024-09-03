@@ -43,7 +43,6 @@ USIKSettings::USIKSettings()
 		GConfig->GetArray(TEXT("OnlineSubsystemSteam"), TEXT("MapsToCook"), MapsToCook, ProjectEngineIniPath);
 		int32 BuildConfigurationInt = 0;
 		GConfig->GetInt(TEXT("OnlineSubsystemSteam"), TEXT("BuildConfiguration"), BuildConfigurationInt, ProjectEngineIniPath);
-		BuildConfiguration = static_cast<ESIK_BuildConfiguration>(BuildConfigurationInt);
 		Username = FPlatformMisc::GetEnvironmentVariable(TEXT("SIK_STEAM_USERNAME"));
 		if(!Username.IsEmpty())
 		{
@@ -85,7 +84,6 @@ void USIKSettings::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
 		GConfig->SetInt(TEXT("OnlineSubsystemSteam"), TEXT("GameServerPort"), GameServerPort, ProjectEngineIniPath);
 		GConfig->SetInt(TEXT("OnlineSubsystemSteam"), TEXT("P2PConnectionTimeout"), P2PConnectionTimeout, ProjectEngineIniPath);
 		GConfig->SetArray(TEXT("OnlineSubsystemSteam"), TEXT("MapsToCook"), MapsToCook, ProjectEngineIniPath);
-		GConfig->SetInt(TEXT("OnlineSubsystemSteam"), TEXT("BuildConfiguration"), static_cast<int32>(BuildConfiguration), ProjectEngineIniPath);
 		if(FPlatformMisc::GetEnvironmentVariable(TEXT("SIK_STEAM_USERNAME")).IsEmpty())
 		{
 			bUseEnvironmentVariables = false;
