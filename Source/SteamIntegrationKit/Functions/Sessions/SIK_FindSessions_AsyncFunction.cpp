@@ -40,7 +40,6 @@ void USIK_FindSessions_AsyncFunction::FindSession()
 			if(E_MatchType == ESMatchType::MT_Lobby)
 			{
 				SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
-				SessionSearch->QuerySettings.Set(SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
 			}
 			if(B_bEmptyServerOnly)
 			{
@@ -78,7 +77,6 @@ MarkAsGarbage();
 
 void USIK_FindSessions_AsyncFunction::OnFindSessionCompleted(bool bWasSuccess)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Find Session Completed"));
 	if(!bWasSuccess)
 	{
 		if(bDelegateCalled)
@@ -98,7 +96,6 @@ void USIK_FindSessions_AsyncFunction::OnFindSessionCompleted(bool bWasSuccess)
 			IOnlineSessionPtr Sessions = OnlineSub->GetSessionInterface();
 			if (Sessions.IsValid())
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Session is valid and number of search results is %d"), SessionSearch->SearchResults.Num());
 				if (SessionSearch->SearchResults.Num() > 0)
 				{
 					for (int32 SearchIdx = 0; SearchIdx < SessionSearch->SearchResults.Num(); SearchIdx++)
