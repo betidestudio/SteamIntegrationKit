@@ -155,7 +155,7 @@ int32 USIK_UserLibrary::GetAuthTicketForWebApi(FString Identity)
 	{
 		return 0;
 	}
-#if !WITH_ENGINE_STEAM
+#if !WITH_ENGINE_STEAM || ENGINE_MINOR_VERSION > 3
 	return SteamUser()->GetAuthTicketForWebApi(TCHAR_TO_ANSI(*Identity));
 #else
 	return 0;

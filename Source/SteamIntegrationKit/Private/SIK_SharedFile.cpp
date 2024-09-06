@@ -19,11 +19,7 @@ TArray<uint8> USIK_SharedFile::ConvertStringToUint8Array(FString String)
 
 FString USIK_SharedFile::ConvertUint8ArrayToString(TArray<uint8> Array)
 {
-	FString String;
-	for (int32 i = 0; i < Array.Num(); i++) {
-		String.AppendChar(Array[i]);
-	}
-	return String;
+	return FString(Array.Num(), UTF8_TO_TCHAR(Array.GetData()));
 }
 
 TArray<uint8> USIK_SharedFile::ConvertFileToUint8Array(FString FilePath, bool& bSuccess)

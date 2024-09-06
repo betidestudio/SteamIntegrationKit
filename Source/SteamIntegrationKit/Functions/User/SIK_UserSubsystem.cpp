@@ -107,7 +107,7 @@ void USIK_UserSubsystem::OnGetAuthSessionTicketResponse(GetAuthSessionTicketResp
 	});
 }
 
-#if !WITH_ENGINE_STEAM
+#if !WITH_ENGINE_STEAM || ENGINE_MINOR_VERSION > 3
 void USIK_UserSubsystem::OnGetTicketForWebApiResponse(GetTicketForWebApiResponse_t *pParam)
 {
 	auto Param = *pParam;
@@ -116,7 +116,8 @@ void USIK_UserSubsystem::OnGetTicketForWebApiResponse(GetTicketForWebApiResponse
 		// Handle GetTicketForWebApiResponse
 		TArray<uint8> TicketData;
 		TicketData.Append(Param.m_rgubTicket, Param.m_cubTicket);
-		OnGetTicketForWebApiResponseCallback.Broadcast(Param.m_eResult, Param.m_hAuthTicket, TicketData);
+		FString ResultToken = BytesToHex(Param.m_rgubTicket, Param.m_cubTicket);
+		OnGetTicketForWebApiResponseCallback.Broadcast(Param.m_eResult, Param.m_hAuthTicket, TicketData, ResultToken);
 	});
 }
 #endif

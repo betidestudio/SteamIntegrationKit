@@ -24,7 +24,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSIK_DurationControlDelegate, int32,
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSIK_EncryptedAppTicketResponseDelegate, int32, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSIK_GameWebCallbackDelegate, FString, URL);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSIK_GetAuthSessionTicketResponseDelegate, int32, Result);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSIK_GetTicketForWebApiResponseDelegate, int32, Result, int32, AuthTicket,const TArray<uint8>&, TicketData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSIK_GetTicketForWebApiResponseDelegate, int32, Result, int32, AuthTicket,const TArray<uint8>&, TicketData, const FString&, TicketAsStr);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSIK_IPCFailureDelegate, int32, FailureType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSIK_LicensesUpdatedDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSIK_MicroTxnAuthorizationResponseDelegate, int32, AppID, int32, OrderID, bool, Authorized);
@@ -92,7 +92,7 @@ private:
 	STEAM_CALLBACK_MANUAL(USIK_UserSubsystem, OnDurationControl, DurationControl_t, m_CallbackDurationControl);
 	STEAM_CALLBACK_MANUAL(USIK_UserSubsystem, OnGameWebCallback, GameWebCallback_t, m_CallbackGameWebCallback);
 	STEAM_CALLBACK_MANUAL(USIK_UserSubsystem, OnGetAuthSessionTicketResponse, GetAuthSessionTicketResponse_t, m_CallbackGetAuthSessionTicketResponse);
-#if WITH_ENGINE_STEAM
+#if WITH_ENGINE_STEAM && ENGINE_MINOR_VERSION <= 3
 #else
 	STEAM_CALLBACK_MANUAL(USIK_UserSubsystem, OnGetTicketForWebApiResponse, GetTicketForWebApiResponse_t, m_CallbackGetTicketForWebApiResponse);
 #endif
