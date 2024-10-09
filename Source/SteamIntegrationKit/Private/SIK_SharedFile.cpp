@@ -22,6 +22,11 @@ FString USIK_SharedFile::ConvertUint8ArrayToString(TArray<uint8> Array)
 	return FString(Array.Num(), UTF8_TO_TCHAR(Array.GetData()));
 }
 
+FString USIK_SharedFile::ConvertHexUint8ArrayToString(TArray<uint8> Array)
+{
+	return BytesToHex(Array.GetData(), Array.Num());
+}	
+
 TArray<uint8> USIK_SharedFile::ConvertFileToUint8Array(FString FilePath, bool& bSuccess)
 {
 	TArray<uint8> Array;

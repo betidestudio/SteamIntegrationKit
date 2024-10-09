@@ -1962,19 +1962,22 @@ class STEAMINTEGRATIONKIT_API USIK_SharedFile : public UObject
 
 public:
 
-	UFUNCTION(BlueprintCallable, Category = "Steam Integration Kit || Helper Functions")
+	UFUNCTION(BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
 	static TArray<uint8> ConvertStringToUint8Array(FString String);
 
-	UFUNCTION(BlueprintCallable, Category = "Steam Integration Kit || Helper Functions")
+	UFUNCTION(BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
 	static FString ConvertUint8ArrayToString(TArray<uint8> Array);
 
-	UFUNCTION(BlueprintCallable, Category = "Steam Integration Kit || Helper Functions")
+	UFUNCTION(BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
+	static FString ConvertHexUint8ArrayToString(TArray<uint8> Array);
+
+	UFUNCTION(BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
 	static TArray<uint8> ConvertFileToUint8Array(FString FilePath, bool& bSuccess);
 	
-	UFUNCTION(BlueprintCallable, Category = "Steam Integration Kit || Helper Functions")
+	UFUNCTION(BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
 	static int64 ConvertSteamIdToInt64(FSIK_SteamId SteamId);
 
-	UFUNCTION(BlueprintCallable, Category = "Steam Integration Kit || Helper Functions")
+	UFUNCTION(BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
 	static FSIK_SteamId ConvertInt64ToSteamId(int64 Int64);
 
 	UFUNCTION(BlueprintCallable, Category = "Steam Integration Kit || Helper Functions")
@@ -1989,10 +1992,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
 	static bool IsValidGameId(FSIK_GameID GameId);
 	
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
+	UFUNCTION(BlueprintPure, BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
 	static bool IsEqualSteamId(FSIK_SteamId SteamId1, FSIK_SteamId SteamId2);
 
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
+	UFUNCTION(BlueprintPure, BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
 	static bool IsEqualGameId(FSIK_GameID GameId1, FSIK_GameID GameId2);
 	
 };

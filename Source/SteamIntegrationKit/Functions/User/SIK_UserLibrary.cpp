@@ -183,6 +183,7 @@ bool USIK_UserLibrary::GetEncryptedAppTicket(TArray<uint8>& Ticket)
 	{
 		return false;
 	}
+	Ticket.SetNum(1024);
 	uint32 TicketLength = 0;
 	auto Result = SteamUser()->GetEncryptedAppTicket(Ticket.GetData(), Ticket.Num(), &TicketLength);
 	Ticket.SetNum(TicketLength);
