@@ -18,6 +18,8 @@ THIRD_PARTY_INCLUDES_START
 #include "steam/steamnetworkingtypes.h"
 #include "steam/isteamapps.h"
 #include "steam/steamclientpublic.h"
+#include "steam/isteaminput.h"
+#include "steam/isteamdualsense.h"
 #else
 #include "steamclientpublic.h"
 #include "isteamuserstats.h"
@@ -26,10 +28,12 @@ THIRD_PARTY_INCLUDES_START
 #include "isteamnetworking.h"
 #include "isteamremotestorage.h"
 #include "isteamscreenshots.h"
+#include "isteamdualsense.h"
 #include "isteamugc.h"
 #include "steamnetworkingtypes.h"
 #include "isteamapps.h"
 #include "steamclientpublic.h"
+#include "isteaminput.h"
 #endif
 THIRD_PARTY_INCLUDES_END
 #include "OnlineSessionSettings.h"
@@ -1954,6 +1958,955 @@ enum ESIK_ECommunityProfileItemProperty
 	ESIK_ECommunityProfileItemProperty_MovieMP4Small = 11 UMETA(DisplayName = "URL to the small mp4 video file"),
 };
 
+
+USTRUCT(BlueprintType)
+struct FSIK_InputActionSetHandle
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int64 Result = 0;
+
+	FSIK_InputActionSetHandle()
+	{
+		Result = 0;
+	}
+	FSIK_InputActionSetHandle(InputActionSetHandle_t InputActionSetHandle)
+	{
+		Result = InputActionSetHandle;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FSIK_InputDigitalActionHandle
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int64 Result = 0;
+
+	FSIK_InputDigitalActionHandle()
+	{
+		Result = 0;
+	}
+	FSIK_InputDigitalActionHandle(InputDigitalActionHandle_t InputDigitalActionHandle)
+	{
+		Result = InputDigitalActionHandle;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FSIK_InputAnalogActionHandle
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int64 Result = 0;
+
+	FSIK_InputAnalogActionHandle()
+	{
+		Result = 0;
+	}
+	FSIK_InputAnalogActionHandle(InputAnalogActionHandle_t InputAnalogActionHandle)
+	{
+		Result = InputAnalogActionHandle;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FSIK_InputHandle
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int64 Result = 0;
+
+	FSIK_InputHandle()
+	{
+		Result = 0;
+	}
+	FSIK_InputHandle(InputHandle_t InputHandle)
+	{
+		Result = InputHandle;
+	}
+};
+
+UENUM(BlueprintType)
+enum ESIK_InputSourceMode
+{
+	ESIK_InputSourceMode_None = 0 UMETA(DisplayName = "None"),
+	  ESIK_InputSourceMode_Dpad UMETA(DisplayName = "Dpad"),
+	   ESIK_InputSourceMode_Buttons UMETA(DisplayName = "Buttons"),
+	   ESIK_InputSourceMode_FourButtons UMETA(DisplayName = "Four Buttons"),
+	   ESIK_InputSourceMode_AbsoluteMouse UMETA(DisplayName = "Absolute Mouse"),
+	   ESIK_InputSourceMode_RelativeMouse UMETA(DisplayName = "Relative Mouse"),
+	   ESIK_InputSourceMode_JoystickMove UMETA(DisplayName = "Joystick Move"),
+	   ESIK_InputSourceMode_JoystickMouse UMETA(DisplayName = "Joystick Mouse"),
+	   ESIK_InputSourceMode_JoystickCamera UMETA(DisplayName = "Joystick Camera"),
+	   ESIK_InputSourceMode_ScrollWheel UMETA(DisplayName = "Scroll Wheel"),
+	   ESIK_InputSourceMode_Trigger UMETA(DisplayName = "Trigger"),
+	   ESIK_InputSourceMode_TouchMenu UMETA(DisplayName = "Touch Menu"),
+	   ESIK_InputSourceMode_MouseJoystick UMETA(DisplayName = "Mouse Joystick"),
+	   ESIK_InputSourceMode_MouseRegion UMETA(DisplayName = "Mouse Region"),
+	   ESIK_InputSourceMode_RadialMenu UMETA(DisplayName = "Radial Menu"),
+	   ESIK_InputSourceMode_SingleButton UMETA(DisplayName = "Single Button"),
+	   ESIK_InputSourceMode_Switches UMETA(DisplayName = "Switches")
+};
+
+USTRUCT(BlueprintType)
+struct FSIK_InputAnalogActionData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	TEnumAsByte<ESIK_InputSourceMode> Mode = ESIK_InputSourceMode::ESIK_InputSourceMode_None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	float X = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	float Y = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	bool bActive = false;
+
+	FSIK_InputAnalogActionData()
+	{
+		Mode = ESIK_InputSourceMode::ESIK_InputSourceMode_None;
+		X = 0.0f;
+		Y = 0.0f;
+		bActive = false;
+	}
+	FSIK_InputAnalogActionData(InputAnalogActionData_t AnalogActionData)
+	{
+		Mode = static_cast<ESIK_InputSourceMode>(AnalogActionData.eMode);
+		X = AnalogActionData.x;
+		Y = AnalogActionData.y;
+		bActive = AnalogActionData.bActive;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FSIK_InputDigitalActionData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	bool bActive = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	bool bState = false;
+
+	FSIK_InputDigitalActionData()
+	{
+		bActive = false;
+		bState = false;
+	}
+	FSIK_InputDigitalActionData(InputDigitalActionData_t DigitalActionData)
+	{
+		bActive = DigitalActionData.bActive;
+		bState = DigitalActionData.bState;
+	}
+};
+
+UENUM(BlueprintType)
+enum ESIK_SteamInputType
+{
+	ESIK_SteamInputType_Unknown,
+	ESIK_SteamInputType_SteamController,
+	ESIK_SteamInputType_XBox360Controller,
+	ESIK_SteamInputType_XBoxOneController,
+	ESIK_SteamInputType_GenericGamepad,		// DirectInput controllers
+	ESIK_SteamInputType_PS4Controller,
+	ESIK_SteamInputType_AppleMFiController,	// Unused
+	ESIK_SteamInputType_AndroidController,	// Unused
+	ESIK_SteamInputType_SwitchJoyConPair,		// Unused
+	ESIK_SteamInputType_SwitchJoyConSingle,	// Unused
+	ESIK_SteamInputType_SwitchProController,
+	ESIK_SteamInputType_MobileTouch,			// Steam Link App On-screen Virtual Controller
+	ESIK_SteamInputType_PS3Controller,		// Currently uses PS4 Origins
+	ESIK_SteamInputType_PS5Controller,		// Added in SDK 151
+	ESIK_SteamInputType_SteamDeckController,	// Added in SDK 153
+	ESIK_SteamInputType_Count,
+	ESIK_SteamInputType_MaximumPossibleValue = 255,
+};
+
+USTRUCT(BlueprintType)
+struct FSIK_InputMotionData
+{
+	GENERATED_BODY()
+
+	// Sensor-fused absolute rotation; will drift in heading toward average
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	float rotQuatX;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	float rotQuatY;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	float rotQuatZ;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	float rotQuatW;
+
+	// Positional acceleration
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	float posAccelX;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	float posAccelY;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	float posAccelZ;
+
+	// Angular velocity
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	float rotVelX;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	float rotVelY;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	float rotVelZ;
+
+	FSIK_InputMotionData()
+	{
+		rotQuatX = 0.0f;
+		rotQuatY = 0.0f;
+		rotQuatZ = 0.0f;
+		rotQuatW = 0.0f;
+		posAccelX = 0.0f;
+		posAccelY = 0.0f;
+		posAccelZ = 0.0f;
+		rotVelX = 0.0f;
+		rotVelY = 0.0f;
+		rotVelZ = 0.0f;
+	}
+	FSIK_InputMotionData(InputMotionData_t MotionData)
+	{
+		rotQuatX = MotionData.rotQuatX;
+		rotQuatY = MotionData.rotQuatY;
+		rotQuatZ = MotionData.rotQuatZ;
+		rotQuatW = MotionData.rotQuatW;
+		posAccelX = MotionData.posAccelX;
+		posAccelY = MotionData.posAccelY;
+		posAccelZ = MotionData.posAccelZ;
+		rotVelX = MotionData.rotVelX;
+		rotVelY = MotionData.rotVelY;
+		rotVelZ = MotionData.rotVelZ;
+	}
+};
+
+UENUM(BlueprintType)
+enum ESIK_InputActionOrigin
+{
+	// Steam Controller
+	ESIK_InputActionOrigin_None,
+	ESIK_InputActionOrigin_SteamController_A,
+	ESIK_InputActionOrigin_SteamController_B,
+	ESIK_InputActionOrigin_SteamController_X,
+	ESIK_InputActionOrigin_SteamController_Y,
+	ESIK_InputActionOrigin_SteamController_LeftBumper,
+	ESIK_InputActionOrigin_SteamController_RightBumper,
+	ESIK_InputActionOrigin_SteamController_LeftGrip,
+	ESIK_InputActionOrigin_SteamController_RightGrip,
+	ESIK_InputActionOrigin_SteamController_Start,
+	ESIK_InputActionOrigin_SteamController_Back,
+	ESIK_InputActionOrigin_SteamController_LeftPad_Touch,
+	ESIK_InputActionOrigin_SteamController_LeftPad_Swipe,
+	ESIK_InputActionOrigin_SteamController_LeftPad_Click,
+	ESIK_InputActionOrigin_SteamController_LeftPad_DPadNorth,
+	ESIK_InputActionOrigin_SteamController_LeftPad_DPadSouth,
+	ESIK_InputActionOrigin_SteamController_LeftPad_DPadWest,
+	ESIK_InputActionOrigin_SteamController_LeftPad_DPadEast,
+	ESIK_InputActionOrigin_SteamController_RightPad_Touch,
+	ESIK_InputActionOrigin_SteamController_RightPad_Swipe,
+	ESIK_InputActionOrigin_SteamController_RightPad_Click,
+	ESIK_InputActionOrigin_SteamController_RightPad_DPadNorth,
+	ESIK_InputActionOrigin_SteamController_RightPad_DPadSouth,
+	ESIK_InputActionOrigin_SteamController_RightPad_DPadWest,
+	ESIK_InputActionOrigin_SteamController_RightPad_DPadEast,
+	ESIK_InputActionOrigin_SteamController_LeftTrigger_Pull,
+	ESIK_InputActionOrigin_SteamController_LeftTrigger_Click,
+	ESIK_InputActionOrigin_SteamController_RightTrigger_Pull,
+	ESIK_InputActionOrigin_SteamController_RightTrigger_Click,
+	ESIK_InputActionOrigin_SteamController_LeftStick_Move,
+	ESIK_InputActionOrigin_SteamController_LeftStick_Click,
+	ESIK_InputActionOrigin_SteamController_LeftStick_DPadNorth,
+	ESIK_InputActionOrigin_SteamController_LeftStick_DPadSouth,
+	ESIK_InputActionOrigin_SteamController_LeftStick_DPadWest,
+	ESIK_InputActionOrigin_SteamController_LeftStick_DPadEast,
+	ESIK_InputActionOrigin_SteamController_Gyro_Move,
+	ESIK_InputActionOrigin_SteamController_Gyro_Pitch,
+	ESIK_InputActionOrigin_SteamController_Gyro_Yaw,
+	ESIK_InputActionOrigin_SteamController_Gyro_Roll,
+	ESIK_InputActionOrigin_SteamController_Reserved0,
+	ESIK_InputActionOrigin_SteamController_Reserved1,
+	ESIK_InputActionOrigin_SteamController_Reserved2,
+	ESIK_InputActionOrigin_SteamController_Reserved3,
+	ESIK_InputActionOrigin_SteamController_Reserved4,
+	ESIK_InputActionOrigin_SteamController_Reserved5,
+	ESIK_InputActionOrigin_SteamController_Reserved6,
+	ESIK_InputActionOrigin_SteamController_Reserved7,
+	ESIK_InputActionOrigin_SteamController_Reserved8,
+	ESIK_InputActionOrigin_SteamController_Reserved9,
+	ESIK_InputActionOrigin_SteamController_Reserved10,
+	
+	// PS4 Dual Shock
+	ESIK_InputActionOrigin_PS4_X,
+	ESIK_InputActionOrigin_PS4_Circle,
+	ESIK_InputActionOrigin_PS4_Triangle,
+	ESIK_InputActionOrigin_PS4_Square,
+	ESIK_InputActionOrigin_PS4_LeftBumper,
+	ESIK_InputActionOrigin_PS4_RightBumper,
+	ESIK_InputActionOrigin_PS4_Options,	//Start
+	ESIK_InputActionOrigin_PS4_Share,		//Back
+	ESIK_InputActionOrigin_PS4_LeftPad_Touch,
+	ESIK_InputActionOrigin_PS4_LeftPad_Swipe,
+	ESIK_InputActionOrigin_PS4_LeftPad_Click,
+	ESIK_InputActionOrigin_PS4_LeftPad_DPadNorth,
+	ESIK_InputActionOrigin_PS4_LeftPad_DPadSouth,
+	ESIK_InputActionOrigin_PS4_LeftPad_DPadWest,
+	ESIK_InputActionOrigin_PS4_LeftPad_DPadEast,
+	ESIK_InputActionOrigin_PS4_RightPad_Touch,
+	ESIK_InputActionOrigin_PS4_RightPad_Swipe,
+	ESIK_InputActionOrigin_PS4_RightPad_Click,
+	ESIK_InputActionOrigin_PS4_RightPad_DPadNorth,
+	ESIK_InputActionOrigin_PS4_RightPad_DPadSouth,
+	ESIK_InputActionOrigin_PS4_RightPad_DPadWest,
+	ESIK_InputActionOrigin_PS4_RightPad_DPadEast,
+	ESIK_InputActionOrigin_PS4_CenterPad_Touch,
+	ESIK_InputActionOrigin_PS4_CenterPad_Swipe,
+	ESIK_InputActionOrigin_PS4_CenterPad_Click,
+	ESIK_InputActionOrigin_PS4_CenterPad_DPadNorth,
+	ESIK_InputActionOrigin_PS4_CenterPad_DPadSouth,
+	ESIK_InputActionOrigin_PS4_CenterPad_DPadWest,
+	ESIK_InputActionOrigin_PS4_CenterPad_DPadEast,
+	ESIK_InputActionOrigin_PS4_LeftTrigger_Pull,
+	ESIK_InputActionOrigin_PS4_LeftTrigger_Click,
+	ESIK_InputActionOrigin_PS4_RightTrigger_Pull,
+	ESIK_InputActionOrigin_PS4_RightTrigger_Click,
+	ESIK_InputActionOrigin_PS4_LeftStick_Move,
+	ESIK_InputActionOrigin_PS4_LeftStick_Click,
+	ESIK_InputActionOrigin_PS4_LeftStick_DPadNorth,
+	ESIK_InputActionOrigin_PS4_LeftStick_DPadSouth,
+	ESIK_InputActionOrigin_PS4_LeftStick_DPadWest,
+	ESIK_InputActionOrigin_PS4_LeftStick_DPadEast,
+	ESIK_InputActionOrigin_PS4_RightStick_Move,
+	ESIK_InputActionOrigin_PS4_RightStick_Click,
+	ESIK_InputActionOrigin_PS4_RightStick_DPadNorth,
+	ESIK_InputActionOrigin_PS4_RightStick_DPadSouth,
+	ESIK_InputActionOrigin_PS4_RightStick_DPadWest,
+	ESIK_InputActionOrigin_PS4_RightStick_DPadEast,
+	ESIK_InputActionOrigin_PS4_DPad_North,
+	ESIK_InputActionOrigin_PS4_DPad_South,
+	ESIK_InputActionOrigin_PS4_DPad_West,
+	ESIK_InputActionOrigin_PS4_DPad_East,
+	ESIK_InputActionOrigin_PS4_Gyro_Move,
+	ESIK_InputActionOrigin_PS4_Gyro_Pitch,
+	ESIK_InputActionOrigin_PS4_Gyro_Yaw,
+	ESIK_InputActionOrigin_PS4_Gyro_Roll,
+	ESIK_InputActionOrigin_PS4_DPad_Move,
+	ESIK_InputActionOrigin_PS4_Reserved1,
+	ESIK_InputActionOrigin_PS4_Reserved2,
+	ESIK_InputActionOrigin_PS4_Reserved3,
+	ESIK_InputActionOrigin_PS4_Reserved4,
+	ESIK_InputActionOrigin_PS4_Reserved5,
+	ESIK_InputActionOrigin_PS4_Reserved6,
+	ESIK_InputActionOrigin_PS4_Reserved7,
+	ESIK_InputActionOrigin_PS4_Reserved8,
+	ESIK_InputActionOrigin_PS4_Reserved9,
+	ESIK_InputActionOrigin_PS4_Reserved10,
+
+	// XBox One
+	ESIK_InputActionOrigin_XBoxOne_A,
+	ESIK_InputActionOrigin_XBoxOne_B,
+	ESIK_InputActionOrigin_XBoxOne_X,
+	ESIK_InputActionOrigin_XBoxOne_Y,
+	ESIK_InputActionOrigin_XBoxOne_LeftBumper,
+	ESIK_InputActionOrigin_XBoxOne_RightBumper,
+	ESIK_InputActionOrigin_XBoxOne_Menu,  //Start
+	ESIK_InputActionOrigin_XBoxOne_View,  //Back
+	ESIK_InputActionOrigin_XBoxOne_LeftTrigger_Pull,
+	ESIK_InputActionOrigin_XBoxOne_LeftTrigger_Click,
+	ESIK_InputActionOrigin_XBoxOne_RightTrigger_Pull,
+	ESIK_InputActionOrigin_XBoxOne_RightTrigger_Click,
+	ESIK_InputActionOrigin_XBoxOne_LeftStick_Move,
+	ESIK_InputActionOrigin_XBoxOne_LeftStick_Click,
+	ESIK_InputActionOrigin_XBoxOne_LeftStick_DPadNorth,
+	ESIK_InputActionOrigin_XBoxOne_LeftStick_DPadSouth,
+	ESIK_InputActionOrigin_XBoxOne_LeftStick_DPadWest,
+	ESIK_InputActionOrigin_XBoxOne_LeftStick_DPadEast,
+	ESIK_InputActionOrigin_XBoxOne_RightStick_Move,
+	ESIK_InputActionOrigin_XBoxOne_RightStick_Click,
+	ESIK_InputActionOrigin_XBoxOne_RightStick_DPadNorth,
+	ESIK_InputActionOrigin_XBoxOne_RightStick_DPadSouth,
+	ESIK_InputActionOrigin_XBoxOne_RightStick_DPadWest,
+	ESIK_InputActionOrigin_XBoxOne_RightStick_DPadEast,
+	ESIK_InputActionOrigin_XBoxOne_DPad_North,
+	ESIK_InputActionOrigin_XBoxOne_DPad_South,
+	ESIK_InputActionOrigin_XBoxOne_DPad_West,
+	ESIK_InputActionOrigin_XBoxOne_DPad_East,
+	ESIK_InputActionOrigin_XBoxOne_DPad_Move,
+	ESIK_InputActionOrigin_XBoxOne_LeftGrip_Lower,
+	ESIK_InputActionOrigin_XBoxOne_LeftGrip_Upper,
+	ESIK_InputActionOrigin_XBoxOne_RightGrip_Lower,
+	ESIK_InputActionOrigin_XBoxOne_RightGrip_Upper,
+	ESIK_InputActionOrigin_XBoxOne_Share, // Xbox Series X controllers only
+	ESIK_InputActionOrigin_XBoxOne_Reserved6,
+	ESIK_InputActionOrigin_XBoxOne_Reserved7,
+	ESIK_InputActionOrigin_XBoxOne_Reserved8,
+	ESIK_InputActionOrigin_XBoxOne_Reserved9,
+	ESIK_InputActionOrigin_XBoxOne_Reserved10,
+
+	// XBox 360
+	ESIK_InputActionOrigin_XBox360_A,
+	ESIK_InputActionOrigin_XBox360_B,
+	ESIK_InputActionOrigin_XBox360_X,
+	ESIK_InputActionOrigin_XBox360_Y,
+	ESIK_InputActionOrigin_XBox360_LeftBumper,
+	ESIK_InputActionOrigin_XBox360_RightBumper,
+	ESIK_InputActionOrigin_XBox360_Start,		//Start
+	ESIK_InputActionOrigin_XBox360_Back,		//Back
+	ESIK_InputActionOrigin_XBox360_LeftTrigger_Pull,
+	ESIK_InputActionOrigin_XBox360_LeftTrigger_Click,
+	ESIK_InputActionOrigin_XBox360_RightTrigger_Pull,
+	ESIK_InputActionOrigin_XBox360_RightTrigger_Click,
+	ESIK_InputActionOrigin_XBox360_LeftStick_Move,
+	ESIK_InputActionOrigin_XBox360_LeftStick_Click,
+	ESIK_InputActionOrigin_XBox360_LeftStick_DPadNorth,
+	ESIK_InputActionOrigin_XBox360_LeftStick_DPadSouth,
+	ESIK_InputActionOrigin_XBox360_LeftStick_DPadWest,
+	ESIK_InputActionOrigin_XBox360_LeftStick_DPadEast,
+	ESIK_InputActionOrigin_XBox360_RightStick_Move,
+	ESIK_InputActionOrigin_XBox360_RightStick_Click,
+	ESIK_InputActionOrigin_XBox360_RightStick_DPadNorth,
+	ESIK_InputActionOrigin_XBox360_RightStick_DPadSouth,
+	ESIK_InputActionOrigin_XBox360_RightStick_DPadWest,
+	ESIK_InputActionOrigin_XBox360_RightStick_DPadEast,
+	ESIK_InputActionOrigin_XBox360_DPad_North,
+	ESIK_InputActionOrigin_XBox360_DPad_South,
+	ESIK_InputActionOrigin_XBox360_DPad_West,
+	ESIK_InputActionOrigin_XBox360_DPad_East,	
+	ESIK_InputActionOrigin_XBox360_DPad_Move,
+	ESIK_InputActionOrigin_XBox360_Reserved1,
+	ESIK_InputActionOrigin_XBox360_Reserved2,
+	ESIK_InputActionOrigin_XBox360_Reserved3,
+	ESIK_InputActionOrigin_XBox360_Reserved4,
+	ESIK_InputActionOrigin_XBox360_Reserved5,
+	ESIK_InputActionOrigin_XBox360_Reserved6,
+	ESIK_InputActionOrigin_XBox360_Reserved7,
+	ESIK_InputActionOrigin_XBox360_Reserved8,
+	ESIK_InputActionOrigin_XBox360_Reserved9,
+	ESIK_InputActionOrigin_XBox360_Reserved10,
+
+
+	// Switch - Pro or Joycons used as a single input device.
+	// This does not apply to a single joycon
+	ESIK_InputActionOrigin_Switch_A,
+	ESIK_InputActionOrigin_Switch_B,
+	ESIK_InputActionOrigin_Switch_X,
+	ESIK_InputActionOrigin_Switch_Y,
+	ESIK_InputActionOrigin_Switch_LeftBumper,
+	ESIK_InputActionOrigin_Switch_RightBumper,
+	ESIK_InputActionOrigin_Switch_Plus,	//Start
+	ESIK_InputActionOrigin_Switch_Minus,	//Back
+	ESIK_InputActionOrigin_Switch_Capture,
+	ESIK_InputActionOrigin_Switch_LeftTrigger_Pull,
+	ESIK_InputActionOrigin_Switch_LeftTrigger_Click,
+	ESIK_InputActionOrigin_Switch_RightTrigger_Pull,
+	ESIK_InputActionOrigin_Switch_RightTrigger_Click,
+	ESIK_InputActionOrigin_Switch_LeftStick_Move,
+	ESIK_InputActionOrigin_Switch_LeftStick_Click,
+	ESIK_InputActionOrigin_Switch_LeftStick_DPadNorth,
+	ESIK_InputActionOrigin_Switch_LeftStick_DPadSouth,
+	ESIK_InputActionOrigin_Switch_LeftStick_DPadWest,
+	ESIK_InputActionOrigin_Switch_LeftStick_DPadEast,
+	ESIK_InputActionOrigin_Switch_RightStick_Move,
+	ESIK_InputActionOrigin_Switch_RightStick_Click,
+	ESIK_InputActionOrigin_Switch_RightStick_DPadNorth,
+	ESIK_InputActionOrigin_Switch_RightStick_DPadSouth,
+	ESIK_InputActionOrigin_Switch_RightStick_DPadWest,
+	ESIK_InputActionOrigin_Switch_RightStick_DPadEast,
+	ESIK_InputActionOrigin_Switch_DPad_North,
+	ESIK_InputActionOrigin_Switch_DPad_South,
+	ESIK_InputActionOrigin_Switch_DPad_West,
+	ESIK_InputActionOrigin_Switch_DPad_East,
+	ESIK_InputActionOrigin_Switch_ProGyro_Move,  // Primary Gyro in Pro Controller, or Right JoyCon
+	ESIK_InputActionOrigin_Switch_ProGyro_Pitch,  // Primary Gyro in Pro Controller, or Right JoyCon
+	ESIK_InputActionOrigin_Switch_ProGyro_Yaw,  // Primary Gyro in Pro Controller, or Right JoyCon
+	ESIK_InputActionOrigin_Switch_ProGyro_Roll,  // Primary Gyro in Pro Controller, or Right JoyCon
+	ESIK_InputActionOrigin_Switch_DPad_Move,
+	ESIK_InputActionOrigin_Switch_Reserved1,
+	ESIK_InputActionOrigin_Switch_Reserved2,
+	ESIK_InputActionOrigin_Switch_Reserved3,
+	ESIK_InputActionOrigin_Switch_Reserved4,
+	ESIK_InputActionOrigin_Switch_Reserved5,
+	ESIK_InputActionOrigin_Switch_Reserved6,
+	ESIK_InputActionOrigin_Switch_Reserved7,
+	ESIK_InputActionOrigin_Switch_Reserved8,
+	ESIK_InputActionOrigin_Switch_Reserved9,
+	ESIK_InputActionOrigin_Switch_Reserved10,
+
+	// Switch JoyCon Specific
+	ESIK_InputActionOrigin_Switch_RightGyro_Move,  // Right JoyCon Gyro generally should correspond to Pro's single gyro
+	ESIK_InputActionOrigin_Switch_RightGyro_Pitch,  // Right JoyCon Gyro generally should correspond to Pro's single gyro
+	ESIK_InputActionOrigin_Switch_RightGyro_Yaw,  // Right JoyCon Gyro generally should correspond to Pro's single gyro
+	ESIK_InputActionOrigin_Switch_RightGyro_Roll,  // Right JoyCon Gyro generally should correspond to Pro's single gyro
+	ESIK_InputActionOrigin_Switch_LeftGyro_Move,
+	ESIK_InputActionOrigin_Switch_LeftGyro_Pitch,
+	ESIK_InputActionOrigin_Switch_LeftGyro_Yaw,
+	ESIK_InputActionOrigin_Switch_LeftGyro_Roll,
+	ESIK_InputActionOrigin_Switch_LeftGrip_Lower, // Left JoyCon SR Button
+	ESIK_InputActionOrigin_Switch_LeftGrip_Upper, // Left JoyCon SL Button
+	ESIK_InputActionOrigin_Switch_RightGrip_Lower,  // Right JoyCon SL Button
+	ESIK_InputActionOrigin_Switch_RightGrip_Upper,  // Right JoyCon SR Button
+	ESIK_InputActionOrigin_Switch_JoyConButton_N, // With a Horizontal JoyCon this will be Y or what would be Dpad Right when vertical
+	ESIK_InputActionOrigin_Switch_JoyConButton_E, // X
+	ESIK_InputActionOrigin_Switch_JoyConButton_S, // A
+	ESIK_InputActionOrigin_Switch_JoyConButton_W, // B
+	ESIK_InputActionOrigin_Switch_Reserved15,
+	ESIK_InputActionOrigin_Switch_Reserved16,
+	ESIK_InputActionOrigin_Switch_Reserved17,
+	ESIK_InputActionOrigin_Switch_Reserved18,
+	ESIK_InputActionOrigin_Switch_Reserved19,
+	ESIK_InputActionOrigin_Switch_Reserved20,
+	
+	// Added in SDK 1.51
+	ESIK_InputActionOrigin_PS5_X,
+	ESIK_InputActionOrigin_PS5_Circle,
+	ESIK_InputActionOrigin_PS5_Triangle,
+	ESIK_InputActionOrigin_PS5_Square,
+	ESIK_InputActionOrigin_PS5_LeftBumper,
+	ESIK_InputActionOrigin_PS5_RightBumper,
+	ESIK_InputActionOrigin_PS5_Option,	//Start
+	ESIK_InputActionOrigin_PS5_Create,		//Back
+	ESIK_InputActionOrigin_PS5_Mute,
+	ESIK_InputActionOrigin_PS5_LeftPad_Touch,
+	ESIK_InputActionOrigin_PS5_LeftPad_Swipe,
+	ESIK_InputActionOrigin_PS5_LeftPad_Click,
+	ESIK_InputActionOrigin_PS5_LeftPad_DPadNorth,
+	ESIK_InputActionOrigin_PS5_LeftPad_DPadSouth,
+	ESIK_InputActionOrigin_PS5_LeftPad_DPadWest,
+	ESIK_InputActionOrigin_PS5_LeftPad_DPadEast,
+	ESIK_InputActionOrigin_PS5_RightPad_Touch,
+	ESIK_InputActionOrigin_PS5_RightPad_Swipe,
+	ESIK_InputActionOrigin_PS5_RightPad_Click,
+	ESIK_InputActionOrigin_PS5_RightPad_DPadNorth,
+	ESIK_InputActionOrigin_PS5_RightPad_DPadSouth,
+	ESIK_InputActionOrigin_PS5_RightPad_DPadWest,
+	ESIK_InputActionOrigin_PS5_RightPad_DPadEast,
+	ESIK_InputActionOrigin_PS5_CenterPad_Touch,
+	ESIK_InputActionOrigin_PS5_CenterPad_Swipe,
+	ESIK_InputActionOrigin_PS5_CenterPad_Click,
+	ESIK_InputActionOrigin_PS5_CenterPad_DPadNorth,
+	ESIK_InputActionOrigin_PS5_CenterPad_DPadSouth,
+	ESIK_InputActionOrigin_PS5_CenterPad_DPadWest,
+	ESIK_InputActionOrigin_PS5_CenterPad_DPadEast,
+	ESIK_InputActionOrigin_PS5_LeftTrigger_Pull,
+	ESIK_InputActionOrigin_PS5_LeftTrigger_Click,
+	ESIK_InputActionOrigin_PS5_RightTrigger_Pull,
+	ESIK_InputActionOrigin_PS5_RightTrigger_Click,
+	ESIK_InputActionOrigin_PS5_LeftStick_Move,
+	ESIK_InputActionOrigin_PS5_LeftStick_Click,
+	ESIK_InputActionOrigin_PS5_LeftStick_DPadNorth,
+	ESIK_InputActionOrigin_PS5_LeftStick_DPadSouth,
+	ESIK_InputActionOrigin_PS5_LeftStick_DPadWest,
+	ESIK_InputActionOrigin_PS5_LeftStick_DPadEast,
+	ESIK_InputActionOrigin_PS5_RightStick_Move,
+	ESIK_InputActionOrigin_PS5_RightStick_Click,
+	ESIK_InputActionOrigin_PS5_RightStick_DPadNorth,
+	ESIK_InputActionOrigin_PS5_RightStick_DPadSouth,
+	ESIK_InputActionOrigin_PS5_RightStick_DPadWest,
+	ESIK_InputActionOrigin_PS5_RightStick_DPadEast,
+	ESIK_InputActionOrigin_PS5_DPad_North,
+	ESIK_InputActionOrigin_PS5_DPad_South,
+	ESIK_InputActionOrigin_PS5_DPad_West,
+	ESIK_InputActionOrigin_PS5_DPad_East,
+	ESIK_InputActionOrigin_PS5_Gyro_Move,
+	ESIK_InputActionOrigin_PS5_Gyro_Pitch,
+	ESIK_InputActionOrigin_PS5_Gyro_Yaw,
+	ESIK_InputActionOrigin_PS5_Gyro_Roll,
+	ESIK_InputActionOrigin_PS5_DPad_Move,
+	ESIK_InputActionOrigin_PS5_LeftGrip,
+	ESIK_InputActionOrigin_PS5_RightGrip,
+	ESIK_InputActionOrigin_PS5_LeftFn,
+	ESIK_InputActionOrigin_PS5_RightFn,
+	ESIK_InputActionOrigin_PS5_Reserved5,
+	ESIK_InputActionOrigin_PS5_Reserved6,
+	ESIK_InputActionOrigin_PS5_Reserved7,
+	ESIK_InputActionOrigin_PS5_Reserved8,
+	ESIK_InputActionOrigin_PS5_Reserved9,
+	ESIK_InputActionOrigin_PS5_Reserved10,
+	ESIK_InputActionOrigin_PS5_Reserved11,
+	ESIK_InputActionOrigin_PS5_Reserved12,
+	ESIK_InputActionOrigin_PS5_Reserved13,
+	ESIK_InputActionOrigin_PS5_Reserved14,
+	ESIK_InputActionOrigin_PS5_Reserved15,
+	ESIK_InputActionOrigin_PS5_Reserved16,
+	ESIK_InputActionOrigin_PS5_Reserved17,
+	ESIK_InputActionOrigin_PS5_Reserved18,
+	ESIK_InputActionOrigin_PS5_Reserved19,
+	ESIK_InputActionOrigin_PS5_Reserved20,
+
+	// Added in SDK 1.53
+	ESIK_InputActionOrigin_SteamDeck_A,
+	ESIK_InputActionOrigin_SteamDeck_B,
+	ESIK_InputActionOrigin_SteamDeck_X,
+	ESIK_InputActionOrigin_SteamDeck_Y,
+	ESIK_InputActionOrigin_SteamDeck_L1,
+	ESIK_InputActionOrigin_SteamDeck_R1,
+	ESIK_InputActionOrigin_SteamDeck_Menu,
+	ESIK_InputActionOrigin_SteamDeck_View,
+	ESIK_InputActionOrigin_SteamDeck_LeftPad_Touch,
+	ESIK_InputActionOrigin_SteamDeck_LeftPad_Swipe,
+	ESIK_InputActionOrigin_SteamDeck_LeftPad_Click,
+	ESIK_InputActionOrigin_SteamDeck_LeftPad_DPadNorth,
+	ESIK_InputActionOrigin_SteamDeck_LeftPad_DPadSouth,
+	ESIK_InputActionOrigin_SteamDeck_LeftPad_DPadWest,
+	ESIK_InputActionOrigin_SteamDeck_LeftPad_DPadEast,
+	ESIK_InputActionOrigin_SteamDeck_RightPad_Touch,
+	ESIK_InputActionOrigin_SteamDeck_RightPad_Swipe,
+	ESIK_InputActionOrigin_SteamDeck_RightPad_Click,
+	ESIK_InputActionOrigin_SteamDeck_RightPad_DPadNorth,
+	ESIK_InputActionOrigin_SteamDeck_RightPad_DPadSouth,
+	ESIK_InputActionOrigin_SteamDeck_RightPad_DPadWest,
+	ESIK_InputActionOrigin_SteamDeck_RightPad_DPadEast,
+	ESIK_InputActionOrigin_SteamDeck_L2_SoftPull,
+	ESIK_InputActionOrigin_SteamDeck_L2,
+	ESIK_InputActionOrigin_SteamDeck_R2_SoftPull,
+	ESIK_InputActionOrigin_SteamDeck_R2,
+	ESIK_InputActionOrigin_SteamDeck_LeftStick_Move,
+	ESIK_InputActionOrigin_SteamDeck_L3,
+	ESIK_InputActionOrigin_SteamDeck_LeftStick_DPadNorth,
+	ESIK_InputActionOrigin_SteamDeck_LeftStick_DPadSouth,
+	ESIK_InputActionOrigin_SteamDeck_LeftStick_DPadWest,
+	ESIK_InputActionOrigin_SteamDeck_LeftStick_DPadEast,
+	ESIK_InputActionOrigin_SteamDeck_LeftStick_Touch,
+	ESIK_InputActionOrigin_SteamDeck_RightStick_Move,
+	ESIK_InputActionOrigin_SteamDeck_R3,
+	ESIK_InputActionOrigin_SteamDeck_RightStick_DPadNorth,
+	ESIK_InputActionOrigin_SteamDeck_RightStick_DPadSouth,
+	ESIK_InputActionOrigin_SteamDeck_RightStick_DPadWest,
+	ESIK_InputActionOrigin_SteamDeck_RightStick_DPadEast,
+	ESIK_InputActionOrigin_SteamDeck_RightStick_Touch,
+	ESIK_InputActionOrigin_SteamDeck_L4,
+	ESIK_InputActionOrigin_SteamDeck_R4,
+	ESIK_InputActionOrigin_SteamDeck_L5,
+	ESIK_InputActionOrigin_SteamDeck_R5,
+	ESIK_InputActionOrigin_SteamDeck_DPad_Move,
+	ESIK_InputActionOrigin_SteamDeck_DPad_North,
+	ESIK_InputActionOrigin_SteamDeck_DPad_South,
+	ESIK_InputActionOrigin_SteamDeck_DPad_West,
+	ESIK_InputActionOrigin_SteamDeck_DPad_East,
+	ESIK_InputActionOrigin_SteamDeck_Gyro_Move,
+	ESIK_InputActionOrigin_SteamDeck_Gyro_Pitch,
+	ESIK_InputActionOrigin_SteamDeck_Gyro_Yaw,
+	ESIK_InputActionOrigin_SteamDeck_Gyro_Roll,
+	ESIK_InputActionOrigin_SteamDeck_Reserved1,
+	ESIK_InputActionOrigin_SteamDeck_Reserved2,
+	ESIK_InputActionOrigin_SteamDeck_Reserved3,
+	ESIK_InputActionOrigin_SteamDeck_Reserved4,
+	ESIK_InputActionOrigin_SteamDeck_Reserved5,
+	ESIK_InputActionOrigin_SteamDeck_Reserved6,
+	ESIK_InputActionOrigin_SteamDeck_Reserved7,
+	ESIK_InputActionOrigin_SteamDeck_Reserved8,
+	ESIK_InputActionOrigin_SteamDeck_Reserved9,
+	ESIK_InputActionOrigin_SteamDeck_Reserved10,
+	ESIK_InputActionOrigin_SteamDeck_Reserved11,
+	ESIK_InputActionOrigin_SteamDeck_Reserved12,
+	ESIK_InputActionOrigin_SteamDeck_Reserved13,
+	ESIK_InputActionOrigin_SteamDeck_Reserved14,
+	ESIK_InputActionOrigin_SteamDeck_Reserved15,
+	ESIK_InputActionOrigin_SteamDeck_Reserved16,
+	ESIK_InputActionOrigin_SteamDeck_Reserved17,
+	ESIK_InputActionOrigin_SteamDeck_Reserved18,
+	ESIK_InputActionOrigin_SteamDeck_Reserved19,
+	ESIK_InputActionOrigin_SteamDeck_Reserved20,
+
+	ESIK_InputActionOrigin_Count, // If Steam has added support for new controllers origins will go here.
+	ESIK_InputActionOrigin_MaximumPossibleValue = 32767, // Origins are currently a maximum of 16 bits.
+};
+
+UENUM(BlueprintType)
+enum ESIK_ScePadTriggerEffectMode
+{
+	ESIK_SCE_PAD_TRIGGER_EFFECT_MODE_OFF,
+	ESIK_SCE_PAD_TRIGGER_EFFECT_MODE_FEEDBACK,
+	ESIK_SCE_PAD_TRIGGER_EFFECT_MODE_WEAPON,
+	ESIK_SCE_PAD_TRIGGER_EFFECT_MODE_VIBRATION,
+	ESIK_SCE_PAD_TRIGGER_EFFECT_MODE_MULTIPLE_POSITION_FEEDBACK,
+	ESIK_SCE_PAD_TRIGGER_EFFECT_MODE_SLOPE_FEEDBACK,
+	ESIK_SCE_PAD_TRIGGER_EFFECT_MODE_MULTIPLE_POSITION_VIBRATION,
+};
+
+USTRUCT(BlueprintType)
+struct FSIK_ScePadTriggerEffectWeaponParam
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int32 StartPosition = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int32 EndPosition = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int32 Strength = 0;
+	
+	ScePadTriggerEffectWeaponParam ToStruct()
+	{
+		ScePadTriggerEffectWeaponParam Param;
+		Param.startPosition = StartPosition;
+		Param.endPosition = EndPosition;
+		Param.strength = Strength;
+		return Param;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FSIK_ScePadTriggerEffectVibrationParam
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int32 Position = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int32 Frequency = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int32 Amplitude = 0;
+
+	ScePadTriggerEffectVibrationParam ToStruct()
+	{
+		ScePadTriggerEffectVibrationParam Param;
+		Param.position = Position;
+		Param.frequency = Frequency;
+		Param.amplitude = Amplitude;
+		return Param;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FSIK_ScePadTriggerEffectFeedbackParam
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int32 Position = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int32 Strength = 0;
+
+	FSIK_ScePadTriggerEffectFeedbackParam()
+	{
+		Position = 0;
+		Strength = 0;
+	}
+	ScePadTriggerEffectFeedbackParam ToStruct()
+	{
+		ScePadTriggerEffectFeedbackParam Param;
+		Param.position = Position;
+		Param.strength = Strength;
+		return Param;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FSIK_ScePadTriggerEffectMultiplePositionFeedbackParam
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	TArray<int32> Strength;
+
+	ScePadTriggerEffectMultiplePositionFeedbackParam ToStruct()
+	{
+		ScePadTriggerEffectMultiplePositionFeedbackParam Param;
+		uint8_t strength[SCE_PAD_TRIGGER_EFFECT_CONTROL_POINT_NUM];
+		for (int i = 0; i < SCE_PAD_TRIGGER_EFFECT_CONTROL_POINT_NUM; i++)
+		{
+			strength[i] = Strength[i];
+		}
+		memcpy(Param.strength, strength, sizeof(strength));
+		return Param;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FSIK_ScePadTriggerEffectOffParam
+{
+	GENERATED_BODY()
+
+	ScePadTriggerEffectOffParam ToStruct()
+	{
+		ScePadTriggerEffectOffParam Param;
+		return Param;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FSIK_ScePadTriggerEffectSlopeFeedbackParam
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int32 StartPosition = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int32 EndPosition = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int32 StartStrength = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int32 EndStrength = 0;
+
+	ScePadTriggerEffectSlopeFeedbackParam ToStruct()
+	{
+		ScePadTriggerEffectSlopeFeedbackParam Param;
+		Param.startPosition = StartPosition;
+		Param.endPosition = EndPosition;
+		Param.startStrength = StartStrength;
+		Param.endStrength = EndStrength;
+		return Param;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FSIK_ScePadTriggerEffectMultiplePositionVibrationParam
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	int32 Freequency = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	TArray<int32> Amplitude;
+
+	ScePadTriggerEffectMultiplePositionVibrationParam ToStruct()
+	{
+		ScePadTriggerEffectMultiplePositionVibrationParam Param;
+		Param.frequency = Freequency;
+		uint8_t amplitude[SCE_PAD_TRIGGER_EFFECT_CONTROL_POINT_NUM];
+		for (int i = 0; i < SCE_PAD_TRIGGER_EFFECT_CONTROL_POINT_NUM; i++)
+		{
+			amplitude[i] = Amplitude[i];
+		}
+		memcpy(Param.amplitude, amplitude, sizeof(amplitude));
+		return Param;
+	}
+};
+	
+
+USTRUCT(BlueprintType)
+struct FSIK_ScePadTriggerEffectCommandData 
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	FSIK_ScePadTriggerEffectOffParam OffParam;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	FSIK_ScePadTriggerEffectFeedbackParam FeedbackParam;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	FSIK_ScePadTriggerEffectWeaponParam WeaponParam;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	FSIK_ScePadTriggerEffectVibrationParam VibrationParam;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	FSIK_ScePadTriggerEffectMultiplePositionFeedbackParam MultiplePositionFeedbackParam;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	FSIK_ScePadTriggerEffectSlopeFeedbackParam SlopeFeedbackParam;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	FSIK_ScePadTriggerEffectMultiplePositionVibrationParam MultiplePositionVibrationParam;
+
+	ScePadTriggerEffectCommandData ToStruct()
+	{
+		ScePadTriggerEffectCommandData Data;
+		Data.offParam = OffParam.ToStruct();
+		Data.feedbackParam = FeedbackParam.ToStruct();
+		Data.weaponParam = WeaponParam.ToStruct();
+		Data.vibrationParam = VibrationParam.ToStruct();
+		Data.multiplePositionFeedbackParam = MultiplePositionFeedbackParam.ToStruct();
+		Data.slopeFeedbackParam = SlopeFeedbackParam.ToStruct();
+		Data.multiplePositionVibrationParam = MultiplePositionVibrationParam.ToStruct();
+		return Data;
+	}
+};
+
+UENUM(BlueprintType)
+enum ESIK_SteamControllerLEDFlag
+{
+	ESIK_SteamControllerLEDFlag_SetColor,
+	ESIK_SteamControllerLEDFlag_RestoreUserDefault
+};
+
+USTRUCT(BlueprintType)
+struct FSIK_ScePadTriggerEffectCommand
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	TEnumAsByte<ESIK_ScePadTriggerEffectMode> Mode = ESIK_ScePadTriggerEffectMode::ESIK_SCE_PAD_TRIGGER_EFFECT_MODE_OFF;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
+	FSIK_ScePadTriggerEffectCommandData CommandData;
+
+	ScePadTriggerEffectCommand ToStruct()
+	{
+		ScePadTriggerEffectCommand Command;
+		Command.mode = static_cast<ScePadTriggerEffectMode>(Mode.GetValue());
+		Command.commandData = CommandData.ToStruct();
+		return Command;
+	}
+};
+
+UENUM(BlueprintType)
+enum ESIK_SteamControllerPad
+{
+	ESIK_LeftPad = 0 UMETA(DisplayName = "Left Pad"),
+	ESIK_RightPad = 1 UMETA(DisplayName = "Right Pad"),
+};
+
+UENUM(BlueprintType)
+enum ESIK_XboxOrigin
+{
+	ESIK_XboxOrigin_A,
+	ESIK_XboxOrigin_B,
+	ESIK_XboxOrigin_X,
+	ESIK_XboxOrigin_Y,
+	ESIK_XboxOrigin_LeftBumper,
+	ESIK_XboxOrigin_RightBumper,
+	ESIK_XboxOrigin_Menu,  //Start
+	ESIK_XboxOrigin_View,  //Back
+	ESIK_XboxOrigin_LeftTrigger_Pull,
+	ESIK_XboxOrigin_LeftTrigger_Click,
+	ESIK_XboxOrigin_RightTrigger_Pull,
+	ESIK_XboxOrigin_RightTrigger_Click,
+	ESIK_XboxOrigin_LeftStick_Move,
+	ESIK_XboxOrigin_LeftStick_Click,
+	ESIK_XboxOrigin_LeftStick_DPadNorth,
+	ESIK_XboxOrigin_LeftStick_DPadSouth,
+	ESIK_XboxOrigin_LeftStick_DPadWest,
+	ESIK_XboxOrigin_LeftStick_DPadEast,
+	ESIK_XboxOrigin_RightStick_Move,
+	ESIK_XboxOrigin_RightStick_Click,
+	ESIK_XboxOrigin_RightStick_DPadNorth,
+	ESIK_XboxOrigin_RightStick_DPadSouth,
+	ESIK_XboxOrigin_RightStick_DPadWest,
+	ESIK_XboxOrigin_RightStick_DPadEast,
+	ESIK_XboxOrigin_DPad_North,
+	ESIK_XboxOrigin_DPad_South,
+	ESIK_XboxOrigin_DPad_West,
+	ESIK_XboxOrigin_DPad_East,
+	ESIK_XboxOrigin_Count,
+};
 
 UCLASS()
 class STEAMINTEGRATIONKIT_API USIK_SharedFile : public UObject
