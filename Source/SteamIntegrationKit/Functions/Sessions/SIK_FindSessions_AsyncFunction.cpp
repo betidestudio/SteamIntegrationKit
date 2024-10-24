@@ -5,6 +5,7 @@
 
 #include "FindSessionsCallbackProxy.h"
 #include "OnlineSubsystem.h"
+#include "OnlineSubsystemUtils.h"
 #include "Online/OnlineSessionNames.h"
 
 USIK_FindSessions_AsyncFunction* USIK_FindSessions_AsyncFunction::FindSIKSessions(
@@ -29,7 +30,7 @@ void USIK_FindSessions_AsyncFunction::Activate()
 
 void USIK_FindSessions_AsyncFunction::FindSession()
 {
-	if(const IOnlineSubsystem *SubsystemRef = IOnlineSubsystem::Get())
+	if(const IOnlineSubsystem *SubsystemRef = Online::GetSubsystem(GetWorld(), STEAM_SUBSYSTEM))
 	{
 		if(const IOnlineSessionPtr SessionPtrRef = SubsystemRef->GetSessionInterface())
 		{
@@ -48,6 +49,10 @@ void USIK_FindSessions_AsyncFunction::FindSession()
 			if(B_bSecureServerOnly)
 			{
 				SessionSearch->QuerySettings.Set(SEARCH_SECURE_SERVERS_ONLY, true, EOnlineComparisonOp::Equals);
+			}
+			for(auto& Elem : SessionSettings)
+			{
+				SessionSearch->QuerySettings.Set(Elem.Key, Elem.Value, EOnlineComparisonOp::Equals);
 			}
 			SessionPtrRef->OnFindSessionsCompleteDelegates.AddUObject(this, &USIK_FindSessions_AsyncFunction::OnFindSessionCompleted);
 			SessionPtrRef->FindSessions(0,SessionSearch.ToSharedRef());
