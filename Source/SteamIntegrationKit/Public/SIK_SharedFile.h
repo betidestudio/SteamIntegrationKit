@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "FindSessionsCallbackProxy.h"
 #include "OnlineKeyValuePair.h"
+#include "Online/CoreOnline.h"
 THIRD_PARTY_INCLUDES_START
 #if WITH_ENGINE_STEAM
 #include "steam/steamclientpublic.h"
@@ -2945,10 +2946,13 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
 	static bool IsValidGameId(FSIK_GameID GameId);
 	
-	UFUNCTION(BlueprintPure, BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
+	UFUNCTION(BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
 	static bool IsEqualSteamId(FSIK_SteamId SteamId1, FSIK_SteamId SteamId2);
 
-	UFUNCTION(BlueprintPure, BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
+	UFUNCTION(BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
 	static bool IsEqualGameId(FSIK_GameID GameId1, FSIK_GameID GameId2);
+
+	UFUNCTION(BlueprintPure, BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
+	static FSIK_SteamId GetSteamIdFromUniqueNetId(const FUniqueNetIdRepl& UniqueNetId);
 	
 };

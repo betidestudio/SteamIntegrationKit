@@ -75,3 +75,18 @@ bool USIK_SharedFile::IsEqualGameId(FSIK_GameID GameId1, FSIK_GameID GameId2)
 {
 	return GameId1.GetGameID() == GameId2.GetGameID();
 }
+
+FSIK_SteamId USIK_SharedFile::GetSteamIdFromUniqueNetId(const FUniqueNetIdRepl& UniqueNetId)
+{
+	if(!UniqueNetId.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UniqueNetId is not valid"));
+		return FSIK_SteamId();
+	}
+	if(!UniqueNetId.GetUniqueNetId().IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UniqueNetId is not valid"));
+		return FSIK_SteamId();
+	}
+	return FSIK_SteamId(UniqueNetId.GetUniqueNetId().ToSharedRef()->ToString());
+}

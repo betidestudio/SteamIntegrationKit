@@ -50,9 +50,10 @@ void USIK_FindSessions_AsyncFunction::FindSession()
 			{
 				SessionSearch->QuerySettings.Set(SEARCH_SECURE_SERVERS_ONLY, true, EOnlineComparisonOp::Equals);
 			}
+			
 			for(auto& Elem : SessionSettings)
 			{
-				SessionSearch->QuerySettings.Set(Elem.Key, Elem.Value, EOnlineComparisonOp::Equals);
+				SessionSearch->QuerySettings.SearchParams.Add(Elem.Key, Elem.Value.GetVariantData());
 			}
 			SessionPtrRef->OnFindSessionsCompleteDelegates.AddUObject(this, &USIK_FindSessions_AsyncFunction::OnFindSessionCompleted);
 			SessionPtrRef->FindSessions(0,SessionSearch.ToSharedRef());
