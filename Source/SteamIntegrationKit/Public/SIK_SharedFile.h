@@ -585,12 +585,12 @@ enum ESIK_LobbyDistanceFilter
 UENUM(BlueprintType)
 enum ESIK_LobbyComparisonType
 {
-	LobbyComparisonEqualToOrLessThan = -2 UMETA(DisplayName = "Equal To Or Less Than"),
-	LobbyComparisonLessThan = -1 UMETA(DisplayName = "Less Than"),
-	LobbyComparisonEqualTo = 0 UMETA(DisplayName = "Equal To"),
-	LobbyComparisonGreaterThan = 1 UMETA(DisplayName = "Greater Than"),
-	LobbyComparisonEqualToOrGreaterThan = 2 UMETA(DisplayName = "Equal To Or Greater Than"),
-	LobbyComparisonNotEqualTo = 3 UMETA(DisplayName = "Not Equal To"),
+	LobbyComparisonEqualToOrLessThan = 0 UMETA(DisplayName = "Equal To Or Less Than"),
+	LobbyComparisonLessThan = 1 UMETA(DisplayName = "Less Than"),
+	LobbyComparisonEqualTo = 2 UMETA(DisplayName = "Equal To"),
+	LobbyComparisonGreaterThan = 3 UMETA(DisplayName = "Greater Than"),
+	LobbyComparisonEqualToOrGreaterThan = 4 UMETA(DisplayName = "Equal To Or Greater Than"),
+	LobbyComparisonNotEqualTo = 5 UMETA(DisplayName = "Not Equal To"),
 };
 
 UENUM(BlueprintType)
