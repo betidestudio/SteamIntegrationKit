@@ -161,14 +161,9 @@ void USIK_MatchmakingLibrary::GetLobbyChatEntry(FSIK_SteamId SteamID, int32 Chat
 	SteamIDUser = Var_SteamIDUser;
 	if(Var_ChatEntry.Num() > 0)
 	{
-		// Create a temporary string with the valid length
-		const char* ChatEntryChars = reinterpret_cast<const char*>(Var_ChatEntry.GetData());
-		int32 ValidLength = 0;
-		while (ValidLength < Var_ChatEntry.Num() && ChatEntryChars[ValidLength] != '\0')
-		{
-			++ValidLength;
-		}
-		ChatEntry = FString(ValidLength, ANSI_TO_TCHAR(ChatEntryChars));
+		FMemoryReader Reader(Var_ChatEntry);
+		Reader << ChatEntry;
+		Reader.Flush();
 	}
 	ChatEntryType = static_cast<ESIK_LobbyChatEntryType>(Var_ChatEntryType);
 }
@@ -179,7 +174,7 @@ FString USIK_MatchmakingLibrary::GetLobbyData(FSIK_SteamId LobbyID, FString Key)
 	{
 		return "";
 	}
-	return FString(SteamMatchmaking()->GetLobbyData(LobbyID.GetSteamID(), TCHAR_TO_ANSI(*Key)));
+	return UTF8_TO_TCHAR(SteamMatchmaking()->GetLobbyData(LobbyID.GetSteamID(), TCHAR_TO_ANSI(*Key)));
 }
 
 bool USIK_MatchmakingLibrary::GetLobbyDataByIndex(FSIK_SteamId LobbyID, int32 DataIndex, FString& Key, FString& Value)
@@ -237,7 +232,7 @@ FString USIK_MatchmakingLibrary::GetLobbyMemberData(FSIK_SteamId LobbyID, FSIK_S
 	{
 		return "";
 	}
-	return FString(SteamMatchmaking()->GetLobbyMemberData(LobbyID.GetSteamID(), UserID.GetSteamID(), TCHAR_TO_ANSI(*Key)));
+	return UTF8_TO_TCHAR(SteamMatchmaking()->GetLobbyMemberData(LobbyID.GetSteamID(), UserID.GetSteamID(), TCHAR_TO_ANSI(*Key)));
 }
 
 int32 USIK_MatchmakingLibrary::GetLobbyMemberLimit(FSIK_SteamId LobbyID)
