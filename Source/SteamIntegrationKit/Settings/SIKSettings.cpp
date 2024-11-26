@@ -67,7 +67,6 @@ USIKSettings::USIKSettings()
 		GConfig->GetString(TEXT("OnlineSubsystemSteam"), TEXT("BranchName"), BranchName, ProjectEngineIniPath);
 	}
 	bEngineInitialized = true;
-	UE_LOG(LogTemp, Warning, TEXT("bEngqweineInitialized is %d"), bEngineInitialized);
 }
 
 #if WITH_EDITOR
