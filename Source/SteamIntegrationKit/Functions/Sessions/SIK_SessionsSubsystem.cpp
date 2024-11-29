@@ -58,17 +58,24 @@ TArray<FSIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndL
 		}
 		if(	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get())
 		{
-			if (FOnlineSubsystemSteam* SteamRef = static_cast<FOnlineSubsystemSteam*>(OnlineSub))
+			if(OnlineSub->GetSubsystemName() == STEAM_SUBSYSTEM)
 			{
-				if(FOnlineSessionSteamPtr SteamSessionPtr = StaticCastSharedPtr<FOnlineSessionSteam>(SteamRef->GetSessionInterface()))
+				if (FOnlineSubsystemSteam* SteamRef = static_cast<FOnlineSubsystemSteam*>(OnlineSub))
 				{
-					TArray<FSIK_CurrentSessionInfo> SessionNames;
-					for(auto& SessionEntry : SteamSessionPtr->Sessions)
+					if(FOnlineSessionSteamPtr SteamSessionPtr = StaticCastSharedPtr<FOnlineSessionSteam>(SteamRef->GetSessionInterface()))
 					{
-						SessionNames.Add(FSIK_CurrentSessionInfo(SessionEntry.SessionName.ToString(), SessionEntry.SessionInfo.Get()->ToString()));
+						TArray<FSIK_CurrentSessionInfo> SessionNames;
+						for(auto& SessionEntry : SteamSessionPtr->Sessions)
+						{
+							SessionNames.Add(FSIK_CurrentSessionInfo(SessionEntry.SessionName.ToString(), SessionEntry.SessionInfo.Get()->ToString()));
+						}
+						return SessionNames;
 					}
-					return SessionNames;
 				}
+			}
+			else
+			{
+				UE_LOG_ONLINE_SESSION(Error, TEXT("SIK_SessionsSubsystem: Online Subsystem Steam is not active. GetAllJoinedSessionsAndLobbies cannot be used in editor or with another online subsystem."));
 			}
 		}
 	}
