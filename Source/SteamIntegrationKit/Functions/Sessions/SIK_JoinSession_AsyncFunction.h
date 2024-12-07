@@ -45,8 +45,9 @@ public:
 		FSSessionFindStruct SessionToJoin = FSSessionFindStruct());
 
 	FSSessionFindStruct Var_SessionToJoin;
+
 	UPROPERTY()
-	UObject* Var_WorldContextObject;
+	TObjectPtr<UObject> Var_WorldContextObject;
 
 
 	void Activate() override;
