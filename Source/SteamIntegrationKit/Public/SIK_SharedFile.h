@@ -28,6 +28,8 @@ THIRD_PARTY_INCLUDES_START
 #include "steam/isteamgameserverstats.h"
 #include "steam/isteammusicremote.h"
 #include "steam/isteammusic.h"
+#include "steam/isteamcontroller.h"
+#include "steam/isteamnetworkingutils.h"
 #else
 #if WITH_STEAMKIT && !WITH_ENGINE_STEAM
 #include "steamclientpublic.h"
@@ -50,6 +52,8 @@ THIRD_PARTY_INCLUDES_START
 #include "isteamgameserverstats.h"
 #include "isteammusicremote.h"
 #include "isteammusic.h"
+#include "isteamcontroller.h"
+#include "isteamnetworkingutils.h"
 #endif
 #endif
 THIRD_PARTY_INCLUDES_END

@@ -72,24 +72,11 @@ public:
 	static FSIK_SteamId CreateUnauthenticatedUserConnection();
 
 	/*
-	Enables or disables heartbeats for the game server.
-	@param bActive - If true, heartbeats are enabled.
-	*/
-	UFUNCTION(BlueprintCallable, DisplayName = "Enable Heartbeats", meta=(Keywords="EnableHeartbeats"), Category = "Steam Integration Kit || SDK Functions || Game Server")
-	static void EnableHeartbeats(bool bActive);
-
-	/*
 	Ends an auth session for a user.
 	@param SteamId - The Steam ID of the user.
 	*/
 	UFUNCTION(BlueprintCallable, DisplayName = "End Auth Session", meta=(Keywords="EndAuthSession"), Category = "Steam Integration Kit || SDK Functions || Game Server")
 	static void EndAuthSession(FSIK_SteamId SteamId);
-
-	/*
-	Forces a heartbeat for the game server.
-	*/
-	UFUNCTION(BlueprintCallable, DisplayName = "Force Heartbeat", meta=(Keywords="ForceHeartbeat"), Category = "Steam Integration Kit || SDK Functions || Game Server")
-	static void ForceHeartbeat();
 
 	/*
 	Gets an auth session ticket for the game server.
