@@ -28,7 +28,9 @@ public:
 private:
 	FSIK_SteamId m_ClanId;
 	virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	SteamAPICall_t m_CallbackHandle;
 	CCallResult<USIK_RequestClanOfficerList_AsyncFunction, ClanOfficerListResponse_t> m_Callback;
 	void OnRequestClanOfficerList(ClanOfficerListResponse_t* ClanOfficerListResponse, bool bIOFailure);
+#endif
 };

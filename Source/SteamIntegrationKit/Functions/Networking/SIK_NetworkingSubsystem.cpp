@@ -8,7 +8,7 @@
 
 USIK_NetworkingSubsystem::USIK_NetworkingSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackP2PSessionConnectFail.Register(this, &USIK_NetworkingSubsystem::OnP2PSessionConnectFailCallbck);
 	m_CallbackP2PSessionRequest.Register(this, &USIK_NetworkingSubsystem::OnP2PSessionRequestCallback);
 
@@ -22,12 +22,13 @@ USIK_NetworkingSubsystem::USIK_NetworkingSubsystem()
 
 USIK_NetworkingSubsystem::~USIK_NetworkingSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackP2PSessionConnectFail.Unregister();
 	m_CallbackP2PSessionRequest.Unregister();
 #endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_NetworkingSubsystem::OnP2PSessionConnectFailCallbck(P2PSessionConnectFail_t* pCallback)
 {
 	auto Param = *pCallback;
@@ -48,3 +49,4 @@ void USIK_NetworkingSubsystem::OnP2PSessionRequestCallback(P2PSessionRequest_t* 
 		OnP2PSessionRequest.Broadcast(SteamID);
 	});
 }
+#endif

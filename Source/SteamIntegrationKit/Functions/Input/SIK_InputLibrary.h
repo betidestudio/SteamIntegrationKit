@@ -3,24 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteammatchmaking.h>
-#include <steam/steam_api_common.h>
-#include <steam/steamtypes.h>
-#include <steam/isteaminput.h>
-#include <steam/isteamdualsense.h>
-#include "steam/isteamcontroller.h"
-#else
-#include <steamtypes.h>
-#include <isteammatchmaking.h>
-#include <steam_api_common.h>
-#include <isteaminput.h>
-#include "isteamdualsense.h"
-#include "isteamcontroller.h"
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "SIK_InputLibrary.generated.h"

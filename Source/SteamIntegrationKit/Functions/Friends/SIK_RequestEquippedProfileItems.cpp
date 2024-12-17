@@ -14,6 +14,7 @@ USIK_RequestEquippedProfileItems* USIK_RequestEquippedProfileItems::RequestEquip
 void USIK_RequestEquippedProfileItems::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(SteamFriends() == nullptr)
 	{
 		OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_SteamId(), false, false, false, false);
@@ -32,8 +33,14 @@ void USIK_RequestEquippedProfileItems::Activate()
 #if !WITH_ENGINE_STEAM
 	m_Callback.Set(m_CallbackHandle, this, &USIK_RequestEquippedProfileItems::OnRequestEquippedProfileItems);
 #endif
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_SteamId(), false, false, false, false);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 #if !WITH_ENGINE_STEAM
 void USIK_RequestEquippedProfileItems::OnRequestEquippedProfileItems(EquippedProfileItems_t* EquippedProfileItemsResponse, bool bIOFailure)
 {
@@ -60,4 +67,5 @@ void USIK_RequestEquippedProfileItems::OnRequestEquippedProfileItems(EquippedPro
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 #endif

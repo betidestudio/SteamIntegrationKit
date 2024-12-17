@@ -8,7 +8,7 @@
 
  USIK_UserStatsSubsystem::USIK_UserStatsSubsystem()
  {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
  	m_CallbackGlobalAchievementPercentagesReady.Register(this, &USIK_UserStatsSubsystem::OnGlobalAchievementPercentagesReadyCallbck);
  	m_CallbackGlobalStatsReceived.Register(this, &USIK_UserStatsSubsystem::OnGlobalStatsReceivedCallbck);
  	m_CallbackLeaderboardFindResult.Register(this, &USIK_UserStatsSubsystem::OnLeaderboardFindResultCallbck);
@@ -40,7 +40,7 @@
 
  USIK_UserStatsSubsystem::~USIK_UserStatsSubsystem()
  {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
  	m_CallbackGlobalAchievementPercentagesReady.Unregister();
  	m_CallbackGlobalStatsReceived.Unregister();
  	m_CallbackLeaderboardFindResult.Unregister();
@@ -55,6 +55,7 @@
 #endif
  }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_UserStatsSubsystem::OnGlobalAchievementPercentagesReadyCallbck(GlobalAchievementPercentagesReady_t* pCallback)
 {
 	auto Param = *pCallback;
@@ -155,3 +156,4 @@ void USIK_UserStatsSubsystem::OnUserStatsUnloadedCallbck(UserStatsUnloaded_t* pC
 		OnUserStatsUnloaded.Broadcast(Param.m_steamIDUser);
 	});
 }
+#endif

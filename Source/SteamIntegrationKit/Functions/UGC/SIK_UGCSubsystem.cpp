@@ -8,7 +8,7 @@
 
 USIK_UGCSubsystem::USIK_UGCSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackAddAppDependencyResult.Register(this, &USIK_UGCSubsystem::OnAddAppDependencyResultCallback);
 	m_CallbackAddUGCDependencyResult.Register(this, &USIK_UGCSubsystem::OnAddUGCDependencyResultCallback);
 	m_CallbackCreateItemResult.Register(this, &USIK_UGCSubsystem::OnCreateItemResultCallback);
@@ -54,7 +54,7 @@ USIK_UGCSubsystem::USIK_UGCSubsystem()
 
 USIK_UGCSubsystem::~USIK_UGCSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackAddAppDependencyResult.Unregister();
 	m_CallbackAddUGCDependencyResult.Unregister();
 	m_CallbackCreateItemResult.Unregister();
@@ -76,6 +76,7 @@ USIK_UGCSubsystem::~USIK_UGCSubsystem()
 #endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_UGCSubsystem::OnAddAppDependencyResultCallback(AddAppDependencyResult_t* pParam)
 {
 	auto Param = *pParam;
@@ -243,3 +244,4 @@ void USIK_UGCSubsystem::OnWorkshopEULAStatusCallback(WorkshopEULAStatus_t* pPara
 		OnWorkshopEULAStatus.Broadcast(static_cast<ESIK_Result>(Param.m_eResult), Param.m_nAppID, Param.m_unVersion, Param.m_rtAction, Param.m_bAccepted, Param.m_bNeedsAction);
 	});
 }
+#endif

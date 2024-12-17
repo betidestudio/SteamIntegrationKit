@@ -13,6 +13,7 @@ USIK_AssociateWithClan_AsyncFunction* USIK_AssociateWithClan_AsyncFunction::Asso
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_AssociateWithClan_AsyncFunction::OnAssociateWithClanCallBack(
 	AssociateWithClanResult_t* AssociateWithClanResult, bool bIOFailure)
 {
@@ -39,10 +40,12 @@ void USIK_AssociateWithClan_AsyncFunction::OnAssociateWithClanCallBack(
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_AssociateWithClan_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamGameServer())
 	{
 		OnFailure.Broadcast(ESIK_Result::ResultFail);
@@ -59,4 +62,9 @@ void USIK_AssociateWithClan_AsyncFunction::Activate()
 		return;
 	}
 	OnAssociateWithClanCallResult.Set(CallbackHandle, this, &USIK_AssociateWithClan_AsyncFunction::OnAssociateWithClanCallBack);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

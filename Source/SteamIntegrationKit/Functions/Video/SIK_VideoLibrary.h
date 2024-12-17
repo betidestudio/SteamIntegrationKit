@@ -4,16 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "SIK_SharedFile.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include "steam/steam_api.h"
-#include "steam/isteamvideo.h"
-#include "steam/steam_api_common.h"
-#else
-#include "isteamvideo.h"
-#include "steam_api_common.h"
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "SIK_VideoLibrary.generated.h"
 

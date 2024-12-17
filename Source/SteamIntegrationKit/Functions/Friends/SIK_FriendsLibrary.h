@@ -3,17 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/steamtypes.h>
-#include <steam/isteamfriends.h>
-#else
-#include <steam_api.h>
-#include <isteamfriends.h>
-#include <steamtypes.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
 #include "Engine/Texture2D.h"
 #include "TextureResource.h"

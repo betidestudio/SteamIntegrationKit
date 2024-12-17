@@ -3,17 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steamtypes.h>
-#include <steam/isteamuserstats.h>
-#include <steam/steam_api_common.h>
-#else
-#include "steam_api_common.h"
-#include "isteamuserstats.h"
-#include "steamtypes.h"
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SIK_UserStatsSubsystem.generated.h"
@@ -77,6 +66,7 @@ public:
 	FOnUserStatsUnloaded OnUserStatsUnloaded;
 	
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	//GlobalAchievementPercentagesReady_t
 	STEAM_CALLBACK_MANUAL(USIK_UserStatsSubsystem, OnGlobalAchievementPercentagesReadyCallbck, GlobalAchievementPercentagesReady_t, m_CallbackGlobalAchievementPercentagesReady);
 	//GlobalStatsReceived_t
@@ -99,4 +89,5 @@ private:
 	STEAM_CALLBACK_MANUAL(USIK_UserStatsSubsystem, OnUserStatsStoredCallbck, UserStatsStored_t, m_CallbackUserStatsStored);
 	//UserStatsUnloaded_t
 	STEAM_CALLBACK_MANUAL(USIK_UserStatsSubsystem, OnUserStatsUnloadedCallbck, UserStatsUnloaded_t, m_CallbackUserStatsUnloaded);
+#endif
 };

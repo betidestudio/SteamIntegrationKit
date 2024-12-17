@@ -7,7 +7,7 @@
 
 USIK_AppSubsystem::USIK_AppSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackDlcInstalled.Register(this, &USIK_AppSubsystem::OnDlcInstalledCallbck);
 	m_CallbackFileDetails.Register(this, &USIK_AppSubsystem::OnFileDetailsCallbck);
 	m_CallbackNewUrlLaunchParameters.Register(this, &USIK_AppSubsystem::OnNewUrlLaunchParametersCallbck);
@@ -25,7 +25,7 @@ USIK_AppSubsystem::USIK_AppSubsystem()
 
 USIK_AppSubsystem::~USIK_AppSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackDlcInstalled.Unregister();
 	m_CallbackFileDetails.Unregister();
 	m_CallbackNewUrlLaunchParameters.Unregister();
@@ -33,6 +33,7 @@ USIK_AppSubsystem::~USIK_AppSubsystem()
 #endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_AppSubsystem::OnDlcInstalledCallbck(DlcInstalled_t* pParam)
 {
 	auto Param = *pParam;
@@ -73,4 +74,4 @@ void USIK_AppSubsystem::OnTimedTrialStatusCallbck(TimedTrialStatus_t* pParam)
 		OnTimedTrialStatus.Broadcast(Param.m_unAppID, Param.m_bIsOffline, Param.m_unSecondsAllowed, Param.m_unSecondsPlayed);
 	});
 }
-
+#endif

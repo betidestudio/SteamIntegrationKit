@@ -26,8 +26,10 @@ public:
 	FJoinClanChatRoomDelegate OnFailure;
 private:
 	FSIK_SteamId m_ClanId;
-	void OnJoinClanChatRoom(GameConnectedChatJoin_t* GameConnectedChatJoin, bool bIOFailure);
 	virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	void OnJoinClanChatRoom(GameConnectedChatJoin_t* GameConnectedChatJoin, bool bIOFailure);
 	SteamAPICall_t m_CallbackHandle;
 	CCallResult<USIK_JoinClanChatRoom_AsyncFunction, GameConnectedChatJoin_t> m_Callback;
+#endif
 };

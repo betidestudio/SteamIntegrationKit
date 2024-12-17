@@ -13,6 +13,7 @@ ComputeNewPlayerCompatibility(const FSIK_SteamId& PlayerSteamId)
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_ComputeNewPlayerCompatibility_AsyncFunction::OnComputeNewPlayerCompatibilityCallback(
 	ComputeNewPlayerCompatibilityResult_t* ComputeNewPlayerCompatibilityResult, bool bIOFailure)
 {
@@ -38,10 +39,12 @@ void USIK_ComputeNewPlayerCompatibility_AsyncFunction::OnComputeNewPlayerCompati
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_ComputeNewPlayerCompatibility_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamGameServer())
 	{
 		OnFailure.Broadcast(ESIK_Result::ResultFail, 0, 0, 0);
@@ -58,4 +61,9 @@ void USIK_ComputeNewPlayerCompatibility_AsyncFunction::Activate()
 		return;
 	}
 	OnComputeNewPlayerCompatibilityCallResult.Set( CallbackHandle, this, &USIK_ComputeNewPlayerCompatibility_AsyncFunction::OnComputeNewPlayerCompatibilityCallback);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail, 0, 0, 0);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

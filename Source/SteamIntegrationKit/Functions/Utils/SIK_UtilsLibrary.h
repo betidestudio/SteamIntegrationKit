@@ -4,15 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "SIK_SharedFile.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include "steam/isteamutils.h"
-#include "steam/isteaminput.h"
-#else
-#include "isteamutils.h"
-#include "isteaminput.h"
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "SIK_UtilsLibrary.generated.h"
 

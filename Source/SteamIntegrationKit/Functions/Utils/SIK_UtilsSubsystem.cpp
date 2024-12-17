@@ -8,7 +8,7 @@
 
 USIK_UtilsSubsystem::USIK_UtilsSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackGamepadTextInputDismissed.Register(this, &USIK_UtilsSubsystem::OnGamepadTextInputDismissedCallbck);
 	m_CallbackIPCountry.Register(this, &USIK_UtilsSubsystem::OnIPCountryCallbck);
 	m_CallbackLowBatteryPower.Register(this, &USIK_UtilsSubsystem::OnLowBatteryPowerCallbck);
@@ -28,7 +28,7 @@ USIK_UtilsSubsystem::USIK_UtilsSubsystem()
 
 USIK_UtilsSubsystem::~USIK_UtilsSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackGamepadTextInputDismissed.SetGameserverFlag();
 	m_CallbackIPCountry.SetGameserverFlag();
 	m_CallbackLowBatteryPower.SetGameserverFlag();
@@ -36,6 +36,8 @@ USIK_UtilsSubsystem::~USIK_UtilsSubsystem()
 	m_CallbackSteamShutdown.SetGameserverFlag();
 #endif
 }
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 
 void USIK_UtilsSubsystem::OnGamepadTextInputDismissedCallbck(GamepadTextInputDismissed_t* pCallback)
 {
@@ -81,3 +83,5 @@ void USIK_UtilsSubsystem::OnSteamShutdownCallbck(SteamShutdown_t* pCallback)
 			OnSteamShutdown.Broadcast();
 		});
 }
+
+#endif

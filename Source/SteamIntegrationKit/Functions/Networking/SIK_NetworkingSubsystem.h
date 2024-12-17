@@ -34,6 +34,8 @@ public:
 	FOnP2PSessionRequest OnP2PSessionRequest;
 
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	STEAM_CALLBACK_MANUAL(USIK_NetworkingSubsystem, OnP2PSessionConnectFailCallbck, P2PSessionConnectFail_t, m_CallbackP2PSessionConnectFail);
 	STEAM_CALLBACK_MANUAL(USIK_NetworkingSubsystem, OnP2PSessionRequestCallback, P2PSessionRequest_t, m_CallbackP2PSessionRequest);
+#endif
 };

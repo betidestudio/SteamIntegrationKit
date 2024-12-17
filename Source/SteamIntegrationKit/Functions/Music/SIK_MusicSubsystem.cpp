@@ -8,7 +8,7 @@
 
 USIK_MusicSubsystem::USIK_MusicSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackPlaybackStatusHasChanged.Register(this, &USIK_MusicSubsystem::OnPlaybackStatusHasChanged);
 	m_CallbackVolumeHasChanged.Register(this, &USIK_MusicSubsystem::OnVolumeHasChanged);
 
@@ -22,12 +22,13 @@ USIK_MusicSubsystem::USIK_MusicSubsystem()
 
 USIK_MusicSubsystem::~USIK_MusicSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackPlaybackStatusHasChanged.Unregister();
 	m_CallbackVolumeHasChanged.Unregister();
 #endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_MusicSubsystem::OnPlaybackStatusHasChanged(PlaybackStatusHasChanged_t* pParam)
 {
 	auto Param = *pParam;
@@ -45,3 +46,4 @@ void USIK_MusicSubsystem::OnVolumeHasChanged(VolumeHasChanged_t* pParam)
 		VolumeHasChanged.Broadcast(Param.m_flNewVolume);
 	});
 }
+#endif

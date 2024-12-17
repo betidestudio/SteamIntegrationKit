@@ -14,6 +14,7 @@ DownloadClanActivityCounts(const TArray<int64>& ClanIds)
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_DownloadClanActivityCounts_AsyncFunction::OnDownloadClanActivityCounts(
 	DownloadClanActivityCountsResult_t* DownloadClanActivityCountsResult, bool bIOFailure)
 {
@@ -32,10 +33,12 @@ void USIK_DownloadClanActivityCounts_AsyncFunction::OnDownloadClanActivityCounts
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_DownloadClanActivityCounts_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(SteamFriends() == nullptr)
 	{
 		OnFailure.Broadcast();
@@ -64,4 +67,9 @@ void USIK_DownloadClanActivityCounts_AsyncFunction::Activate()
 		return;
 	}
 	OnDownloadClanActivityCountsCallResult.Set( CallbackHandle, this, &USIK_DownloadClanActivityCounts_AsyncFunction::OnDownloadClanActivityCounts );
+#else
+	OnFailure.Broadcast();
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

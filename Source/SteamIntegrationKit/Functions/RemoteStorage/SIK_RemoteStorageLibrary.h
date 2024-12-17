@@ -5,14 +5,6 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "SIK_SharedFile.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteamremotestorage.h>
-#else
-#include "isteamremotestorage.h"
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_RemoteStorageLibrary.generated.h"
 
 /**

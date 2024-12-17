@@ -3,17 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/steamtypes.h>
-#include <steam/isteammusic.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steam_api_common.h>
-#include "isteammusic.h"
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SIK_MusicSubsystem.generated.h"
@@ -36,6 +25,8 @@ public:
 	FVolumeHasChanged VolumeHasChanged;
 
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	STEAM_CALLBACK_MANUAL(USIK_MusicSubsystem, OnPlaybackStatusHasChanged, PlaybackStatusHasChanged_t, m_CallbackPlaybackStatusHasChanged);
 	STEAM_CALLBACK_MANUAL(USIK_MusicSubsystem, OnVolumeHasChanged, VolumeHasChanged_t, m_CallbackVolumeHasChanged);
+#endif
 };

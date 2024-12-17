@@ -4,17 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "SIK_SharedFile.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steamnetworkingtypes.h>
-#include <steam/isteamnetworkingutils.h>
-#include <steam/steam_api_common.h>
-#else
-#include <isteamnetworkingutils.h>
-#include <steamnetworkingtypes.h>
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "SIK_NetworkingUtilsLibrary.generated.h"
 

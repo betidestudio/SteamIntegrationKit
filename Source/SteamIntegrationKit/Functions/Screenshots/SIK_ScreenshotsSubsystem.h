@@ -27,6 +27,8 @@ public:
 	FOnScreenshotRequested OnScreenshotRequested;
 
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	STEAM_CALLBACK_MANUAL(USIK_ScreenshotsSubsystem, OnScreenshotReadyCallback, ScreenshotReady_t, m_CallbackScreenshotReady);
 	STEAM_CALLBACK_MANUAL(USIK_ScreenshotsSubsystem, OnScreenshotRequestedCallback, ScreenshotRequested_t, m_CallbackScreenshotRequested);
+#endif
 };

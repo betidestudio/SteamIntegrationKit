@@ -51,11 +51,12 @@ public:
 	FSteamInventoryRequestPricesResultDelegate OnSteamInventoryRequestPricesResult;
 
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	STEAM_CALLBACK_MANUAL(USIK_InventorySubsystem, OnSteamInventoryDefinitionUpdateCallback, SteamInventoryDefinitionUpdate_t, m_CallbackSteamInventoryDefinitionUpdate);
 	STEAM_CALLBACK_MANUAL(USIK_InventorySubsystem, OnSteamInventoryEligiblePromoItemDefIDsCallback, SteamInventoryEligiblePromoItemDefIDs_t, m_CallbackSteamInventoryEligiblePromoItemDefIDs);
 	STEAM_CALLBACK_MANUAL(USIK_InventorySubsystem, OnSteamInventoryFullUpdateCallback, SteamInventoryFullUpdate_t, m_CallbackSteamInventoryFullUpdate);
 	STEAM_CALLBACK_MANUAL(USIK_InventorySubsystem, OnSteamInventoryResultReadyCallback, SteamInventoryResultReady_t, m_CallbackSteamInventoryResultReady);
 	STEAM_CALLBACK_MANUAL(USIK_InventorySubsystem, OnSteamInventoryStartPurchaseResultCallback, SteamInventoryStartPurchaseResult_t, m_CallbackSteamInventoryStartPurchaseResult);
 	STEAM_CALLBACK_MANUAL(USIK_InventorySubsystem, OnSteamInventoryRequestPricesResultCallback, SteamInventoryRequestPricesResult_t, m_CallbackSteamInventoryRequestPricesResult);
-	
+#endif	
 };

@@ -4,17 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteammatchmaking.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steam_api.h>
-#include <isteammatchmaking.h>
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
 #include "SIK_MatchmakingSubsystem.generated.h"
 
@@ -92,6 +81,7 @@ public:
 	FOnLobbyMatchListDel OnLobbyMatchList;
 
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	STEAM_CALLBACK_MANUAL(USIK_MatchmakingSubsystem, OnFavoritesListAccountsCallbck, FavoritesListAccountsUpdated_t, m_CallbackFavoritesListAccountsUpdated);
 	STEAM_CALLBACK_MANUAL(USIK_MatchmakingSubsystem, OnFavoritesListChangedCallback, FavoritesListChanged_t, m_CallbackFavoritesListChanged);
 	STEAM_CALLBACK_MANUAL(USIK_MatchmakingSubsystem, OnLobbyChatMsgCallback, LobbyChatMsg_t, m_CallbackLobbyChatMsg);
@@ -103,4 +93,5 @@ private:
 	STEAM_CALLBACK_MANUAL(USIK_MatchmakingSubsystem, OnLobbyInviteCallback, LobbyInvite_t, m_CallbackLobbyInvite);
 	STEAM_CALLBACK_MANUAL(USIK_MatchmakingSubsystem, OnLobbyKickedCallback, LobbyKicked_t, m_CallbackLobbyKicked);
 	STEAM_CALLBACK_MANUAL(USIK_MatchmakingSubsystem, OnLobbyMatchListCallback, LobbyMatchList_t, m_CallbackLobbyMatchList);
+#endif
 };

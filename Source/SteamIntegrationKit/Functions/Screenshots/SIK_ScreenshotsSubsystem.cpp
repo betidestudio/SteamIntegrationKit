@@ -8,7 +8,7 @@
 
 USIK_ScreenshotsSubsystem::USIK_ScreenshotsSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackScreenshotReady.Register(this, &USIK_ScreenshotsSubsystem::OnScreenshotReadyCallback);
 	m_CallbackScreenshotRequested.Register(this, &USIK_ScreenshotsSubsystem::OnScreenshotRequestedCallback);
  	if(IsRunningDedicatedServer())
@@ -21,11 +21,13 @@ USIK_ScreenshotsSubsystem::USIK_ScreenshotsSubsystem()
 
 USIK_ScreenshotsSubsystem::~USIK_ScreenshotsSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackScreenshotReady.Unregister();
 	m_CallbackScreenshotRequested.Unregister();
 #endif
 }
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 
 void USIK_ScreenshotsSubsystem::OnScreenshotReadyCallback(ScreenshotReady_t* Callback)
 {
@@ -44,3 +46,4 @@ void USIK_ScreenshotsSubsystem::OnScreenshotRequestedCallback(ScreenshotRequeste
 		OnScreenshotRequested.Broadcast();
 	});
 }
+#endif

@@ -7,7 +7,7 @@
 #include "OnlineKeyValuePair.h"
 #include "Online/CoreOnline.h"
 THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
+#if WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE
 #include "steam/steamclientpublic.h"
 #include "steam/isteamuserstats.h"
 #include "steam/isteaminventory.h"
@@ -21,7 +21,15 @@ THIRD_PARTY_INCLUDES_START
 #include "steam/steamclientpublic.h"
 #include "steam/isteaminput.h"
 #include "steam/isteamdualsense.h"
+#include "steam/isteamuser.h"
+#include "steam/isteamutils.h"
+#include "steam/isteamgameserver.h"
+#include "steam/isteamvideo.h"
+#include "steam/isteamgameserverstats.h"
+#include "steam/isteammusicremote.h"
+#include "steam/isteammusic.h"
 #else
+#if WITH_STEAMKIT && !WITH_ENGINE_STEAM
 #include "steamclientpublic.h"
 #include "isteamuserstats.h"
 #include "isteaminventory.h"
@@ -35,6 +43,14 @@ THIRD_PARTY_INCLUDES_START
 #include "isteamapps.h"
 #include "steamclientpublic.h"
 #include "isteaminput.h"
+#include "isteamuser.h"
+#include "isteamutils.h"
+#include "isteamgameserver.h"
+#include "isteamvideo.h"
+#include "isteamgameserverstats.h"
+#include "isteammusicremote.h"
+#include "isteammusic.h"
+#endif
 #endif
 THIRD_PARTY_INCLUDES_END
 #include "OnlineSessionSettings.h"
@@ -82,6 +98,7 @@ struct FSIK_AppId
 	{
 		AppID = 0;
 	}
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_AppId(AppId_t AppID)
 	{
 		this->AppID = AppID;
@@ -90,6 +107,7 @@ struct FSIK_AppId
 	{
 		return AppID;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -104,6 +122,7 @@ struct FSIK_DepotId
 	{
 		DepotID = 0;
 	}
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_DepotId(DepotId_t DepotID)
 	{
 		this->DepotID = DepotID;
@@ -112,6 +131,7 @@ struct FSIK_DepotId
 	{
 		return DepotID;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -126,6 +146,8 @@ struct FSIK_AccountID
 	{
 		AccountID = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_AccountID(AccountID_t AccountID)
 	{
 		this->AccountID = AccountID;
@@ -134,6 +156,7 @@ struct FSIK_AccountID
 	{
 		return AccountID;
 	}
+#endif
 };
 
 UENUM(BlueprintType)
@@ -312,6 +335,7 @@ struct FSIKAttribute
 		BoolValue = false;
 		IntValue = 0;
 	}
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FVariantData GetVariantData() const
 	{
 		FVariantData VariantData;
@@ -355,6 +379,7 @@ struct FSIKAttribute
 			break;
 		}
 	}
+#endif
 };
 
 
@@ -389,7 +414,8 @@ struct FSIK_SteamId
 
 	UPROPERTY()
 	int64 Result = 0;
-
+	
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	CSteamID GetSteamID() const
 	{
 		CSteamID SteamID;
@@ -421,6 +447,7 @@ struct FSIK_SteamId
 		SteamID.SetFromUint64(Result);
 		return SteamID;
 	}
+#endif
 };
 
 
@@ -436,6 +463,7 @@ struct FSIK_AuthTicket
 		Value = 0;
 	}
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_AuthTicket(HAuthTicket AuthTicket)
 	{
 		Value = AuthTicket;
@@ -445,7 +473,7 @@ struct FSIK_AuthTicket
 	{
 		return Value;
 	}
-	
+#endif
 };
 
 UENUM()
@@ -467,6 +495,8 @@ struct FSIK_FriendsGroupID
 		Value = 0;
 	}
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	
 	FSIK_FriendsGroupID(FriendsGroupID_t FriendsGroupID)
 	{
 		Value = FriendsGroupID;
@@ -476,7 +506,7 @@ struct FSIK_FriendsGroupID
 	{
 		return Value;
 	}
-	
+#endif
 };
 
 
@@ -502,11 +532,13 @@ public:
 		m_unIPv4 = 0;
 		m_ipv6Qword = 0;
 	}
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_SteamIPAddress(SteamIPAddress_t SteamIPAddress): m_ipv6Qword(0)
 	{
 		m_eType = (ESIK_SteamIPType)SteamIPAddress.m_eType;
 		m_unIPv4 = SteamIPAddress.m_unIPv4;
 	}
+#endif
 };
 
 
@@ -557,7 +589,8 @@ public:
 		m_eType = ESIK_SteamPartyBeaconLocationType::SteamPartyBeaconLocationType_Invalid;
 		m_ulLocationID = 0;
 	}
-
+	
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_SteamPartyBeaconLocation(SteamPartyBeaconLocation_t SteamPartyBeaconLocation)
 	{
 		m_eType = (ESIK_SteamPartyBeaconLocationType)SteamPartyBeaconLocation.m_eType;
@@ -571,6 +604,7 @@ public:
 		SteamPartyBeaconLocation.m_ulLocationID = m_ulLocationID;
 		return SteamPartyBeaconLocation;
 	}
+#endif
 };
 
 UENUM(BlueprintType)
@@ -765,6 +799,7 @@ struct FSIK_FoundServers
 		GameTags = "";
 	}
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_FoundServers(gameserveritem_t ServerItem)
 	{
 		Ping = ServerItem.m_nPing;
@@ -784,6 +819,7 @@ struct FSIK_FoundServers
 		ServerName = ServerItem.GetName();
 		GameTags = ServerItem.m_szGameTags;
 	}
+#endif
 };
 
 UENUM(BlueprintType)
@@ -832,6 +868,8 @@ struct FSIK_SteamNetworkingIPAddr
 		IpV6 = "";
 		m_port = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_SteamNetworkingIPAddr(SteamNetworkingIPAddr SteamNetworkingIPAddr)
 	{
 		
@@ -847,6 +885,7 @@ struct FSIK_SteamNetworkingIPAddr
 		}
 		m_port = SteamNetworkingIPAddr.m_port;
 	};
+#endif
 };
 
 
@@ -880,6 +919,8 @@ struct FSIK_SteamNetworkingIdentity
 		m_szGenericBytes = TArray<uint8>();
 		m_ipAddress = FSIK_SteamNetworkingIPAddr();
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_SteamNetworkingIdentity(SteamNetworkingIdentity SteamNetworkingIdentity)
 	{
 		m_eType = static_cast<ESIK_SteamNetworkingIdentityType>(SteamNetworkingIdentity.m_eType);
@@ -946,7 +987,7 @@ struct FSIK_SteamNetworkingIdentity
 		}
 		return SteamNetworkingIdentity;
 	}
-	
+#endif	
 };
 
 UENUM(BlueprintType)
@@ -978,6 +1019,8 @@ struct FSIK_SteamInventoryResult
 	{
 		Result = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_SteamInventoryResult(SteamInventoryResult_t SteamInventoryResult)
 	{
 		Result = SteamInventoryResult;
@@ -986,6 +1029,7 @@ struct FSIK_SteamInventoryResult
 	{
 		return Result;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -1000,6 +1044,8 @@ struct FSIK_SteamItemDef
 	{
 		Result = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_SteamItemDef(SteamItemDef_t SteamItemDef)
 	{
 		Result = SteamItemDef;
@@ -1008,6 +1054,7 @@ struct FSIK_SteamItemDef
 	{
 		return Result;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -1022,6 +1069,8 @@ struct FSIK_SteamItemInstanceID
 	{
 		Result = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_SteamItemInstanceID(SteamItemInstanceID_t SteamItemInstanceID)
 	{
 		Result = SteamItemInstanceID;
@@ -1030,6 +1079,7 @@ struct FSIK_SteamItemInstanceID
 	{
 		return Result;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -1044,6 +1094,8 @@ struct FSIK_SteamInventoryUpdateHandle
 	{
 		Result = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_SteamInventoryUpdateHandle(SteamInventoryUpdateHandle_t SteamInventoryUpdateHandle)
 	{
 		Result = SteamInventoryUpdateHandle;
@@ -1052,6 +1104,7 @@ struct FSIK_SteamInventoryUpdateHandle
 	{
 		return Result;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -1078,6 +1131,8 @@ struct FSIK_SteamItemDetails
 		Quantity = 0;
 		Flags = TEnumAsByte<ESIK_SteamItemFlags>();
 	}
+	
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_SteamItemDetails(SteamItemDetails_t SteamItemDetails)
 	{
 		ItemID = SteamItemDetails.m_itemId;
@@ -1085,6 +1140,7 @@ struct FSIK_SteamItemDetails
 		Quantity = SteamItemDetails.m_unQuantity;
 		Flags = static_cast<ESIK_SteamItemFlags>(SteamItemDetails.m_unFlags);
 	}
+#endif
 };
 
 UENUM(BlueprintType)
@@ -1123,6 +1179,8 @@ struct FSIK_SteamNetworkPingLocation
 	{
 		Data = TArray<uint8>();
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_SteamNetworkPingLocation(SteamNetworkPingLocation_t SteamNetworkPingLocation)
 	{
 		Data = TArray<uint8>();
@@ -1140,6 +1198,7 @@ struct FSIK_SteamNetworkPingLocation
 		}
 		return SteamNetworkPingLocation;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -1154,6 +1213,8 @@ struct FSIK_SteamNetworkingPOPID
 	{
 		Value = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_SteamNetworkingPOPID(SteamNetworkingPOPID SteamNetworkingPOPID)
 	{
 		Value = SteamNetworkingPOPID;
@@ -1162,6 +1223,7 @@ struct FSIK_SteamNetworkingPOPID
 	{
 		return Value;
 	}
+#endif
 };
 
 UENUM(BlueprintType)
@@ -1216,6 +1278,8 @@ struct FSIK_P2PSessionState
 		RemoteIP = "";
 		RemotePort = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_P2PSessionState(P2PSessionState_t P2PSessionState)
 	{
 		bConnectionActive = P2PSessionState.m_bConnectionActive != 0;
@@ -1243,6 +1307,7 @@ struct FSIK_P2PSessionState
 		P2PSessionState.m_nRemotePort = RemotePort;
 		return P2PSessionState;
 	}
+#endif
 	
 };
 
@@ -1268,6 +1333,7 @@ struct FSIK_PublishedFileId
 		PublishedFileId = 0;
 	}
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_PublishedFileId(PublishedFileId_t Input)
 	{
 		PublishedFileId = Input;
@@ -1277,6 +1343,7 @@ struct FSIK_PublishedFileId
 	{
 		return PublishedFileId;
 	}
+#endif
 };
 
 
@@ -1293,6 +1360,7 @@ struct FSIK_PublishedFileUpdateHandle
 		PublishedFileUpdateHandle = 0;
 	}
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_PublishedFileUpdateHandle(PublishedFileUpdateHandle_t Input)
 	{
 		PublishedFileUpdateHandle = Input;
@@ -1302,6 +1370,7 @@ struct FSIK_PublishedFileUpdateHandle
 	{
 		return PublishedFileUpdateHandle;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -1317,6 +1386,7 @@ struct FSIK_UGCFileWriteStreamHandle
 		UGCFileWriteStreamHandle = 0;
 	}
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_UGCFileWriteStreamHandle(UGCFileWriteStreamHandle_t Input)
 	{
 		UGCFileWriteStreamHandle = Input;
@@ -1326,6 +1396,7 @@ struct FSIK_UGCFileWriteStreamHandle
 	{
 		return UGCFileWriteStreamHandle;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -1340,7 +1411,8 @@ struct FSIK_UGCHandle
 	{
 		UGCHandle = 0;
 	}
-
+	
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_UGCHandle(UGCHandle_t Input)
 	{
 		UGCHandle = Input;
@@ -1350,6 +1422,7 @@ struct FSIK_UGCHandle
 	{
 		return UGCHandle;
 	}
+#endif
 };
 
 UENUM(BlueprintType)
@@ -1456,6 +1529,8 @@ struct FSIK_ScreenshotHandle
 	{
 		Result = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_ScreenshotHandle(ScreenshotHandle ScreenshotHandle)
 	{
 		Result = ScreenshotHandle;
@@ -1463,7 +1538,8 @@ struct FSIK_ScreenshotHandle
 	ScreenshotHandle GetScreenshotHandle() const
 	{
 		return Result;
-	}	
+	}
+#endif
 };
 
 UENUM(BlueprintType)
@@ -1611,6 +1687,8 @@ struct FSIK_UGCQueryHandle
 	{
 		Result = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_UGCQueryHandle(UGCQueryHandle_t UGCQueryHandle)
 	{
 		Result = UGCQueryHandle;
@@ -1619,6 +1697,7 @@ struct FSIK_UGCQueryHandle
 	{
 		return Result;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -1633,6 +1712,8 @@ struct FSIK_UGCUpdateHandle
 	{
 		Result = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_UGCUpdateHandle(UGCUpdateHandle_t UGCUpdateHandle)
 	{
 		Result = UGCUpdateHandle;
@@ -1641,6 +1722,7 @@ struct FSIK_UGCUpdateHandle
 	{
 		return Result;
 	}
+#endif
 };
 
 
@@ -1756,7 +1838,8 @@ struct FSIK_SteamUGCDetails
 		Score = 0;
 		NumChildren = 0;
 	}
-
+	
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_SteamUGCDetails (SteamUGCDetails_t SteamUGCDetails)
 	{
 		PublishedFileId = SteamUGCDetails.m_nPublishedFileId;
@@ -1786,6 +1869,7 @@ struct FSIK_SteamUGCDetails
 		Score = SteamUGCDetails.m_flScore;
 		NumChildren = SteamUGCDetails.m_unNumChildren;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -1800,11 +1884,13 @@ struct FSIK_SteamLeaderboardEntries
 	{
 		Result = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_SteamLeaderboardEntries(SteamLeaderboardEntries_t SteamLeaderboardEntries)
 	{
 		Result = SteamLeaderboardEntries;
 	}
-	
+#endif	
 };
 
 USTRUCT(BlueprintType)
@@ -1819,10 +1905,13 @@ struct FSIK_SteamLeaderboard
 	{
 		Result = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_SteamLeaderboard(SteamLeaderboard_t SteamLeaderboard)
 	{
 		Result = SteamLeaderboard;
 	}
+#endif
 };
 
 
@@ -1850,6 +1939,7 @@ struct FSIK_PartyBeaconID
 		Result = 0;
 	}
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_PartyBeaconID(PartyBeaconID_t PartyBeaconID)
 	{
 		Result = PartyBeaconID;
@@ -1859,6 +1949,7 @@ struct FSIK_PartyBeaconID
 	{
 		return Result;
 	}
+#endif
 };
 
 
@@ -1874,6 +1965,7 @@ struct FSIK_GameID
 		Result = 0;
 	}
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_GameID(CGameID GameID)
 	{
 		Result = *GameID.GetUint64Ptr();
@@ -1885,6 +1977,7 @@ struct FSIK_GameID
 		LocalId.Set(Result);
 		return LocalId;
 	}
+#endif
 };
 
 UENUM(BlueprintType)
@@ -1972,10 +2065,12 @@ struct FSIK_InputActionSetHandle
 	{
 		Result = 0;
 	}
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_InputActionSetHandle(InputActionSetHandle_t InputActionSetHandle)
 	{
 		Result = InputActionSetHandle;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -1990,10 +2085,12 @@ struct FSIK_InputDigitalActionHandle
 	{
 		Result = 0;
 	}
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_InputDigitalActionHandle(InputDigitalActionHandle_t InputDigitalActionHandle)
 	{
 		Result = InputDigitalActionHandle;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -2008,10 +2105,13 @@ struct FSIK_InputAnalogActionHandle
 	{
 		Result = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_InputAnalogActionHandle(InputAnalogActionHandle_t InputAnalogActionHandle)
 	{
 		Result = InputAnalogActionHandle;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -2026,10 +2126,13 @@ struct FSIK_InputHandle
 	{
 		Result = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_InputHandle(InputHandle_t InputHandle)
 	{
 		Result = InputHandle;
 	}
+#endif
 };
 
 UENUM(BlueprintType)
@@ -2078,6 +2181,7 @@ struct FSIK_InputAnalogActionData
 		Y = 0.0f;
 		bActive = false;
 	}
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_InputAnalogActionData(InputAnalogActionData_t AnalogActionData)
 	{
 		Mode = static_cast<ESIK_InputSourceMode>(AnalogActionData.eMode);
@@ -2085,6 +2189,7 @@ struct FSIK_InputAnalogActionData
 		Y = AnalogActionData.y;
 		bActive = AnalogActionData.bActive;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -2103,11 +2208,13 @@ struct FSIK_InputDigitalActionData
 		bActive = false;
 		bState = false;
 	}
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_InputDigitalActionData(InputDigitalActionData_t DigitalActionData)
 	{
 		bActive = DigitalActionData.bActive;
 		bState = DigitalActionData.bState;
 	}
+#endif
 };
 
 UENUM(BlueprintType)
@@ -2183,6 +2290,7 @@ struct FSIK_InputMotionData
 		rotVelY = 0.0f;
 		rotVelZ = 0.0f;
 	}
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_InputMotionData(InputMotionData_t MotionData)
 	{
 		rotQuatX = MotionData.rotQuatX;
@@ -2196,6 +2304,7 @@ struct FSIK_InputMotionData
 		rotVelY = MotionData.rotVelY;
 		rotVelZ = MotionData.rotVelZ;
 	}
+#endif
 };
 
 UENUM(BlueprintType)
@@ -2654,7 +2763,8 @@ struct FSIK_ScePadTriggerEffectWeaponParam
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
 	int32 Strength = 0;
-	
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	ScePadTriggerEffectWeaponParam ToStruct()
 	{
 		ScePadTriggerEffectWeaponParam Param;
@@ -2663,6 +2773,7 @@ struct FSIK_ScePadTriggerEffectWeaponParam
 		Param.strength = Strength;
 		return Param;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -2679,6 +2790,7 @@ struct FSIK_ScePadTriggerEffectVibrationParam
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
 	int32 Amplitude = 0;
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	ScePadTriggerEffectVibrationParam ToStruct()
 	{
 		ScePadTriggerEffectVibrationParam Param;
@@ -2687,6 +2799,7 @@ struct FSIK_ScePadTriggerEffectVibrationParam
 		Param.amplitude = Amplitude;
 		return Param;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -2705,6 +2818,8 @@ struct FSIK_ScePadTriggerEffectFeedbackParam
 		Position = 0;
 		Strength = 0;
 	}
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	ScePadTriggerEffectFeedbackParam ToStruct()
 	{
 		ScePadTriggerEffectFeedbackParam Param;
@@ -2712,6 +2827,7 @@ struct FSIK_ScePadTriggerEffectFeedbackParam
 		Param.strength = Strength;
 		return Param;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -2722,6 +2838,7 @@ struct FSIK_ScePadTriggerEffectMultiplePositionFeedbackParam
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
 	TArray<int32> Strength;
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	ScePadTriggerEffectMultiplePositionFeedbackParam ToStruct()
 	{
 		ScePadTriggerEffectMultiplePositionFeedbackParam Param;
@@ -2733,6 +2850,7 @@ struct FSIK_ScePadTriggerEffectMultiplePositionFeedbackParam
 		memcpy(Param.strength, strength, sizeof(strength));
 		return Param;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -2740,11 +2858,13 @@ struct FSIK_ScePadTriggerEffectOffParam
 {
 	GENERATED_BODY()
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	ScePadTriggerEffectOffParam ToStruct()
 	{
 		ScePadTriggerEffectOffParam Param;
 		return Param;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -2764,6 +2884,7 @@ struct FSIK_ScePadTriggerEffectSlopeFeedbackParam
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
 	int32 EndStrength = 0;
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	ScePadTriggerEffectSlopeFeedbackParam ToStruct()
 	{
 		ScePadTriggerEffectSlopeFeedbackParam Param;
@@ -2773,6 +2894,7 @@ struct FSIK_ScePadTriggerEffectSlopeFeedbackParam
 		Param.endStrength = EndStrength;
 		return Param;
 	}
+#endif
 };
 
 USTRUCT(BlueprintType)
@@ -2786,6 +2908,7 @@ struct FSIK_ScePadTriggerEffectMultiplePositionVibrationParam
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
 	TArray<int32> Amplitude;
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	ScePadTriggerEffectMultiplePositionVibrationParam ToStruct()
 	{
 		ScePadTriggerEffectMultiplePositionVibrationParam Param;
@@ -2798,6 +2921,7 @@ struct FSIK_ScePadTriggerEffectMultiplePositionVibrationParam
 		memcpy(Param.amplitude, amplitude, sizeof(amplitude));
 		return Param;
 	}
+#endif
 };
 	
 
@@ -2827,6 +2951,7 @@ struct FSIK_ScePadTriggerEffectCommandData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
 	FSIK_ScePadTriggerEffectMultiplePositionVibrationParam MultiplePositionVibrationParam;
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	ScePadTriggerEffectCommandData ToStruct()
 	{
 		ScePadTriggerEffectCommandData Data;
@@ -2839,6 +2964,7 @@ struct FSIK_ScePadTriggerEffectCommandData
 		Data.multiplePositionVibrationParam = MultiplePositionVibrationParam.ToStruct();
 		return Data;
 	}
+#endif
 };
 
 UENUM(BlueprintType)
@@ -2859,6 +2985,7 @@ struct FSIK_ScePadTriggerEffectCommand
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steam Integration Kit")
 	FSIK_ScePadTriggerEffectCommandData CommandData;
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	ScePadTriggerEffectCommand ToStruct()
 	{
 		ScePadTriggerEffectCommand Command;
@@ -2866,6 +2993,7 @@ struct FSIK_ScePadTriggerEffectCommand
 		Command.commandData = CommandData.ToStruct();
 		return Command;
 	}
+#endif
 };
 
 UENUM(BlueprintType)

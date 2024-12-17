@@ -6,7 +6,7 @@
 
 USIK_GameServerStatsSubsystem::USIK_GameServerStatsSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackGSStatsReceived.Register(this, &USIK_GameServerStatsSubsystem::OnGSStatsReceivedCallbck);
 	m_CallbackGSStatsStored.Register(this, &USIK_GameServerStatsSubsystem::OnGSStatsStoredCallbck);
 	m_CallbackGSStatsUnloaded.Register(this, &USIK_GameServerStatsSubsystem::OnGSStatsUnloadedCallbck);
@@ -22,12 +22,15 @@ USIK_GameServerStatsSubsystem::USIK_GameServerStatsSubsystem()
 
 USIK_GameServerStatsSubsystem::~USIK_GameServerStatsSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackGSStatsReceived.Unregister();
 	m_CallbackGSStatsStored.Unregister();
 	m_CallbackGSStatsUnloaded.Unregister();
 #endif
 }
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+
 void USIK_GameServerStatsSubsystem::OnGSStatsReceivedCallbck(GSStatsReceived_t* pCallback)
 {
 	FSIK_SteamId SteamID = pCallback->m_steamIDUser;
@@ -47,3 +50,4 @@ void USIK_GameServerStatsSubsystem::OnGSStatsUnloadedCallbck(GSStatsUnloaded_t* 
 	FSIK_SteamId SteamID = pCallback->m_steamIDUser;
 	OnGSStatsUnloaded.Broadcast(SteamID);
 }
+#endif

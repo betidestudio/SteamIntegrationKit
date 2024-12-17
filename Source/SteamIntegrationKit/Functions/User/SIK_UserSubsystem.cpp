@@ -7,7 +7,7 @@
 
 USIK_UserSubsystem::USIK_UserSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackClientGameServerDeny.Register(this, &USIK_UserSubsystem::OnClientGameServerDeny);
 	m_CallbackDurationControl.Register(this, &USIK_UserSubsystem::OnDurationControl);
 	m_CallbackGameWebCallback.Register(this, &USIK_UserSubsystem::OnGameWebCallback);
@@ -48,7 +48,7 @@ USIK_UserSubsystem::USIK_UserSubsystem()
 
 USIK_UserSubsystem::~USIK_UserSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackClientGameServerDeny.Unregister();
 	m_CallbackDurationControl.Unregister();
 	m_CallbackGameWebCallback.Unregister();
@@ -67,6 +67,7 @@ USIK_UserSubsystem::~USIK_UserSubsystem()
 #endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_UserSubsystem::OnClientGameServerDeny(ClientGameServerDeny_t *pParam)
 {
 	auto Param = *pParam;
@@ -193,3 +194,4 @@ void USIK_UserSubsystem::OnValidateAuthTicketResponse(ValidateAuthTicketResponse
 		OnValidateAuthTicketResponseCallback.Broadcast(Param.m_SteamID, Param.m_eAuthSessionResponse, Param.m_OwnerSteamID);
 	});
 }
+#endif

@@ -27,8 +27,10 @@ public:
 
 private:
 	FSIK_SteamId m_SteamId;
-	void OnGetFollowerCount(FriendsGetFollowerCount_t* FriendsGetFollowerCount, bool bIOFailure);
 	virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	void OnGetFollowerCount(FriendsGetFollowerCount_t* FriendsGetFollowerCount, bool bIOFailure);
 	SteamAPICall_t m_CallbackHandle;
 	CCallResult<USIK_GetFollowerCount_AsyncFunction, FriendsGetFollowerCount_t> m_Callback;
+#endif
 };

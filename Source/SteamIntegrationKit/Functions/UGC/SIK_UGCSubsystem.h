@@ -91,6 +91,8 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Steam Integration Kit || SDK Functions || UGC")
 	FOnWorkshopEULAStatus OnWorkshopEULAStatus;
 private:
+	
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	STEAM_CALLBACK_MANUAL(USIK_UGCSubsystem, OnAddAppDependencyResultCallback, AddAppDependencyResult_t, m_CallbackAddAppDependencyResult);
 	STEAM_CALLBACK_MANUAL(USIK_UGCSubsystem, OnAddUGCDependencyResultCallback, AddUGCDependencyResult_t, m_CallbackAddUGCDependencyResult);
 	STEAM_CALLBACK_MANUAL(USIK_UGCSubsystem, OnCreateItemResultCallback, CreateItemResult_t, m_CallbackCreateItemResult);
@@ -109,4 +111,5 @@ private:
 	STEAM_CALLBACK_MANUAL(USIK_UGCSubsystem, OnUserFavoriteItemsListChangedCallback, UserFavoriteItemsListChanged_t, m_CallbackUserFavoriteItemsListChanged);
 	STEAM_CALLBACK_MANUAL(USIK_UGCSubsystem, OnUserSubscribedItemsListChangedCallback, UserSubscribedItemsListChanged_t, m_CallbackUserSubscribedItemsListChanged);
 	STEAM_CALLBACK_MANUAL(USIK_UGCSubsystem, OnWorkshopEULAStatusCallback, WorkshopEULAStatus_t, m_CallbackWorkshopEULAStatus);
+#endif
 };

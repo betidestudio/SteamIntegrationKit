@@ -3,17 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steamtypes.h>
-#include <steam/isteamuser.h>
-#include <steam/steam_api_common.h>
-#else
-#include "steam_api_common.h"
-#include "isteamuser.h"
-#include "steamtypes.h"
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "UObject/Object.h"
 #include "SIK_SharedFile.h"
 #include "Subsystems/GameInstanceSubsystem.h"
@@ -88,6 +77,7 @@ public:
 
 
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	STEAM_CALLBACK_MANUAL(USIK_UserSubsystem, OnClientGameServerDeny, ClientGameServerDeny_t, m_CallbackClientGameServerDeny);
 	STEAM_CALLBACK_MANUAL(USIK_UserSubsystem, OnDurationControl, DurationControl_t, m_CallbackDurationControl);
 	STEAM_CALLBACK_MANUAL(USIK_UserSubsystem, OnGameWebCallback, GameWebCallback_t, m_CallbackGameWebCallback);
@@ -104,5 +94,6 @@ private:
 	STEAM_CALLBACK_MANUAL(USIK_UserSubsystem, OnSteamServersDisconnected, SteamServersDisconnected_t, m_CallbackSteamServersDisconnected);
 	STEAM_CALLBACK_MANUAL(USIK_UserSubsystem, OnStoreAuthURLResponse, StoreAuthURLResponse_t, m_CallbackStoreAuthURLResponse);
 	STEAM_CALLBACK_MANUAL(USIK_UserSubsystem, OnValidateAuthTicketResponse, ValidateAuthTicketResponse_t, m_CallbackValidateAuthTicketResponse);
+#endif
 	
 };

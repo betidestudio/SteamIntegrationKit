@@ -8,7 +8,7 @@
 
 USIK_MusicRemoteSubsystem::USIK_MusicRemoteSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackMusicPlayerRemoteToFront.Register(this, &USIK_MusicRemoteSubsystem::OnMusicPlayerRemoteToFrontCallbck);
 	m_CallbackMusicPlayerRemoteWillActivate.Register(this, &USIK_MusicRemoteSubsystem::OnMusicPlayerRemoteWillActivateCallbck);
 	m_CallbackMusicPlayerRemoteWillDeactivate.Register(this, &USIK_MusicRemoteSubsystem::OnMusicPlayerRemoteWillDeactivateCallbck);
@@ -47,7 +47,7 @@ USIK_MusicRemoteSubsystem::USIK_MusicRemoteSubsystem()
 
 USIK_MusicRemoteSubsystem::~USIK_MusicRemoteSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackMusicPlayerRemoteToFront.Unregister();
 	m_CallbackMusicPlayerRemoteWillActivate.Unregister();
 	m_CallbackMusicPlayerRemoteWillDeactivate.Unregister();
@@ -65,6 +65,7 @@ USIK_MusicRemoteSubsystem::~USIK_MusicRemoteSubsystem()
 #endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_MusicRemoteSubsystem::OnMusicPlayerRemoteToFrontCallbck(MusicPlayerRemoteToFront_t* pParam)
 {
 	auto Param = *pParam;
@@ -190,3 +191,4 @@ void USIK_MusicRemoteSubsystem::OnMusicPlayerWillQuitCallbck(MusicPlayerWillQuit
 		OnMusicPlayerWillQuit.Broadcast();
 	});
 }
+#endif

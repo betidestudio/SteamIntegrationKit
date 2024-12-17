@@ -36,44 +36,76 @@ TArray<uint8> USIK_SharedFile::ConvertFileToUint8Array(FString FilePath, bool& b
 
 int64 USIK_SharedFile::ConvertSteamIdToInt64(FSIK_SteamId SteamId)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	return SteamId.GetSteamID().ConvertToUint64();
+#else
+	return -11;
+#endif
 }
 
 FSIK_SteamId USIK_SharedFile::ConvertInt64ToSteamId(int64 Int64)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	CSteamID SteamId;
 	SteamId.SetFromUint64(Int64);
 	return SteamId;
+#else
+	return FSIK_SteamId();
+#endif
 }
 
 FSIK_AccountID USIK_SharedFile::GetAccountID(FSIK_SteamId SteamId)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	return SteamId.GetSteamID().GetAccountID();
+#else
+	return -11;
+#endif
 }
 
 TEnumAsByte<ESIK_Universe> USIK_SharedFile::GetUniverse(FSIK_SteamId SteamId)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	return static_cast<TEnumAsByte<ESIK_Universe>>(SteamId.GetSteamID().GetEUniverse());
+#else
+	return ESIK_Universe::k_EUniverseInvalid;
+#endif
 }
 
 bool USIK_SharedFile::IsValidSteamId(FSIK_SteamId SteamId)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	return SteamId.GetSteamID().IsValid();
+#else
+	return false;
+#endif
 }
 
 bool USIK_SharedFile::IsValidGameId(FSIK_GameID GameId)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	return GameId.GetGameID().IsValid();
+#else
+	return false;
+#endif
 }
 
 bool USIK_SharedFile::IsEqualSteamId(FSIK_SteamId SteamId1, FSIK_SteamId SteamId2)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	return SteamId1.GetSteamID() == SteamId2.GetSteamID();
+#else
+	return false;
+#endif
 }
 
 bool USIK_SharedFile::IsEqualGameId(FSIK_GameID GameId1, FSIK_GameID GameId2)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	return GameId1.GetGameID() == GameId2.GetGameID();
+#else
+	return false;
+#endif
 }
 
 FSIK_SteamId USIK_SharedFile::GetSteamIdFromUniqueNetId(const FUniqueNetIdRepl& UniqueNetId)

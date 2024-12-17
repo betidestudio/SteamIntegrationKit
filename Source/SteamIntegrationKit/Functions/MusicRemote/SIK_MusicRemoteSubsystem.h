@@ -5,17 +5,6 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SIK_SharedFile.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteammusicremote.h>
-#include <steam/isteamuser.h>
-#include <steam/steam_api_common.h>
-#else
-#include "isteammusicremote.h"
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_MusicRemoteSubsystem.generated.h"
 
 
@@ -87,7 +76,7 @@ public:
 	FOnMusicPlayerWillQuit OnMusicPlayerWillQuit;
 
 private:
-
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	STEAM_CALLBACK_MANUAL(USIK_MusicRemoteSubsystem, OnMusicPlayerRemoteToFrontCallbck, MusicPlayerRemoteToFront_t, m_CallbackMusicPlayerRemoteToFront);
 	STEAM_CALLBACK_MANUAL(USIK_MusicRemoteSubsystem, OnMusicPlayerRemoteWillActivateCallbck, MusicPlayerRemoteWillActivate_t, m_CallbackMusicPlayerRemoteWillActivate);
 	STEAM_CALLBACK_MANUAL(USIK_MusicRemoteSubsystem, OnMusicPlayerRemoteWillDeactivateCallbck, MusicPlayerRemoteWillDeactivate_t, m_CallbackMusicPlayerRemoteWillDeactivate);
@@ -102,4 +91,5 @@ private:
 	STEAM_CALLBACK_MANUAL(USIK_MusicRemoteSubsystem, OnMusicPlayerWantsShuffledCallbck, MusicPlayerWantsShuffled_t, m_CallbackMusicPlayerWantsShuffled);
 	STEAM_CALLBACK_MANUAL(USIK_MusicRemoteSubsystem, OnMusicPlayerWantsVolumeCallbck, MusicPlayerWantsVolume_t, m_CallbackMusicPlayerWantsVolume);
 	STEAM_CALLBACK_MANUAL(USIK_MusicRemoteSubsystem, OnMusicPlayerWillQuitCallbck, MusicPlayerWillQuit_t, m_CallbackMusicPlayerWillQuit);
+#endif
 };

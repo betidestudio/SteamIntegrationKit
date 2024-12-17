@@ -26,8 +26,10 @@ public:
 	FOnDownloadClanActivityCountsComplete OnFailure;
 private:
 	TArray<int64> Var_ClanIds;
-	void OnDownloadClanActivityCounts(DownloadClanActivityCountsResult_t* DownloadClanActivityCountsResult, bool bIOFailure);
 	virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	void OnDownloadClanActivityCounts(DownloadClanActivityCountsResult_t* DownloadClanActivityCountsResult, bool bIOFailure);
 	SteamAPICall_t CallbackHandle;
 	CCallResult<USIK_DownloadClanActivityCounts_AsyncFunction, DownloadClanActivityCountsResult_t> OnDownloadClanActivityCountsCallResult;
+#endif
 };

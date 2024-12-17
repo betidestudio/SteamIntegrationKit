@@ -5,7 +5,7 @@
 
 USIK_RemoteStorageSubsystem::USIK_RemoteStorageSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackUGCDownloadResult.Register(this, &USIK_RemoteStorageSubsystem::RemoteStorageDownloadUGCResutCallbck);
 	m_CallbackFileShareResult.Register(this, &USIK_RemoteStorageSubsystem::RemoteStorageFileShareResultCallback);
 	m_CallbackFileWriteAsyncComplete.Register(this, &USIK_RemoteStorageSubsystem::RemoteStorageFileWriteAsyncCompleteCallback);
@@ -28,7 +28,7 @@ USIK_RemoteStorageSubsystem::USIK_RemoteStorageSubsystem()
 
 USIK_RemoteStorageSubsystem::~USIK_RemoteStorageSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackUGCDownloadResult.Unregister();
 	m_CallbackFileShareResult.Unregister();
 	m_CallbackFileWriteAsyncComplete.Unregister();
@@ -38,6 +38,7 @@ USIK_RemoteStorageSubsystem::~USIK_RemoteStorageSubsystem()
 #endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_RemoteStorageSubsystem::RemoteStorageDownloadUGCResutCallbck(RemoteStorageDownloadUGCResult_t* Callback)
 {
 	
@@ -111,3 +112,4 @@ void USIK_RemoteStorageSubsystem::RemoteStorageUnsubscribePublishedFileResultCal
 		OnRemoteStorageUnsubscribePublishedFileResult.Broadcast(FSIK_PublishedFileId(Param.m_nPublishedFileId), static_cast<ESIK_Result>(Param.m_eResult));
 	});
 }
+#endif

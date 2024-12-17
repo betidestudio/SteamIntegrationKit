@@ -12,6 +12,7 @@ USIK_GetFollowerCount_AsyncFunction* USIK_GetFollowerCount_AsyncFunction::GetFol
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_GetFollowerCount_AsyncFunction::OnGetFollowerCount(FriendsGetFollowerCount_t* FriendsGetFollowerCount, bool bIOFailure)
 {
 	auto Param = *FriendsGetFollowerCount;
@@ -36,10 +37,12 @@ void USIK_GetFollowerCount_AsyncFunction::OnGetFollowerCount(FriendsGetFollowerC
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_GetFollowerCount_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(SteamFriends() == nullptr)
 	{
 		OnFailure.Broadcast(0, FSIK_SteamId());
@@ -56,4 +59,9 @@ void USIK_GetFollowerCount_AsyncFunction::Activate()
 		return;
 	}
 	m_Callback.Set(m_CallbackHandle, this, &USIK_GetFollowerCount_AsyncFunction::OnGetFollowerCount);
+#else
+	OnFailure.Broadcast(0, FSIK_SteamId());
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

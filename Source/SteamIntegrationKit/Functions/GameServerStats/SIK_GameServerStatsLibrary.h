@@ -4,13 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "SIK_SharedFile.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include "steam/isteamgameserverstats.h"
-#else
-#include "isteamgameserverstats.h"
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "SIK_GameServerStatsLibrary.generated.h"
 

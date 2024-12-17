@@ -3,17 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteamuserstats.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steam_api.h>
-#include <isteamuserstats.h>
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_CreateLeaderboard_AsyncFunction.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Runtime/Core/Public/PixelFormat.h"

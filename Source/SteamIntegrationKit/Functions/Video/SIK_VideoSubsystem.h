@@ -4,17 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "SIK_SharedFile.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteamvideo.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steam_api.h>
-#include <isteamvideo.h>
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SIK_VideoSubsystem.generated.h"
 
@@ -37,8 +26,10 @@ public:
 	
 	
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	//GetOPFSettingsResult_t
 	STEAM_CALLBACK_MANUAL(USIK_VideoSubsystem, OnGetOPFSettingsResultCallbck, GetOPFSettingsResult_t, m_CallbackGetOPFSettingsResult);
 	//GetVideoURLResult_t
 	STEAM_CALLBACK_MANUAL(USIK_VideoSubsystem, OnGetVideoURLResultCallbck, GetVideoURLResult_t, m_CallbackGetVideoURLResult);
+#endif
 };

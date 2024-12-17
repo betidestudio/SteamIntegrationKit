@@ -12,6 +12,7 @@ USIK_SetPersonaName_AsyncFunction* USIK_SetPersonaName_AsyncFunction::SetPersona
 	return BlueprintNode;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_SetPersonaName_AsyncFunction::OnSetPersonaName(PersonaStateChange_t* PersonaStateChange, bool bIOFailure)
 {
 	auto Param = *PersonaStateChange;
@@ -29,10 +30,12 @@ void USIK_SetPersonaName_AsyncFunction::OnSetPersonaName(PersonaStateChange_t* P
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_SetPersonaName_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(SteamFriends() == nullptr)
 	{
 		OnFailure.Broadcast();
@@ -49,4 +52,9 @@ void USIK_SetPersonaName_AsyncFunction::Activate()
 		return;
 	}
 	m_Callback.Set(m_CallbackHandle, this, &USIK_SetPersonaName_AsyncFunction::OnSetPersonaName);
+#else
+	OnFailure.Broadcast();
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

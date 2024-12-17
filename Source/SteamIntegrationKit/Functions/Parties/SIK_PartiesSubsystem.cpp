@@ -7,7 +7,7 @@
 
 USIK_PartiesSubsystem::USIK_PartiesSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackJoinParty.Register(this, &USIK_PartiesSubsystem::OnJoinPartyCallback);
 	m_CallbackCreateBeacon.Register(this, &USIK_PartiesSubsystem::OnCreateBeaconCallback);
 	m_CallbackReservationNotification.Register(this, &USIK_PartiesSubsystem::OnReservationNotificationCallback);
@@ -30,7 +30,7 @@ USIK_PartiesSubsystem::USIK_PartiesSubsystem()
 
 USIK_PartiesSubsystem::~USIK_PartiesSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackJoinParty.Unregister();
 	m_CallbackCreateBeacon.Unregister();
 	m_CallbackReservationNotification.Unregister();
@@ -40,6 +40,7 @@ USIK_PartiesSubsystem::~USIK_PartiesSubsystem()
 #endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_PartiesSubsystem::OnJoinPartyCallback(JoinPartyCallback_t* pParam)
 {
 	auto Param = *pParam;
@@ -104,3 +105,4 @@ void USIK_PartiesSubsystem::OnActiveBeaconsUpdatedCallback(ActiveBeaconsUpdated_
 		OnActiveBeaconsUpdated.Broadcast();
 	});
 }
+#endif

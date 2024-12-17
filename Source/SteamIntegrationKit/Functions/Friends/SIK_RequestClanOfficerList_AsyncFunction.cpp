@@ -16,6 +16,7 @@ USIK_RequestClanOfficerList_AsyncFunction* USIK_RequestClanOfficerList_AsyncFunc
 void USIK_RequestClanOfficerList_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(SteamFriends() == nullptr)
 	{
 		OnFailure.Broadcast(-1);
@@ -32,8 +33,14 @@ void USIK_RequestClanOfficerList_AsyncFunction::Activate()
 		return;
 	}
 	m_Callback.Set(m_CallbackHandle, this, &USIK_RequestClanOfficerList_AsyncFunction::OnRequestClanOfficerList);
+#else
+	OnFailure.Broadcast(-1);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_RequestClanOfficerList_AsyncFunction::OnRequestClanOfficerList(ClanOfficerListResponse_t* ClanOfficerListResponse, bool bIOFailure)
 {
 	auto Param = *ClanOfficerListResponse;
@@ -58,3 +65,4 @@ void USIK_RequestClanOfficerList_AsyncFunction::OnRequestClanOfficerList(ClanOff
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif

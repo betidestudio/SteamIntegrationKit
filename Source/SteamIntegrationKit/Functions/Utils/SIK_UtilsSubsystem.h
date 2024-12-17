@@ -3,16 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steamtypes.h>
-#include <steam/isteamutils.h>
-#include <steam/steam_api_common.h>
-#else
-#include "isteamutils.h"
-#include "steam_api_common.h"
-#endif
-THIRD_PARTY_INCLUDES_END
+#include "SIK_SharedFile.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SIK_UtilsSubsystem.generated.h"
 
@@ -48,9 +39,11 @@ public:
 	FOnSteamShutdown OnSteamShutdown;
 	
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	STEAM_CALLBACK_MANUAL(USIK_UtilsSubsystem, OnGamepadTextInputDismissedCallbck, GamepadTextInputDismissed_t, m_CallbackGamepadTextInputDismissed);
 	STEAM_CALLBACK_MANUAL(USIK_UtilsSubsystem, OnIPCountryCallbck, IPCountry_t, m_CallbackIPCountry);
 	STEAM_CALLBACK_MANUAL(USIK_UtilsSubsystem, OnLowBatteryPowerCallbck, LowBatteryPower_t, m_CallbackLowBatteryPower);
 	STEAM_CALLBACK_MANUAL(USIK_UtilsSubsystem, OnAppResumingFromSuspendCallbck, AppResumingFromSuspend_t, m_CallbackAppResumingFromSuspend);
 	STEAM_CALLBACK_MANUAL(USIK_UtilsSubsystem, OnSteamShutdownCallbck, SteamShutdown_t, m_CallbackSteamShutdown);
+#endif
 };

@@ -4,17 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "SIK_SharedFile.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteamgameserver.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steam_api_common.h>
-#include <steam_gameserver.h>
-#include <isteamgameserver.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SIK_GameServerSubsystem.generated.h"
 
@@ -57,6 +46,7 @@ public:
 	FGSPolicyResponseDelegate OnGSPolicyResponse;
 	
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	//AssociateWithClanResult_t
 	STEAM_CALLBACK_MANUAL(USIK_GameServerSubsystem, OnAssociateWithClanResultCallbck, AssociateWithClanResult_t, m_CallbackAssociateWithClanResult);
 	//ComputeNewPlayerCompatibilityResult_t
@@ -71,4 +61,5 @@ private:
 	STEAM_CALLBACK_MANUAL(USIK_GameServerSubsystem, OnGSClientKickCallbck, GSClientKick_t, m_CallbackGSClientKick);
 	//GSPolicyResponse_t
 	STEAM_CALLBACK_MANUAL(USIK_GameServerSubsystem, OnGSPolicyResponseCallbck, GSPolicyResponse_t, m_CallbackGSPolicyResponse);
+#endif
 };

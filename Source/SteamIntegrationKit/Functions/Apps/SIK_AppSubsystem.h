@@ -3,16 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteamapps.h>
-#include <steam/steam_api_common.h>
-#else
-#include <isteamapps.h>
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SIK_AppSubsystem.generated.h"
@@ -60,8 +50,10 @@ public:
 	FTimedTrialStatusDelegate OnTimedTrialStatus;
 	
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	STEAM_CALLBACK_MANUAL(USIK_AppSubsystem, OnDlcInstalledCallbck, DlcInstalled_t, m_CallbackDlcInstalled);
 	STEAM_CALLBACK_MANUAL(USIK_AppSubsystem, OnFileDetailsCallbck, FileDetailsResult_t, m_CallbackFileDetails);
 	STEAM_CALLBACK_MANUAL(USIK_AppSubsystem, OnNewUrlLaunchParametersCallbck, NewUrlLaunchParameters_t, m_CallbackNewUrlLaunchParameters);
 	STEAM_CALLBACK_MANUAL(USIK_AppSubsystem, OnTimedTrialStatusCallbck, TimedTrialStatus_t, m_CallbackTimedTrialStatus);
+#endif
 };

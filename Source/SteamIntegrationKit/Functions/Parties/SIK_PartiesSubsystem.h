@@ -42,10 +42,12 @@ public:
 	FActiveBeaconsUpdatedDelegate OnActiveBeaconsUpdated;
 
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	STEAM_CALLBACK_MANUAL(USIK_PartiesSubsystem, OnJoinPartyCallback, JoinPartyCallback_t, m_CallbackJoinParty);
 	STEAM_CALLBACK_MANUAL(USIK_PartiesSubsystem, OnCreateBeaconCallback, CreateBeaconCallback_t, m_CallbackCreateBeacon);
 	STEAM_CALLBACK_MANUAL(USIK_PartiesSubsystem, OnReservationNotificationCallback, ReservationNotificationCallback_t, m_CallbackReservationNotification);
 	STEAM_CALLBACK_MANUAL(USIK_PartiesSubsystem, OnChangeNumOpenSlotsCallback, ChangeNumOpenSlotsCallback_t, m_CallbackChangeNumOpenSlots);
 	STEAM_CALLBACK_MANUAL(USIK_PartiesSubsystem, OnAvailableBeaconLocationsUpdatedCallback, AvailableBeaconLocationsUpdated_t, m_CallbackAvailableBeaconLocationsUpdated);
 	STEAM_CALLBACK_MANUAL(USIK_PartiesSubsystem, OnActiveBeaconsUpdatedCallback, ActiveBeaconsUpdated_t, m_CallbackActiveBeaconsUpdated);
+#endif
 };

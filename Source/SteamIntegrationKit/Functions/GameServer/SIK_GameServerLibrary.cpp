@@ -317,9 +317,13 @@ TEnumAsByte<ESIK_UserHasLicenseForAppResult> USIK_GameServerLibrary::UserHasLice
 
 bool USIK_GameServerLibrary::WasRestartRequested()
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamGameServer())
 	{
 		return false;
 	}
 	return SteamGameServer()->WasRestartRequested();
+#else
+	return false;
+#endif
 }

@@ -3,20 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteamgameserver.h>
-#include <steam/steam_api_common.h>
-#include <steam/steamtypes.h>
-#include <steam/isteamuserstats.h>
-#else
-#include <steamtypes.h>
-#include <isteamuserstats.h>
-#include <steam_api_common.h>
-#include <steam_gameserver.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
 #include "Runtime/Launch/Resources/Version.h"
 #include "Kismet/BlueprintFunctionLibrary.h"

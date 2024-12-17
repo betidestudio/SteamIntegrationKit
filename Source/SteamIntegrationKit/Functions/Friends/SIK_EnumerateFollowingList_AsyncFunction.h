@@ -28,8 +28,10 @@ public:
 
 private:
 	int32 m_StartIndex;
-	void OnEnumerateFollowingList(FriendsEnumerateFollowingList_t* FriendsEnumerateFollowings, bool bIOFailure);
 	virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	void OnEnumerateFollowingList(FriendsEnumerateFollowingList_t* FriendsEnumerateFollowings, bool bIOFailure);
 	SteamAPICall_t m_CallbackHandle;
 	CCallResult<USIK_EnumerateFollowingList_AsyncFunction, FriendsEnumerateFollowingList_t> m_Callback;
+#endif
 };

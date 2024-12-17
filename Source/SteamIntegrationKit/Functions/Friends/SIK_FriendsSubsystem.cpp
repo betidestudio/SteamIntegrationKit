@@ -2,13 +2,12 @@
 
 
 #include "SIK_FriendsSubsystem.h"
-
 #include "Async/Async.h"
 
 
 USIK_FriendsSubsystem::USIK_FriendsSubsystem()
 {
-//#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(SteamFriends() != nullptr)
 	{
 		m_CallbackAvatarImageLoaded.Register(this, &USIK_FriendsSubsystem::OnAvatarImageLoadedCallback);
@@ -52,11 +51,12 @@ USIK_FriendsSubsystem::USIK_FriendsSubsystem()
 			m_CallbackClanOfficerList.SetGameserverFlag();
 		}
 	}
+#endif
 }
 
 USIK_FriendsSubsystem::~USIK_FriendsSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackAvatarImageLoaded.Unregister();
 	m_CallbackFriendRichPresenceUpdate.Unregister();
 	m_CallbackDownloadClanActivityCountsResult.Unregister();
@@ -77,6 +77,8 @@ USIK_FriendsSubsystem::~USIK_FriendsSubsystem()
 	m_CallbackClanOfficerList.Unregister();
 #endif
 }
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 
 void USIK_FriendsSubsystem::OnAvatarImageLoadedCallback(AvatarImageLoaded_t* pParam)
 {
@@ -243,3 +245,4 @@ void USIK_FriendsSubsystem::OnClanOfficerListCallback(ClanOfficerListResponse_t*
 		OnClanOfficerList.Broadcast(Param.m_steamIDClan, Param.m_cOfficers, Param.m_bSuccess != 0);
 	});
 }
+#endif

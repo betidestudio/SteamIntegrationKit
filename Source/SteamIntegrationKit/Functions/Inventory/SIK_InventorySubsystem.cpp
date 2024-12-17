@@ -7,7 +7,7 @@
 
 USIK_InventorySubsystem::USIK_InventorySubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackSteamInventoryDefinitionUpdate.Register(this, &USIK_InventorySubsystem::OnSteamInventoryDefinitionUpdateCallback);
 	m_CallbackSteamInventoryEligiblePromoItemDefIDs.Register(this, &USIK_InventorySubsystem::OnSteamInventoryEligiblePromoItemDefIDsCallback);
 	m_CallbackSteamInventoryFullUpdate.Register(this, &USIK_InventorySubsystem::OnSteamInventoryFullUpdateCallback);
@@ -29,7 +29,7 @@ USIK_InventorySubsystem::USIK_InventorySubsystem()
 
 USIK_InventorySubsystem::~USIK_InventorySubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackSteamInventoryDefinitionUpdate.Unregister();
 	m_CallbackSteamInventoryEligiblePromoItemDefIDs.Unregister();
 	m_CallbackSteamInventoryFullUpdate.Unregister();
@@ -39,6 +39,7 @@ USIK_InventorySubsystem::~USIK_InventorySubsystem()
 #endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_InventorySubsystem::OnSteamInventoryDefinitionUpdateCallback(SteamInventoryDefinitionUpdate_t* pParam)
 {
 	auto Param = *pParam;
@@ -96,3 +97,4 @@ void USIK_InventorySubsystem::OnSteamInventoryRequestPricesResultCallback(SteamI
 		OnSteamInventoryRequestPricesResult.Broadcast(result, Param.m_rgchCurrency);
 	});
 }
+#endif

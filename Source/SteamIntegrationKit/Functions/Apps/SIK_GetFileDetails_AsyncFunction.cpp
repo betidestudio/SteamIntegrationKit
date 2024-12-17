@@ -12,6 +12,7 @@ USIK_GetFileDetails_AsyncFunction* USIK_GetFileDetails_AsyncFunction::GetFileDet
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_GetFileDetails_AsyncFunction::OnGetFileDetails(FileDetailsResult_t* FileDetailsResult, bool bIOFailure)
 {
 	auto Param = *FileDetailsResult;
@@ -35,10 +36,12 @@ void USIK_GetFileDetails_AsyncFunction::OnGetFileDetails(FileDetailsResult_t* Fi
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_GetFileDetails_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if (!SteamApps())
 	{
 		OnFailure.Broadcast(ESIK_Result::ResultFail, 0, TArray<int32>(), 0);
@@ -55,4 +58,5 @@ void USIK_GetFileDetails_AsyncFunction::Activate()
 		return;
 	}
 	m_Callback.Set(m_CallbackHandle, this, &USIK_GetFileDetails_AsyncFunction::OnGetFileDetails);
+#endif
 }

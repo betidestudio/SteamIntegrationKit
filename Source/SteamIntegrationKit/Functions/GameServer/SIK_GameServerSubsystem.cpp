@@ -7,7 +7,7 @@
 
 USIK_GameServerSubsystem::USIK_GameServerSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackAssociateWithClanResult.Register(this, &USIK_GameServerSubsystem::OnAssociateWithClanResultCallbck);
 	m_CallbackComputeNewPlayerCompatibilityResult.Register(this, &USIK_GameServerSubsystem::OnComputeNewPlayerCompatibilityResultCallbck);
 	m_CallbackGSClientApprove.Register(this, &USIK_GameServerSubsystem::OnGSClientApproveCallbck);
@@ -32,7 +32,7 @@ USIK_GameServerSubsystem::USIK_GameServerSubsystem()
 
 USIK_GameServerSubsystem::~USIK_GameServerSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackAssociateWithClanResult.Unregister();
 	m_CallbackComputeNewPlayerCompatibilityResult.Unregister();
 	m_CallbackGSClientApprove.Unregister();
@@ -43,6 +43,7 @@ USIK_GameServerSubsystem::~USIK_GameServerSubsystem()
 #endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_GameServerSubsystem::OnAssociateWithClanResultCallbck(AssociateWithClanResult_t* pCallback)
 {
 	auto Param = *pCallback;
@@ -105,3 +106,4 @@ void USIK_GameServerSubsystem::OnGSPolicyResponseCallbck(GSPolicyResponse_t* pCa
 		OnGSPolicyResponse.Broadcast(Param.m_bSecure == 1);
 	});
 }
+#endif

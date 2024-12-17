@@ -3,16 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steamtypes.h>
-#include <steam/isteamremotestorage.h>
-#include <steam/steam_api_common.h>
-#else
-#include "isteamremotestorage.h"
-#include "steam_api_common.h"
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Async/Async.h"
@@ -68,6 +58,7 @@ public:
 	FOnRemoteStorageLocalFileChange OnRemoteStorageLocalFileChange;
 
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	STEAM_CALLBACK_MANUAL(USIK_RemoteStorageSubsystem, RemoteStorageDownloadUGCResutCallbck, RemoteStorageDownloadUGCResult_t, m_CallbackUGCDownloadResult);
 	STEAM_CALLBACK_MANUAL(USIK_RemoteStorageSubsystem, RemoteStorageFileShareResultCallback, RemoteStorageFileShareResult_t, m_CallbackFileShareResult);
 	STEAM_CALLBACK_MANUAL(USIK_RemoteStorageSubsystem, RemoteStorageFileWriteAsyncCompleteCallback, RemoteStorageFileWriteAsyncComplete_t, m_CallbackFileWriteAsyncComplete);
@@ -76,5 +67,5 @@ private:
 	STEAM_CALLBACK_MANUAL(USIK_RemoteStorageSubsystem, RemoteStoragePublishedFileUnsubscribedCompleteCallback, RemoteStoragePublishedFileUnsubscribed_t, m_CallbackPublishedFileUnsubscribedComplete);
 	STEAM_CALLBACK_MANUAL(USIK_RemoteStorageSubsystem, RemoteStorageSubscribePublishedFileResultCallback, RemoteStorageSubscribePublishedFileResult_t, m_CallbackSubscribePublishedFileResult);
 	STEAM_CALLBACK_MANUAL(USIK_RemoteStorageSubsystem, RemoteStorageUnsubscribePublishedFileResultCallback, RemoteStorageUnsubscribePublishedFileResult_t, m_CallbackUnsubscribePublishedFileResult);
-
+#endif
 };

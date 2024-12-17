@@ -25,8 +25,10 @@ public:
 	FSetPersonaNameDelegate OnFailure;
 private:
 	FString m_PersonaName;
-	void OnSetPersonaName(PersonaStateChange_t* PersonaStateChange, bool bIOFailure);
 	virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	SteamAPICall_t m_CallbackHandle;
+	void OnSetPersonaName(PersonaStateChange_t* PersonaStateChange, bool bIOFailure);
 	CCallResult<USIK_SetPersonaName_AsyncFunction, PersonaStateChange_t> m_Callback;
+	#endif
 };

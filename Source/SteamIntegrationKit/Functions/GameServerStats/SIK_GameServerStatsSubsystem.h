@@ -4,19 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "SIK_SharedFile.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteamgameserver.h>
-#include <steam/isteamgameserverstats.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steam_api_common.h>
-#include <steam_gameserver.h>
-#include <isteamgameserver.h>
-#include <isteamgameserverstats.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SIK_GameServerStatsSubsystem.generated.h"
 
@@ -42,7 +29,9 @@ public:
 	FGSStatsUnloadedDelegate OnGSStatsUnloaded;
 	
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	STEAM_CALLBACK_MANUAL(USIK_GameServerStatsSubsystem, OnGSStatsReceivedCallbck, GSStatsReceived_t, m_CallbackGSStatsReceived);
 	STEAM_CALLBACK_MANUAL(USIK_GameServerStatsSubsystem, OnGSStatsStoredCallbck, GSStatsStored_t, m_CallbackGSStatsStored);
 	STEAM_CALLBACK_MANUAL(USIK_GameServerStatsSubsystem, OnGSStatsUnloadedCallbck, GSStatsUnloaded_t, m_CallbackGSStatsUnloaded);
+#endif
 };
