@@ -40,7 +40,7 @@
 
 <h2>🛠️ Installation Steps:</h2>
 
-Please check the docs for updated Installation Steps
+- Make sure to change `bUseEngineSteam` to true because Marketplace version uses it's own Subsystem and SDK but this uses the Engine's Steam Plugin. It's present in **Source/SteamIntegrationKit/SteamIntegrationKit.Build.cs**.
 
 <h2>🍰 Contribution Guidelines:</h2>
 
