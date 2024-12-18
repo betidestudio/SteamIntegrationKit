@@ -18,7 +18,7 @@ THIRD_PARTY_INCLUDES_END
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "SIK_JoinLobby_AsyncFunction.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnJoinLobby, TEnumAsByte<ESIK_Result>, Result, bool, bLocked, TEnumAsByte<ESIK_ChatRoomEnterResponse>, ChatRoomEnterResponse);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnJoinLobby, bool, bLocked, TEnumAsByte<ESIK_ChatRoomEnterResponse>, ChatRoomEnterResponse);
 UCLASS()
 class STEAMINTEGRATIONKIT_API USIK_JoinLobby_AsyncFunction : public UBlueprintAsyncActionBase
 {
