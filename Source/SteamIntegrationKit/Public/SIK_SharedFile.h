@@ -678,11 +678,12 @@ enum ESIK_ChatRoomEnterResponse
 UENUM(BlueprintType)
 enum ESIK_LobbyChatMemberStateChange
 {
-	ChatMemberStateChangeEntered = 0 UMETA(DisplayName = "Entered"),
-	ChatMemberStateChangeLeft = 1 UMETA(DisplayName = "Left"),
-	ChatMemberStateChangeDisconnected = 2 UMETA(DisplayName = "Disconnected"),
-	ChatMemberStateChangeKicked = 3 UMETA(DisplayName = "Kicked"),
-	ChatMemberStateChangeBanned = 4 UMETA(DisplayName = "Banned"),
+	ChatMemberStateChangeInvalid = 0 UMETA(DisplayName = "Invalid"),
+	ChatMemberStateChangeEntered = 1 UMETA(DisplayName = "Entered"),
+	ChatMemberStateChangeLeft = 2 UMETA(DisplayName = "Left"),
+	ChatMemberStateChangeDisconnected = 4 UMETA(DisplayName = "Disconnected"),
+	ChatMemberStateChangeKicked = 8 UMETA(DisplayName = "Kicked"),
+	ChatMemberStateChangeBanned = 16 UMETA(DisplayName = "Banned"),
 };
 
 USTRUCT(BlueprintType)
