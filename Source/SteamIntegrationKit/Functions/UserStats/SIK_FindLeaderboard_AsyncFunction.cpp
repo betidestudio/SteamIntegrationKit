@@ -16,6 +16,7 @@ USIK_FindLeaderboard_AsyncFunction* USIK_FindLeaderboard_AsyncFunction::FindLead
 void USIK_FindLeaderboard_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if(!SteamUserStats())
 	{
 		OnFailure.Broadcast(-1);
@@ -32,8 +33,14 @@ void USIK_FindLeaderboard_AsyncFunction::Activate()
 		return;
 	}
 	OnFindLeaderboardCallResult.Set( CallbackHandle, this, &USIK_FindLeaderboard_AsyncFunction::OnFindLeaderboard );
+#else
+	OnFailure.Broadcast(-1);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_FindLeaderboard_AsyncFunction::OnFindLeaderboard(LeaderboardFindResult_t* pResult, bool bIOFailure)
 {
 	auto Param = *pResult;
@@ -58,3 +65,4 @@ void USIK_FindLeaderboard_AsyncFunction::OnFindLeaderboard(LeaderboardFindResult
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif

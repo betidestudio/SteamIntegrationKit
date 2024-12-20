@@ -12,6 +12,7 @@ USIK_RequestStoreAuthURL_AsyncFunction* USIK_RequestStoreAuthURL_AsyncFunction::
 	return BlueprintNode;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_RequestStoreAuthURL_AsyncFunction::OnRequestStoreAuthURL(StoreAuthURLResponse_t* StoreAuthURLResponse,
                                                                    bool bIOFailure)
 {
@@ -30,10 +31,12 @@ void USIK_RequestStoreAuthURL_AsyncFunction::OnRequestStoreAuthURL(StoreAuthURLR
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_RequestStoreAuthURL_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if (!SteamUser())
 	{
 		OnFailure.Broadcast("");
@@ -43,4 +46,9 @@ void USIK_RequestStoreAuthURL_AsyncFunction::Activate()
 	}
 	m_SteamAPICall = SteamUser()->RequestStoreAuthURL(TCHAR_TO_UTF8(*m_URL));
 	m_Callback.Set(m_SteamAPICall, this, &USIK_RequestStoreAuthURL_AsyncFunction::OnRequestStoreAuthURL);
+#else
+	OnFailure.Broadcast("");
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

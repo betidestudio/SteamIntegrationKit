@@ -12,6 +12,8 @@ USIK_DeleteItem_AsyncFunction* USIK_DeleteItem_AsyncFunction::DeleteItem(FSIK_Pu
 
 void USIK_DeleteItem_AsyncFunction::Activate()
 {
+    Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     if(!SteamUGC())
     {
         OnFailure.Broadcast(ESIK_Result::ResultFail,FSIK_PublishedFileId());
@@ -27,8 +29,14 @@ void USIK_DeleteItem_AsyncFunction::Activate()
         return;
     }
     CallResult.Set(CallbackHandle, this, &USIK_DeleteItem_AsyncFunction::OnComplete);
+#else
+    OnFailure.Broadcast(ESIK_Result::ResultFail,FSIK_PublishedFileId());
+    SetReadyToDestroy();
+    MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_DeleteItem_AsyncFunction::OnComplete(DeleteItemResult_t* pResult, bool bIOFailure)
 {
     auto Param = *pResult;
@@ -47,4 +55,4 @@ void USIK_DeleteItem_AsyncFunction::OnComplete(DeleteItemResult_t* pResult, bool
     SetReadyToDestroy();
     MarkAsGarbage();
 }
-        
+#endif

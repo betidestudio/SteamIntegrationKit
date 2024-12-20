@@ -13,6 +13,8 @@ USIK_AddItemToFavorites_AsyncFunction* USIK_AddItemToFavorites_AsyncFunction::Ad
 
 void USIK_AddItemToFavorites_AsyncFunction::Activate()
 {
+    Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     if(!SteamUGC())
     {
         OnFailure.Broadcast(ESIK_Result::ResultFail, Var_PublishedFileId, false);
@@ -29,8 +31,14 @@ void USIK_AddItemToFavorites_AsyncFunction::Activate()
         return;
     }
     CallResult.Set(CallbackHandle, this, &USIK_AddItemToFavorites_AsyncFunction::OnComplete);
+#else
+    OnFailure.Broadcast(ESIK_Result::ResultFail, Var_PublishedFileId, false);
+    SetReadyToDestroy();
+    MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_AddItemToFavorites_AsyncFunction::OnComplete(UserFavoriteItemsListChanged_t* pParam, bool bIOFailure)
 {
     auto Param = *pParam;
@@ -49,3 +57,4 @@ void USIK_AddItemToFavorites_AsyncFunction::OnComplete(UserFavoriteItemsListChan
     SetReadyToDestroy();
     MarkAsGarbage();
 }
+#endif

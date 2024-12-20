@@ -6,6 +6,7 @@
 
 bool USIK_PartiesLibrary::GetNumAvailableBeaconLocations(int32& NumLocations)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamParties())
 	{
 		return false;
@@ -14,10 +15,14 @@ bool USIK_PartiesLibrary::GetNumAvailableBeaconLocations(int32& NumLocations)
 	auto Response =  SteamParties()->GetNumAvailableBeaconLocations(&NumLocations_t);
 	NumLocations = NumLocations_t;
 	return Response;
+#else
+	return false;
+#endif
 }
 
 bool USIK_PartiesLibrary::GetAvailableBeaconLocations(int32 MaxNumberOfLocations, TArray<FSIK_SteamPartyBeaconLocation>& Locations)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamParties())
 	{
 		return false;
@@ -32,47 +37,63 @@ bool USIK_PartiesLibrary::GetAvailableBeaconLocations(int32 MaxNumberOfLocations
 	}
 	Locations = LocationsOut;
 	return Rsponse;
+#else
+	return false;
+#endif
 }
 
 void USIK_PartiesLibrary::OnReservationCompleted(FSIK_PartyBeaconID BeaconID, FSIK_SteamId UserSteamID)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamParties())
 	{
 		return;
 	}
 	SteamParties()->OnReservationCompleted(BeaconID.GetPartyBeaconID(), UserSteamID.GetSteamID());
+#endif
 }
 
 bool USIK_PartiesLibrary::DestroyBeacon(FSIK_PartyBeaconID BeaconID)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamParties())
 	{
 		return false;
 	}
 	return SteamParties()->DestroyBeacon(BeaconID.GetPartyBeaconID());
+#else
+	return false;
+#endif
 }
 
 void USIK_PartiesLibrary::GetNumActiveBeacons(int32& NumActiveBeacons)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamParties())
 	{
 		return;
 	}
 	NumActiveBeacons = SteamParties()->GetNumActiveBeacons();
+#endif
 }
 
 FSIK_PartyBeaconID USIK_PartiesLibrary::GetBeaconByIndex(int32 Index)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamParties())
 	{
 		return FSIK_PartyBeaconID();
 	}
 	return SteamParties()->GetBeaconByIndex(Index);
+#else
+	return FSIK_PartyBeaconID();
+#endif
 }
 
 bool USIK_PartiesLibrary::GetBeaconDetails(FSIK_PartyBeaconID BeaconID, FSIK_SteamId& CreatorId,
 	FSIK_SteamPartyBeaconLocation& Location, FString& MetaData)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamParties())
 	{
 		return false;
@@ -85,11 +106,15 @@ bool USIK_PartiesLibrary::GetBeaconDetails(FSIK_PartyBeaconID BeaconID, FSIK_Ste
 	Location = FSIK_SteamPartyBeaconLocation(Location_t);
 	MetaData = FString(MetaData_t);
 	return Response;
+#else
+	return false;
+#endif
 }
 
 bool USIK_PartiesLibrary::GetBeaconLocationData(FSIK_SteamPartyBeaconLocation BeaconLocation,
 	TEnumAsByte<ESIK_SteamPartyBeaconLocationType>& LocationType, FString& LocationString)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamParties())
 	{
 		return false;
@@ -100,4 +125,7 @@ bool USIK_PartiesLibrary::GetBeaconLocationData(FSIK_SteamPartyBeaconLocation Be
 	LocationType = static_cast<ESIK_SteamPartyBeaconLocationType>(LocationType_t);
 	LocationString = FString(LocationString_t);
 	return Response;
+#else
+	return false;
+#endif
 }

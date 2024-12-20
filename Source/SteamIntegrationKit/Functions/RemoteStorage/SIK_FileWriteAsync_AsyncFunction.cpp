@@ -14,6 +14,7 @@ USIK_FileWriteAsync_AsyncFunction* USIK_FileWriteAsync_AsyncFunction::FileWriteA
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_FileWriteAsync_AsyncFunction::OnFileWriteAsyncComplete(RemoteStorageFileWriteAsyncComplete_t* RemoteStorageFileWriteAsyncComplete, bool bIOFailure)
 {
 	auto Param = *RemoteStorageFileWriteAsyncComplete;
@@ -31,10 +32,12 @@ void USIK_FileWriteAsync_AsyncFunction::OnFileWriteAsyncComplete(RemoteStorageFi
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_FileWriteAsync_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if(!SteamRemoteStorage() || Var_FileName.IsEmpty() || Var_FileData.Num() == 0)
 	{
 		UE_LOG(LogTemp, Error, TEXT("File Write Async Invalid Parameters"));
@@ -54,5 +57,10 @@ void USIK_FileWriteAsync_AsyncFunction::Activate()
 		MarkAsGarbage();
 		return;
 	}
-	OnFileWriteAsyncCallResult.Set(CallbackHandle, this, &USIK_FileWriteAsync_AsyncFunction::OnFileWriteAsyncComplete);	
+	OnFileWriteAsyncCallResult.Set(CallbackHandle, this, &USIK_FileWriteAsync_AsyncFunction::OnFileWriteAsyncComplete);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

@@ -3,17 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteamuser.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steam_api.h>
-#include <isteamuser.h>
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "SIK_SharedFile.h"
 #include "SIK_GetDurationControl_AsyncFunction.generated.h"
@@ -55,8 +44,10 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Steam Integration Kit | User")
 	FOnDurationControl OnFailure;
 private:
-	void OnDurationControl(DurationControl_t* DurationControl, bool bIOFailure);
 	virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	SteamAPICall_t m_SteamAPICall;
 	CCallResult<USIK_GetDurationControl_AsyncFunction, DurationControl_t> m_Callback;
+	void OnDurationControl(DurationControl_t* DurationControl, bool bIOFailure);
+#endif
 };

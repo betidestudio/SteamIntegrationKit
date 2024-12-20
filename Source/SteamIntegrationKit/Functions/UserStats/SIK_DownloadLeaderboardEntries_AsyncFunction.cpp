@@ -9,6 +9,7 @@
 void USIK_DownloadLeaderboardEntries_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if(!SteamUserStats())
 	{
 		OnFailure.Broadcast(TArray<FDownloadedLeaderboardEntry>());
@@ -26,6 +27,11 @@ void USIK_DownloadLeaderboardEntries_AsyncFunction::Activate()
 		return;
 	}
 	OnDownloadLeaderboardEntriesCallResult.Set( CallbackHandle, this, &USIK_DownloadLeaderboardEntries_AsyncFunction::OnDownloadLeaderboardEntries );
+#else
+	OnFailure.Broadcast(TArray<FDownloadedLeaderboardEntry>());
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }
 
 USIK_DownloadLeaderboardEntries_AsyncFunction* USIK_DownloadLeaderboardEntries_AsyncFunction::
@@ -40,6 +46,7 @@ DownloadLeaderboardEntries(int32 LeaderboardId, int32 RangeStart, int32 RangeEnd
 	return BlueprintNode;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_DownloadLeaderboardEntries_AsyncFunction::OnDownloadLeaderboardEntries(LeaderboardScoresDownloaded_t* LeaderboardScoresDownloaded, bool bIOFailure)
 {
 	auto Param = *LeaderboardScoresDownloaded;
@@ -71,3 +78,4 @@ void USIK_DownloadLeaderboardEntries_AsyncFunction::OnDownloadLeaderboardEntries
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif

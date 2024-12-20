@@ -13,6 +13,7 @@ USIK_SetUserItemVote_AsyncFunction* USIK_SetUserItemVote_AsyncFunction::SetUserI
 
 void USIK_SetUserItemVote_AsyncFunction::Activate()
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     if(!SteamUGC())
     {
         OnFailure.Broadcast(FSIK_PublishedFileId(), false, ESIK_Result::ResultFail);
@@ -29,8 +30,15 @@ void USIK_SetUserItemVote_AsyncFunction::Activate()
         return;
     }
     CallResult.Set(CallbackHandle, this, &USIK_SetUserItemVote_AsyncFunction::OnComplete);
+#else
+    OnFailure.Broadcast(FSIK_PublishedFileId(), false, ESIK_Result::ResultFail);
+    SetReadyToDestroy();
+    MarkAsGarbage();
+#endif
 }
 
+
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_SetUserItemVote_AsyncFunction::OnComplete(SetUserItemVoteResult_t* Callback, bool bIOFailure)
 {
     auto Param = *Callback;
@@ -48,3 +56,4 @@ void USIK_SetUserItemVote_AsyncFunction::OnComplete(SetUserItemVoteResult_t* Cal
     SetReadyToDestroy();
     MarkAsGarbage();
 }
+#endif

@@ -3,17 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteammatchmaking.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steamtypes.h>
-#include <isteammatchmaking.h>
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "SIK_CreateBeacon_AsyncFunction.generated.h"
@@ -36,11 +25,13 @@ public:
 	FCreateBeaconDelegate OnFailure;
 private:
 	int32 Var_nOpenSlots;
-	SteamPartyBeaconLocation_t Var_Location;
 	FString Var_sConnectString;
 	FString Var_sMetadata;
-	void OnCreateBeaconCallback(CreateBeaconCallback_t* CreateBeaconCallback, bool bIOFailure);
 	virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
+	void OnCreateBeaconCallback(CreateBeaconCallback_t* CreateBeaconCallback, bool bIOFailure);
 	SteamAPICall_t CallbackHandle;
 	CCallResult<USIK_CreateBeacon_AsyncFunction, CreateBeaconCallback_t> OnCreateBeaconCallResult;
+	SteamPartyBeaconLocation_t Var_Location;
+#endif
 };

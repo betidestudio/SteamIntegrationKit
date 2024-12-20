@@ -12,6 +12,8 @@ USIK_SubscribeItem_AsyncFunction* USIK_SubscribeItem_AsyncFunction::SubscribeIte
 
 void USIK_SubscribeItem_AsyncFunction::Activate()
 {
+    Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     if(!SteamUGC())
     {
         OnFailure.Broadcast(ESIK_Result::ResultFail, Var_PublishedFileID);
@@ -27,8 +29,14 @@ void USIK_SubscribeItem_AsyncFunction::Activate()
         return;
     }
     CallResult.Set(CallbackHandle, this, &USIK_SubscribeItem_AsyncFunction::OnComplete);
+#else
+    OnFailure.Broadcast(ESIK_Result::ResultFail, Var_PublishedFileID);
+    SetReadyToDestroy();
+    MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_SubscribeItem_AsyncFunction::OnComplete(RemoteStorageSubscribePublishedFileResult_t* pResult, bool bIOFailure)
 {
     auto Param = *pResult;
@@ -46,3 +54,4 @@ void USIK_SubscribeItem_AsyncFunction::OnComplete(RemoteStorageSubscribePublishe
     SetReadyToDestroy();
     MarkAsGarbage();
 }
+#endif

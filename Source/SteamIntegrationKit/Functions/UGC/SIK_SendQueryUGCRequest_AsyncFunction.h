@@ -3,12 +3,6 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#else
-#include <steam_api.h>
-#endif
 #include "SIK_SharedFile.h"
 #include "SIK_SendQueryUGCRequest_AsyncFunction.generated.h"
 
@@ -32,8 +26,10 @@ public:
 private:
     FSIK_UGCQueryHandle Var_QueryHandle;
     virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     void OnComplete(SteamUGCQueryCompleted_t* pCallback, bool bIOFailure);
     SteamAPICall_t CallbackHandle;
     CCallResult<USIK_SendQueryUGCRequest_AsyncFunction, SteamUGCQueryCompleted_t> CallResult;
+#endif
 };
         

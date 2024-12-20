@@ -102,11 +102,11 @@ struct FSIK_AppId
 	{
 		AppID = 0;
 	}
-#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
-	FSIK_AppId(AppId_t AppID)
+	FSIK_AppId(int32 AppID)
 	{
 		this->AppID = AppID;
 	}
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	AppId_t GetAppID() const
 	{
 		return AppID;
@@ -339,7 +339,6 @@ struct FSIKAttribute
 		BoolValue = false;
 		IntValue = 0;
 	}
-#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FVariantData GetVariantData() const
 	{
 		FVariantData VariantData;
@@ -383,7 +382,6 @@ struct FSIKAttribute
 			break;
 		}
 	}
-#endif
 };
 
 
@@ -418,14 +416,7 @@ struct FSIK_SteamId
 
 	UPROPERTY()
 	int64 Result = 0;
-	
-#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
-	CSteamID GetSteamID() const
-	{
-		CSteamID SteamID;
-		SteamID.SetFromUint64(Result);
-		return SteamID;
-	}
+
 	FSIK_SteamId()
 	{
 		Result = 0;
@@ -434,15 +425,23 @@ struct FSIK_SteamId
 	{
 		Result = SteamID;
 	}
+	
+	FSIK_SteamId(FString SteamID)
+	{
+		Result = FCString::Atoi64(*SteamID);
+	}
+	
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	CSteamID GetSteamID() const
+	{
+		CSteamID SteamID;
+		SteamID.SetFromUint64(Result);
+		return SteamID;
+	}
 
 	FSIK_SteamId(CSteamID SteamID)
 	{
 		Result = SteamID.ConvertToUint64();
-	}
-
-	FSIK_SteamId(FString SteamID)
-	{
-		Result = FCString::Atoi64(*SteamID);
 	}
 
 	CSteamID GetSteamID()
@@ -719,6 +718,7 @@ struct FSIK_ServerNetAddress
 	{
 		QueryPort = 0;
 	}
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_ServerNetAddress(servernetadr_t ServerNetAddress)
 	{
 		QueryPort = ServerNetAddress.GetQueryPort();
@@ -727,6 +727,7 @@ struct FSIK_ServerNetAddress
 		ConnectionAddress = ServerNetAddress.GetConnectionAddressString();
 		QueryAddress = ServerNetAddress.GetQueryAddressString();
 	}
+#endif
 };
 USTRUCT(BlueprintType)
 struct FSIK_FoundServers
@@ -1942,6 +1943,10 @@ struct FSIK_PartyBeaconID
 	FSIK_PartyBeaconID()
 	{
 		Result = 0;
+	}
+	FSIK_PartyBeaconID(int64 PartyBeaconID)
+	{
+		Result = PartyBeaconID;
 	}
 
 #if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)

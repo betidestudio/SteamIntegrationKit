@@ -26,8 +26,11 @@ public:
 	
 private:
 	FString Var_FileName;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	void OnFileShare(RemoteStorageFileShareResult_t* RemoteStorageFileShareResult, bool bIOFailure);
-	virtual void Activate() override;
 	SteamAPICall_t CallbackHandle;
 	CCallResult<USIK_FileShare_AsyncFunction, RemoteStorageFileShareResult_t> OnFileShareCallResult;
+#endif
+	virtual void Activate() override;
+
 };

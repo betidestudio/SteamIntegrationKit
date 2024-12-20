@@ -13,6 +13,7 @@ RequestEligiblePromoItemDefinitionsIDs(FSIK_SteamId SteamID)
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_RequestEligiblePromoItemDefinitionsIDs_AsyncFunction::OnEligiblePromoItemDefinitionsIDsReceived(
 	SteamInventoryEligiblePromoItemDefIDs_t* SteamInventoryEligiblePromoItemDefIDs, bool bIOFailure)
 {
@@ -31,10 +32,12 @@ void USIK_RequestEligiblePromoItemDefinitionsIDs_AsyncFunction::OnEligiblePromoI
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_RequestEligiblePromoItemDefinitionsIDs_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_SteamId(), -1, false);
@@ -51,5 +54,10 @@ void USIK_RequestEligiblePromoItemDefinitionsIDs_AsyncFunction::Activate()
 		return;
 	}
 	CallResult.Set(CallbackHandle, this, &USIK_RequestEligiblePromoItemDefinitionsIDs_AsyncFunction::OnEligiblePromoItemDefinitionsIDsReceived);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_SteamId(), -1, false);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 	
 }

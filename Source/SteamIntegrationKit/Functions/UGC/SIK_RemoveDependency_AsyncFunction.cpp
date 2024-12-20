@@ -13,6 +13,7 @@ USIK_RemoveDependency_AsyncFunction* USIK_RemoveDependency_AsyncFunction::Remove
 
 void USIK_RemoveDependency_AsyncFunction::Activate()
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     if(!SteamUGC())
     {
         OnFailure.Broadcast(ResultFail, Var_ParentPublishedFileID, Var_ChildPublishedFileID);
@@ -28,8 +29,14 @@ void USIK_RemoveDependency_AsyncFunction::Activate()
         return;
     }
     CallResult.Set(CallbackHandle, this, &USIK_RemoveDependency_AsyncFunction::OnComplete);
+#else
+    OnFailure.Broadcast(ResultFail, Var_ParentPublishedFileID, Var_ChildPublishedFileID);
+    SetReadyToDestroy();
+    MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_RemoveDependency_AsyncFunction::OnComplete(RemoveUGCDependencyResult_t* pResult, bool bIOFailure)
 {
     auto Param = *pResult;
@@ -48,4 +55,4 @@ void USIK_RemoveDependency_AsyncFunction::OnComplete(RemoveUGCDependencyResult_t
     SetReadyToDestroy();
     MarkAsGarbage();
 }
-        
+#endif

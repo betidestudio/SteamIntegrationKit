@@ -15,6 +15,7 @@ USIK_UploadLeaderboardScore_AsyncFunction* USIK_UploadLeaderboardScore_AsyncFunc
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_UploadLeaderboardScore_AsyncFunction::OnUploadLeaderboardScore(
 	LeaderboardScoreUploaded_t* LeaderboardScoreUploaded, bool bIOFailure)
 {
@@ -46,10 +47,12 @@ void USIK_UploadLeaderboardScore_AsyncFunction::OnUploadLeaderboardScore(
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_UploadLeaderboardScore_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if(!SteamUserStats())
 	{
 		OnFailure.Broadcast(FSIK_LeaderboardScoreUploaded());
@@ -67,4 +70,9 @@ void USIK_UploadLeaderboardScore_AsyncFunction::Activate()
 		return;
 	}
 	OnUploadLeaderboardScoreCallResult.Set(CallbackHandle, this, &USIK_UploadLeaderboardScore_AsyncFunction::OnUploadLeaderboardScore);
+#else
+	OnFailure.Broadcast(FSIK_LeaderboardScoreUploaded());
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

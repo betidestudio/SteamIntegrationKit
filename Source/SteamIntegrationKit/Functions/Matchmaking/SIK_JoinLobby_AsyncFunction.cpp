@@ -12,6 +12,7 @@ USIK_JoinLobby_AsyncFunction* USIK_JoinLobby_AsyncFunction::JoinLobby(FSIK_Steam
 	return JoinLobby;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_JoinLobby_AsyncFunction::OnLobbyEnter(LobbyEnter_t* LobbyEnter, bool bIOFailure)
 {
 	auto Param = *LobbyEnter;
@@ -38,11 +39,13 @@ void USIK_JoinLobby_AsyncFunction::OnLobbyEnter(LobbyEnter_t* LobbyEnter, bool b
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 	
 
 void USIK_JoinLobby_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamMatchmaking())
 	{
 		OnFailure.Broadcast(ESIK_Result::ResultFail, false, ESIK_ChatRoomEnterResponse::None);
@@ -59,4 +62,9 @@ void USIK_JoinLobby_AsyncFunction::Activate()
 		return;
 	}
 	CallResult.Set(CallbackHandle, this, &USIK_JoinLobby_AsyncFunction::OnLobbyEnter);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail, false, ESIK_ChatRoomEnterResponse::None);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

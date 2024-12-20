@@ -12,10 +12,12 @@ USIK_SendQueryUGCRequest_AsyncFunction* USIK_SendQueryUGCRequest_AsyncFunction::
 
 void USIK_SendQueryUGCRequest_AsyncFunction::Activate()
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     if(!SteamUGC())
     {
         OnFailure.Broadcast(FSIK_UGCQueryHandle(), ESIK_Result::ResultFail, 0, 0, false);
         SetReadyToDestroy();
+        MarkAsGarbage();
         return;
     }
     CallbackHandle = SteamUGC()->SendQueryUGCRequest(Var_QueryHandle.GetUGCQueryHandle());
@@ -23,11 +25,18 @@ void USIK_SendQueryUGCRequest_AsyncFunction::Activate()
     {
         OnFailure.Broadcast(FSIK_UGCQueryHandle(), ESIK_Result::ResultFail, 0, 0, false);
         SetReadyToDestroy();
+        MarkAsGarbage();
         return;
     }
     CallResult.Set(CallbackHandle, this, &USIK_SendQueryUGCRequest_AsyncFunction::OnComplete);
+#else
+    OnFailure.Broadcast(FSIK_UGCQueryHandle(), ESIK_Result::ResultFail, 0, 0, false);
+    SetReadyToDestroy();
+    MarkAsGarbage();    
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_SendQueryUGCRequest_AsyncFunction::OnComplete(SteamUGCQueryCompleted_t* pCallback, bool bIOFailure)
 {
     auto Param = *pCallback;
@@ -45,3 +54,4 @@ void USIK_SendQueryUGCRequest_AsyncFunction::OnComplete(SteamUGCQueryCompleted_t
     SetReadyToDestroy();
     MarkAsGarbage();
 }
+#endif

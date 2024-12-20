@@ -11,6 +11,7 @@ USIK_GetNumberOfCurrentPlayers_AsyncFunction* USIK_GetNumberOfCurrentPlayers_Asy
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_GetNumberOfCurrentPlayers_AsyncFunction::OnNumberOfCurrentPlayersReceived(NumberOfCurrentPlayers_t* NumberOfCurrentPlayers, bool bIOFailure)
 {
 	auto Param = *NumberOfCurrentPlayers;
@@ -35,10 +36,12 @@ void USIK_GetNumberOfCurrentPlayers_AsyncFunction::OnNumberOfCurrentPlayersRecei
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_GetNumberOfCurrentPlayers_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if(!SteamUserStats())
 	{
 		OnFailure.Broadcast(-1);
@@ -55,4 +58,9 @@ void USIK_GetNumberOfCurrentPlayers_AsyncFunction::Activate()
 		return;
 	}
 	m_OnNumberOfCurrentPlayersReceived.Set(m_CallbackHandle, this, &USIK_GetNumberOfCurrentPlayers_AsyncFunction::OnNumberOfCurrentPlayersReceived);
+#else
+	OnFailure.Broadcast(-1);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

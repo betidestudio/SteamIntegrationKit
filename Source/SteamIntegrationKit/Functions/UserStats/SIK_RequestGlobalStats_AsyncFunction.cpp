@@ -14,6 +14,7 @@ USIK_RequestGlobalStats_AsyncFunction* USIK_RequestGlobalStats_AsyncFunction::Re
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_RequestGlobalStats_AsyncFunction::OnRequestGlobalStats(GlobalStatsReceived_t* GlobalStatsReceived,
                                                                  bool bIOFailure)
 {
@@ -39,10 +40,12 @@ void USIK_RequestGlobalStats_AsyncFunction::OnRequestGlobalStats(GlobalStatsRece
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_RequestGlobalStats_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if(!SteamUserStats())
 	{
 		OnFailure.Broadcast(ESIK_Result::ResultFail);
@@ -59,4 +62,9 @@ void USIK_RequestGlobalStats_AsyncFunction::Activate()
 		return;
 	}
 	m_OnRequestGlobalStatsCallResult.Set(m_CallbackHandle, this, &USIK_RequestGlobalStats_AsyncFunction::OnRequestGlobalStats);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

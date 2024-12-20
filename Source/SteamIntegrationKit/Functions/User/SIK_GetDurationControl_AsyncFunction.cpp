@@ -11,6 +11,7 @@ USIK_GetDurationControl_AsyncFunction* USIK_GetDurationControl_AsyncFunction::Ge
 	return BlueprintNode;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_GetDurationControl_AsyncFunction::OnDurationControl(DurationControl_t* DurationControl, bool bIOFailure)
 {
 	auto Param = *DurationControl;
@@ -31,10 +32,12 @@ void USIK_GetDurationControl_AsyncFunction::OnDurationControl(DurationControl_t*
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_GetDurationControl_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if(!SteamUser())
 	{
 		OnFailure.Broadcast(ESIK_Result::ResultBusy,ESIK_DurationControlNotification::DurationControlNotification_None,ESIK_DurationControlProgress::DurationControlProgress_Full,0,false,0);
@@ -44,4 +47,9 @@ void USIK_GetDurationControl_AsyncFunction::Activate()
 	}
 	m_SteamAPICall = SteamUser()->GetDurationControl();
 	m_Callback.Set(m_SteamAPICall, this, &USIK_GetDurationControl_AsyncFunction::OnDurationControl);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail,ESIK_DurationControlNotification::DurationControlNotification_None,ESIK_DurationControlProgress::DurationControlProgress_Full,0,false,0);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

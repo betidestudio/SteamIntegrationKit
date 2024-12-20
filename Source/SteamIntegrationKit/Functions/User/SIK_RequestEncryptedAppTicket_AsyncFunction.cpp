@@ -13,6 +13,7 @@ USIK_RequestEncryptedAppTicket_AsyncFunction* USIK_RequestEncryptedAppTicket_Asy
 	return BlueprintNode;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_RequestEncryptedAppTicket_AsyncFunction::OnRequestEncryptedAppTicket(
 	EncryptedAppTicketResponse_t* EncryptedAppTicketResponse, bool bIOFailure)
 {
@@ -32,10 +33,12 @@ void USIK_RequestEncryptedAppTicket_AsyncFunction::OnRequestEncryptedAppTicket(
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_RequestEncryptedAppTicket_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if (!SteamUser())
 	{
 		OnFailure.Broadcast(ESIK_Result::ResultBusy);
@@ -54,4 +57,9 @@ void USIK_RequestEncryptedAppTicket_AsyncFunction::Activate()
 		return;
 	}
 	m_Callback.Set(m_SteamAPICall, this, &USIK_RequestEncryptedAppTicket_AsyncFunction::OnRequestEncryptedAppTicket);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

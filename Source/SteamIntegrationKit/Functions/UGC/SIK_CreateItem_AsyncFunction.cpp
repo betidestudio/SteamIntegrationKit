@@ -13,6 +13,8 @@ USIK_CreateItem_AsyncFunction* USIK_CreateItem_AsyncFunction::CreateItem(FSIK_Ap
 
 void USIK_CreateItem_AsyncFunction::Activate()
 {
+    Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     if(!SteamUGC())
     {
         OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PublishedFileId(), false);
@@ -28,8 +30,14 @@ void USIK_CreateItem_AsyncFunction::Activate()
         return;
     }
     CallResult.Set(CallbackHandle, this, &USIK_CreateItem_AsyncFunction::OnComplete);
+#else
+    OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PublishedFileId(), false);
+    SetReadyToDestroy();
+    MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_CreateItem_AsyncFunction::OnComplete(CreateItemResult_t* pResult, bool bIOFailure)
 {
     auto Param = *pResult;
@@ -48,3 +56,4 @@ void USIK_CreateItem_AsyncFunction::OnComplete(CreateItemResult_t* pResult, bool
     SetReadyToDestroy();
     MarkAsGarbage();
 }
+#endif

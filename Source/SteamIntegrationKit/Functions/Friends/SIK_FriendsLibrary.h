@@ -42,6 +42,7 @@ struct FSIK_FriendGameInfo
 		GamePort = 0;
 		QueryPort = 0;
 	};
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	FSIK_FriendGameInfo(FriendGameInfo_t FriendGameInfo)
 	{
 		LobbySteamId = FriendGameInfo.m_steamIDLobby;
@@ -50,6 +51,7 @@ struct FSIK_FriendGameInfo
 		GamePort = FriendGameInfo.m_usGamePort;
 		QueryPort = FriendGameInfo.m_usQueryPort;
 	};
+#endif
 	
 };
 

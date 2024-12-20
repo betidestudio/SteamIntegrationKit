@@ -5,6 +5,7 @@
 
 bool USIK_InventoryLibrary::AddPromoItem(FSIK_SteamInventoryResult& InventoryResult, FSIK_SteamItemDef ItemDef)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		UE_LOG(LogTemp, Error, TEXT("SteamInventory() is null"));
@@ -14,11 +15,15 @@ bool USIK_InventoryLibrary::AddPromoItem(FSIK_SteamInventoryResult& InventoryRes
 	auto Result = SteamInventory()->AddPromoItem(&ResultInventory, ItemDef.GetSteamItemDef());
 	InventoryResult = ResultInventory;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::AddPromoItems(FSIK_SteamInventoryResult& InventoryResult,
 	const TArray<FSIK_SteamItemDef>& ItemDefs)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		UE_LOG(LogTemp, Error, TEXT("SteamInventory() is null"));
@@ -33,21 +38,29 @@ bool USIK_InventoryLibrary::AddPromoItems(FSIK_SteamInventoryResult& InventoryRe
 	auto Result = SteamInventory()->AddPromoItems(&ResultInventory, ItemDefsSteamFormat.GetData(), ItemDefs.Num());
 	InventoryResult = ResultInventory;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::CheckResultSteamID(FSIK_SteamInventoryResult InventoryResult, FSIK_SteamId SteamID)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		UE_LOG(LogTemp, Error, TEXT("SteamInventory() is null"));
 		return false;
 	}
 	return SteamInventory()->CheckResultSteamID(InventoryResult.GetSteamInventoryResult(), SteamID.GetSteamID());
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::ConsumeItem(FSIK_SteamInventoryResult& InventoryResult,
 	FSIK_SteamItemInstanceID ItemInstance, int32 Quantity)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		UE_LOG(LogTemp, Error, TEXT("SteamInventory() is null"));
@@ -57,10 +70,14 @@ bool USIK_InventoryLibrary::ConsumeItem(FSIK_SteamInventoryResult& InventoryResu
 	auto Result = SteamInventory()->ConsumeItem(&ResultInventory, ItemInstance.GetSteamItemInstanceID(), Quantity);
 	InventoryResult = ResultInventory;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::DeserializeResult(FSIK_SteamInventoryResult& InventoryResult, const TArray<uint8>& Buffer)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		UE_LOG(LogTemp, Error, TEXT("SteamInventory() is null"));
@@ -70,21 +87,27 @@ bool USIK_InventoryLibrary::DeserializeResult(FSIK_SteamInventoryResult& Invento
 	auto Result = SteamInventory()->DeserializeResult(&ResultInventory, Buffer.GetData(), Buffer.Num(), false);
 	InventoryResult = ResultInventory;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 void USIK_InventoryLibrary::DestroyResult(FSIK_SteamInventoryResult InventoryResult)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return;
 	}
 	SteamInventory()->DestroyResult(InventoryResult.GetSteamInventoryResult());
+#endif
 }
 
 bool USIK_InventoryLibrary::ExchangeItems(FSIK_SteamInventoryResult& InventoryResult,
 	const TArray<FSIK_SteamItemDef>& ItemDefsToCreate, const TArray<int32>& ArrayGenerateQuantity,
 	const TArray<FSIK_SteamItemInstanceID>& ItemDefsToDestroy, const TArray<int32>& DestroyQuantity)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -118,12 +141,16 @@ bool USIK_InventoryLibrary::ExchangeItems(FSIK_SteamInventoryResult& InventoryRe
 		punArrayDestroyQuantity, ItemDefsToDestroy.Num());
 	InventoryResult = ResultInventory;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 
 bool USIK_InventoryLibrary::GenerateItems(FSIK_SteamInventoryResult& InventoryResult,
                                           const TArray<FSIK_SteamItemDef>& ItemDefs, const TArray<int32>& Quantity)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -144,10 +171,14 @@ bool USIK_InventoryLibrary::GenerateItems(FSIK_SteamInventoryResult& InventoryRe
   QuantityUint32.Num());
 	InventoryResult = ResultInventory;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::GetAllItems(FSIK_SteamInventoryResult& InventoryResult)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -156,10 +187,14 @@ bool USIK_InventoryLibrary::GetAllItems(FSIK_SteamInventoryResult& InventoryResu
 	auto Result = SteamInventory()->GetAllItems(&ResultInventory);
 	InventoryResult = ResultInventory;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::GetEligiblePromoItemDefinitionIDs(FSIK_SteamId SteamID, TArray<FSIK_SteamItemDef>& ItemDefs)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -173,10 +208,14 @@ bool USIK_InventoryLibrary::GetEligiblePromoItemDefinitionIDs(FSIK_SteamId Steam
 		ItemDefs.Add(ItemDefSteam);
 	}
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::GetItemDefinitionIDs(TArray<FSIK_SteamItemDef>& ItemDefs)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -189,11 +228,15 @@ bool USIK_InventoryLibrary::GetItemDefinitionIDs(TArray<FSIK_SteamItemDef>& Item
 		ItemDefs.Add(ItemDefSteam);
 	}
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::GetItemDefinitionProperty(FSIK_SteamItemDef ItemDef, const FString& PropertyName,
 	FString& Value)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -204,11 +247,15 @@ bool USIK_InventoryLibrary::GetItemDefinitionProperty(FSIK_SteamItemDef ItemDef,
 		ValueChar, &ValueCharSize);
 	Value = ValueChar;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::GetItemsByID(FSIK_SteamInventoryResult& InventoryResult,
 	const TArray<FSIK_SteamItemInstanceID>& ItemInstances)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -222,10 +269,14 @@ bool USIK_InventoryLibrary::GetItemsByID(FSIK_SteamInventoryResult& InventoryRes
 	auto Result = SteamInventory()->GetItemsByID(&ResultInventory, ItemInstancesSteamFormat.GetData(), ItemInstances.Num());
 	InventoryResult = ResultInventory;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::GetItemPrice(FSIK_SteamItemDef ItemDef, int64& CurrentPrice, int64& BasePrice)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -236,11 +287,15 @@ bool USIK_InventoryLibrary::GetItemPrice(FSIK_SteamItemDef ItemDef, int64& Curre
 	CurrentPrice = CurrentPriceUint;
 	BasePrice = BasePriceUint;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::GetItemsWithPrices(TArray<FSIK_SteamItemDef>& ItemDefs, TArray<int64>& CurrentPrices,
 	TArray<int64>& BasePrices, int32 ArraySize)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -266,20 +321,28 @@ bool USIK_InventoryLibrary::GetItemsWithPrices(TArray<FSIK_SteamItemDef>& ItemDe
 		BasePrices.Add(BasePriceUint);
 	}
 	return Result;
+#else
+	return false;
+#endif
 }
 
 int32 USIK_InventoryLibrary::GetNumItemsWithPrices()
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return 0;
 	}
 	return SteamInventory()->GetNumItemsWithPrices();
+#else
+	return 0;
+#endif
 }
 
 bool USIK_InventoryLibrary::GetResultItemProperty(FSIK_SteamInventoryResult InventoryResult, int32 ItemIndex,
 	const FString& PropertyName, FString& Value)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -290,11 +353,15 @@ bool USIK_InventoryLibrary::GetResultItemProperty(FSIK_SteamInventoryResult Inve
 		TCHAR_TO_ANSI(*PropertyName), ValueChar, &ValueCharSize);
 	Value = ValueChar;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::GetResultItems(FSIK_SteamInventoryResult InventoryResult,
 	TArray<FSIK_SteamItemDetails>& ItemInstances)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -315,29 +382,41 @@ bool USIK_InventoryLibrary::GetResultItems(FSIK_SteamInventoryResult InventoryRe
 		}
 	}
 	return false;
+#else
+	return false;
+#endif
 }
 	
 TEnumAsByte<ESIK_Result> USIK_InventoryLibrary::GetResultStatus(FSIK_SteamInventoryResult InventoryResult)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return ESIK_Result::ResultFail;
 	}
 	return static_cast<ESIK_Result>(SteamInventory()->GetResultStatus(InventoryResult.GetSteamInventoryResult()));
+#else
+	return ESIK_Result::ResultFail;
+#endif
 }
 
 FDateTime USIK_InventoryLibrary::GetResultTimestamp(FSIK_SteamInventoryResult InventoryResult, int32& Timestamp)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return FDateTime();
 	}
 	Timestamp = SteamInventory()->GetResultTimestamp(InventoryResult.GetSteamInventoryResult());
 	return FDateTime::FromUnixTimestamp(Timestamp);
+#else
+	return FDateTime();
+#endif
 }
 
 bool USIK_InventoryLibrary::GrantPromoItems(FSIK_SteamInventoryResult& InventoryResult)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -346,19 +425,27 @@ bool USIK_InventoryLibrary::GrantPromoItems(FSIK_SteamInventoryResult& Inventory
 	auto Result = SteamInventory()->GrantPromoItems(&ResultInventory);
 	InventoryResult = ResultInventory;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::LoadItemDefinitions()
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
 	}
 	return SteamInventory()->LoadItemDefinitions();
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::SerializeResult(FSIK_SteamInventoryResult InventoryResult, TArray<uint8>& Buffer)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -367,11 +454,15 @@ bool USIK_InventoryLibrary::SerializeResult(FSIK_SteamInventoryResult InventoryR
 	auto Result = SteamInventory()->SerializeResult(InventoryResult.GetSteamInventoryResult(), Buffer.GetData(), &BufferSize);
 	Buffer.SetNum(BufferSize);
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::TransferItemQuantity(FSIK_SteamInventoryResult& InventoryResult,
 	FSIK_SteamItemInstanceID ItemInstance, int32 Quantity, FSIK_SteamItemInstanceID itemIdDest)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -381,10 +472,14 @@ bool USIK_InventoryLibrary::TransferItemQuantity(FSIK_SteamInventoryResult& Inve
 		itemIdDest.GetSteamItemInstanceID());
 	InventoryResult = ResultInventory;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::TriggerItemDrop(FSIK_SteamInventoryResult& InventoryResult, FSIK_SteamItemDef ItemDef)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -393,20 +488,28 @@ bool USIK_InventoryLibrary::TriggerItemDrop(FSIK_SteamInventoryResult& Inventory
 	auto Result = SteamInventory()->TriggerItemDrop(&ResultInventory, ItemDef.GetSteamItemDef());
 	InventoryResult = ResultInventory;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 FSIK_SteamInventoryUpdateHandle USIK_InventoryLibrary::StartUpdateProperties()
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return FSIK_SteamInventoryUpdateHandle();
 	}
 	return SteamInventory()->StartUpdateProperties();
+#else
+	return FSIK_SteamInventoryUpdateHandle();
+#endif
 }
 
 bool USIK_InventoryLibrary::SubmitUpdateProperties(FSIK_SteamInventoryUpdateHandle UpdateHandle,
 	FSIK_SteamInventoryResult& InventoryResult)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
@@ -416,26 +519,37 @@ bool USIK_InventoryLibrary::SubmitUpdateProperties(FSIK_SteamInventoryUpdateHand
 		&ResultInventory);
 	InventoryResult = ResultInventory;
 	return Result;
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::RemoveProperty(FSIK_SteamInventoryUpdateHandle UpdateHandle,
 	FSIK_SteamItemInstanceID ItemInstance, const FString& PropertyName)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
 	}
 	return SteamInventory()->RemoveProperty(UpdateHandle.GetSteamInventoryUpdateHandle(),
-		ItemInstance.GetSteamItemInstanceID(), TCHAR_TO_ANSI(*PropertyName));
+	ItemInstance.GetSteamItemInstanceID(), TCHAR_TO_ANSI(*PropertyName));
+#else
+	return false;
+#endif
 }
 
 bool USIK_InventoryLibrary::SetProperty(FSIK_SteamInventoryUpdateHandle UpdateHandle,
 	FSIK_SteamItemInstanceID ItemInstance, const FString& PropertyName, const FString& Value)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		return false;
 	}
 	return SteamInventory()->SetProperty(UpdateHandle.GetSteamInventoryUpdateHandle(),
 		ItemInstance.GetSteamItemInstanceID(), TCHAR_TO_ANSI(*PropertyName), TCHAR_TO_ANSI(*Value));
+#else
+	return false;
+#endif
 }

@@ -3,17 +3,6 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteamremotestorage.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steam_api.h>
-#include <isteamremotestorage.h>
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
 #include "SIK_SetUserItemVote_AsyncFunction.generated.h"
 
@@ -38,8 +27,10 @@ private:
     FSIK_PublishedFileId Var_PublishedFileID;
     bool Var_bVoteUp;
     virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     void OnComplete(SetUserItemVoteResult_t* Callback, bool bIOFailure);
     SteamAPICall_t CallbackHandle;
     CCallResult<USIK_SetUserItemVote_AsyncFunction, SetUserItemVoteResult_t> CallResult;
+#endif
 };
         

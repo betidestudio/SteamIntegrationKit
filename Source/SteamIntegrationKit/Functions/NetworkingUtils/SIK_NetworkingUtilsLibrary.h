@@ -41,9 +41,6 @@ public:
 	static bool CheckPingDataUpToDate(float MaxAgeSeconds);
 
 	UFUNCTION(BlueprintCallable, Category = "Steam Integration Kit || SDK Functions || Networking Utils")
-	static bool IsPingMeasurementInProgress();
-
-	UFUNCTION(BlueprintCallable, Category = "Steam Integration Kit || SDK Functions || Networking Utils")
 	static int32 GetPingToDataCenter(FSIK_SteamNetworkingPOPID PopID, FSIK_SteamNetworkingPOPID& ViaRelayPoP);
 
 	UFUNCTION(BlueprintCallable, Category = "Steam Integration Kit || SDK Functions || Networking Utils")

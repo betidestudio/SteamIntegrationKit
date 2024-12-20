@@ -12,6 +12,8 @@ USIK_UnsubscribeItem_AsyncFunction* USIK_UnsubscribeItem_AsyncFunction::Unsubscr
 
 void USIK_UnsubscribeItem_AsyncFunction::Activate()
 {
+    Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     if(!SteamUGC())
     {
         OnFailure.Broadcast(ESIK_Result::ResultFail, Var_PublishedFileID);
@@ -21,8 +23,14 @@ void USIK_UnsubscribeItem_AsyncFunction::Activate()
     }
     CallbackHandle = SteamUGC()->UnsubscribeItem(Var_PublishedFileID.GetPublishedFileId());
     CallResult.Set(CallbackHandle, this, &USIK_UnsubscribeItem_AsyncFunction::OnComplete);
+#else
+    OnFailure.Broadcast(ESIK_Result::ResultFail, Var_PublishedFileID);
+    SetReadyToDestroy();
+    MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_UnsubscribeItem_AsyncFunction::OnComplete(RemoteStorageUnsubscribePublishedFileResult_t* pResult, bool bIOFailure)
 {
     auto Param = *pResult;
@@ -40,3 +48,4 @@ void USIK_UnsubscribeItem_AsyncFunction::OnComplete(RemoteStorageUnsubscribePubl
     SetReadyToDestroy();
     MarkAsGarbage();
 }
+#endif

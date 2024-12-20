@@ -12,6 +12,8 @@ USIK_GetAppDependencies_AsyncFunction* USIK_GetAppDependencies_AsyncFunction::Ge
 
 void USIK_GetAppDependencies_AsyncFunction::Activate()
 {
+    Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     if(!SteamUGC())
     {
         OnFailure.Broadcast(ESIK_Result::ResultFail, Var_PublishedFileID, TArray<FSIK_AppId>(), 0, 0);
@@ -28,8 +30,14 @@ void USIK_GetAppDependencies_AsyncFunction::Activate()
         return;
     }
     CallResult.Set(CallbackHandle, this, &USIK_GetAppDependencies_AsyncFunction::OnComplete);
+#else
+    OnFailure.Broadcast(ESIK_Result::ResultFail, Var_PublishedFileID, TArray<FSIK_AppId>(), 0, 0);
+    SetReadyToDestroy();
+    MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_GetAppDependencies_AsyncFunction::OnComplete(GetAppDependenciesResult_t* pResult, bool bIOFailure)
 {
     auto Param = *pResult;
@@ -54,3 +62,4 @@ void USIK_GetAppDependencies_AsyncFunction::OnComplete(GetAppDependenciesResult_
     SetReadyToDestroy();
     MarkAsGarbage();
 }
+#endif

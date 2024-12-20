@@ -19,6 +19,7 @@ USIK_RequestFavoritesServerList_AsyncFunction* USIK_RequestFavoritesServerList_A
 void USIK_RequestFavoritesServerList_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamMatchmakingServers())
 	{
 		return;
@@ -33,8 +34,14 @@ void USIK_RequestFavoritesServerList_AsyncFunction::Activate()
 	HServerListRequest Request = SteamMatchmakingServers()->RequestFavoritesServerList(VarAppId.GetAppID(), &KeyValuePairs, Filters.Num(), this);
 	FDateTime DateTime = FDateTime::UtcNow();
 	StartTime = DateTime.ToUnixTimestamp();
+#else
+	OnFailure.Broadcast(ESIK_MatchMakingServerResponse::ServerResponded, TArray<FSIK_FoundServers>());
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_RequestFavoritesServerList_AsyncFunction::ServerResponded(HServerListRequest hRequest, int iServer)
 {
 	//Calculate the time from the start of the request
@@ -89,3 +96,4 @@ SetReadyToDestroy();
 MarkAsGarbage();
 	});
 }
+#endif

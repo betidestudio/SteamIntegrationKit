@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SIK_SharedFile.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "SIK_TimelineLibrary.generated.h"
 

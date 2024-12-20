@@ -10,12 +10,15 @@ USIK_CreateBeacon_AsyncFunction* USIK_CreateBeacon_AsyncFunction::CreateBeacon(i
 {
 	USIK_CreateBeacon_AsyncFunction* Node = NewObject<USIK_CreateBeacon_AsyncFunction>();
 	Node->Var_nOpenSlots = OpenSlots;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	Node->Var_Location = Location.GetSteamPartyBeaconLocation();
+#endif
 	Node->Var_sConnectString = ConnectString;
 	Node->Var_sMetadata = Metadata;
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_CreateBeacon_AsyncFunction::OnCreateBeaconCallback(CreateBeaconCallback_t* CreateBeaconCallback,
                                                              bool bIOFailure)
 {
@@ -24,7 +27,7 @@ void USIK_CreateBeacon_AsyncFunction::OnCreateBeaconCallback(CreateBeaconCallbac
 	{
 		if(bIOFailure)
 		{
-			OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PartyBeaconID(0));
+			OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PartyBeaconID());
 		}
 		else
 		{
@@ -36,13 +39,15 @@ void USIK_CreateBeacon_AsyncFunction::OnCreateBeaconCallback(CreateBeaconCallbac
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_CreateBeacon_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if(!SteamParties())
 	{
-		OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PartyBeaconID(0));
+		OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PartyBeaconID());
 		SetReadyToDestroy();
 		MarkAsGarbage();
 		return;
@@ -50,10 +55,15 @@ void USIK_CreateBeacon_AsyncFunction::Activate()
 	CallbackHandle = SteamParties()->CreateBeacon(Var_nOpenSlots, &Var_Location, TCHAR_TO_ANSI(*Var_sConnectString), TCHAR_TO_ANSI(*Var_sMetadata));
 	if(CallbackHandle == k_uAPICallInvalid)
 	{
-		OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PartyBeaconID(0));
+		OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PartyBeaconID());
 		SetReadyToDestroy();
 		MarkAsGarbage();
 		return;
 	}
 	OnCreateBeaconCallResult.Set(CallbackHandle, this, &USIK_CreateBeacon_AsyncFunction::OnCreateBeaconCallback);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PartyBeaconID());
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

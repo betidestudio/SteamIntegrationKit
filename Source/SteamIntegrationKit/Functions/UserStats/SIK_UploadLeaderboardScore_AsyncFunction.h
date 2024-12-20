@@ -3,17 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/steamtypes.h>
-#include <steam/isteamuserstats.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steamtypes.h>
-#include <isteamuserstats.h>
-#include <steam_api_common.h>
-#endif
+#include "SIK_SharedFile.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "SIK_UploadLeaderboardScore_AsyncFunction.generated.h"
 
@@ -68,8 +58,10 @@ private:
 	TEnumAsByte<ESIK_LeaderboardUploadScoreMethod> Var_UploadScoreMethod;
 	int32 Var_LeaderboardId;
 	int32 Var_Score;
-	void OnUploadLeaderboardScore(LeaderboardScoreUploaded_t* LeaderboardScoreUploaded, bool bIOFailure);
 	virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
+	void OnUploadLeaderboardScore(LeaderboardScoreUploaded_t* LeaderboardScoreUploaded, bool bIOFailure);
 	SteamAPICall_t CallbackHandle;
 	CCallResult<USIK_UploadLeaderboardScore_AsyncFunction, LeaderboardScoreUploaded_t> OnUploadLeaderboardScoreCallResult;
+#endif
 };

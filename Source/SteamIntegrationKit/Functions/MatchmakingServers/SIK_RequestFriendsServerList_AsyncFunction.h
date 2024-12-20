@@ -3,17 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteammatchmaking.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steamtypes.h>
-#include <isteammatchmaking.h>
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "SIK_RequestFriendsServerList_AsyncFunction.generated.h"
@@ -21,7 +10,10 @@ THIRD_PARTY_INCLUDES_END
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRequestFriendsServerListDelegate, TEnumAsByte<ESIK_MatchMakingServerResponse>, Response, const TArray<FSIK_FoundServers>&, ServerList);
 
 UCLASS()
-class STEAMINTEGRATIONKIT_API USIK_RequestFriendsServerList_AsyncFunction : public UBlueprintAsyncActionBase, public ISteamMatchmakingServerListResponse
+class STEAMINTEGRATIONKIT_API USIK_RequestFriendsServerList_AsyncFunction : public UBlueprintAsyncActionBase
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	, public ISteamMatchmakingServerListResponse
+#endif
 {
 	GENERATED_BODY()
 
@@ -39,9 +31,11 @@ private:
 	FSIK_AppId VarAppId;
 	TMap<FString, FString> Filters;
 	virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	virtual void ServerResponded(HServerListRequest hRequest, int iServer) override;
 	virtual void ServerFailedToRespond(HServerListRequest hRequest, int iServer) override;
 	virtual void RefreshComplete(HServerListRequest hRequest, EMatchMakingServerResponse response) override;
+#endif
 	double StartTime;
 	float Var_TimeOut = 10.0f;
 	

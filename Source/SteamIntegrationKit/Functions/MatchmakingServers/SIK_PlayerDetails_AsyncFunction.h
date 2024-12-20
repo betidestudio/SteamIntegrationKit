@@ -3,17 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteammatchmaking.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steamtypes.h>
-#include <isteammatchmaking.h>
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
+#include "SIK_SharedFile.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "SIK_PlayerDetails_AsyncFunction.generated.h"
 
@@ -22,7 +12,10 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayersFailedToRespond);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayersRefreshComplete);
 
 UCLASS()
-class STEAMINTEGRATIONKIT_API USIK_PlayerDetails_AsyncFunction : public UBlueprintAsyncActionBase, public ISteamMatchmakingPlayersResponse
+class STEAMINTEGRATIONKIT_API USIK_PlayerDetails_AsyncFunction : public UBlueprintAsyncActionBase
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	, public ISteamMatchmakingPlayersResponse
+#endif
 {
 	GENERATED_BODY()
 public:
@@ -41,9 +34,11 @@ private:
 	FString Var_ServerIP;
 	int32 Var_ServerPort;
 	virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	virtual void AddPlayerToList(const char* pchName, int nScore, float flTimePlayed) override;
 	virtual void PlayersFailedToRespond() override;
 	virtual void PlayersRefreshComplete() override;
 	HServerQuery ServerQueryHandle;
+#endif
 
 };

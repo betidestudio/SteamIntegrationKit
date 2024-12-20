@@ -3,17 +3,6 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteamuserstats.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steam_api.h>
-#include <isteamuserstats.h>
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
 #include "SIK_StopPlaytimeTrackingForAllItems_AsyncFunction.generated.h"
 
@@ -36,8 +25,10 @@ public:
 
 private:
     virtual void Activate() override;
-    void OnComplete(StopPlaytimeTrackingResult_t* pResult, bool bIOFailure);
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     SteamAPICall_t CallbackHandle;
+    void OnComplete(StopPlaytimeTrackingResult_t* pResult, bool bIOFailure);
     CCallResult<USIK_StopPlaytimeTrackingForAllItems_AsyncFunction, StopPlaytimeTrackingResult_t> CallResult;
+#endif
 };
         

@@ -11,6 +11,7 @@ USIK_RequestPrices_AsyncFunction* USIK_RequestPrices_AsyncFunction::RequestPrice
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_RequestPrices_AsyncFunction::OnPricesReceived(
 	SteamInventoryRequestPricesResult_t* SteamInventoryRequestPricesResult, bool bIOFailure)
 {
@@ -30,10 +31,12 @@ void USIK_RequestPrices_AsyncFunction::OnPricesReceived(
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_RequestPrices_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		OnFailure.Broadcast(ESIK_Result::ResultFail, TEXT(""));
@@ -50,4 +53,9 @@ void USIK_RequestPrices_AsyncFunction::Activate()
 		return;
 	}
 	CallResult.Set(CallbackHandle, this, &USIK_RequestPrices_AsyncFunction::OnPricesReceived);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail, TEXT(""));
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

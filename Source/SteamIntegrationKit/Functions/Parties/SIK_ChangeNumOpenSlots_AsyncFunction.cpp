@@ -15,6 +15,7 @@ USIK_ChangeNumOpenSlots_AsyncFunction* USIK_ChangeNumOpenSlots_AsyncFunction::Ch
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_ChangeNumOpenSlots_AsyncFunction::OnChangeNumOpenSlots(
 	ChangeNumOpenSlotsCallback_t* ChangeNumOpenSlotsCallback, bool bIOFailure)
 {
@@ -35,10 +36,12 @@ void USIK_ChangeNumOpenSlots_AsyncFunction::OnChangeNumOpenSlots(
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_ChangeNumOpenSlots_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if(!SteamParties())
 	{
 		OnFailure.Broadcast(ESIK_Result::ResultFail);
@@ -55,4 +58,9 @@ void USIK_ChangeNumOpenSlots_AsyncFunction::Activate()
 		return;
 	}
 	OnChangeNumOpenSlotsCallResult.Set(CallbackHandle, this, &USIK_ChangeNumOpenSlots_AsyncFunction::OnChangeNumOpenSlots);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

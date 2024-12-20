@@ -15,6 +15,8 @@ USIK_StopPlaytimeTracking_AsyncFunction* USIK_StopPlaytimeTracking_AsyncFunction
 
 void USIK_StopPlaytimeTracking_AsyncFunction::Activate()
 {
+    Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     if(!SteamUGC())
     {
         OnFailure.Broadcast(ESIK_Result::ResultFail);
@@ -36,8 +38,14 @@ void USIK_StopPlaytimeTracking_AsyncFunction::Activate()
         return;
     }
     CallResult.Set(CallbackHandle, this, &USIK_StopPlaytimeTracking_AsyncFunction::OnComplete);
+#else
+    OnFailure.Broadcast(ESIK_Result::ResultFail);
+    SetReadyToDestroy();
+    MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_StopPlaytimeTracking_AsyncFunction::OnComplete(StopPlaytimeTrackingResult_t *CallbackData, bool bIOFailure)
 {
     auto Param = *CallbackData;
@@ -55,3 +63,4 @@ void USIK_StopPlaytimeTracking_AsyncFunction::OnComplete(StopPlaytimeTrackingRes
     SetReadyToDestroy();
     MarkAsGarbage();
 }
+#endif

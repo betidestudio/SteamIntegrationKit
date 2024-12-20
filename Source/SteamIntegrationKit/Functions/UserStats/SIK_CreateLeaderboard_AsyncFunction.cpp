@@ -20,6 +20,7 @@ USIK_CreateLeaderboard_AsyncFunction* USIK_CreateLeaderboard_AsyncFunction::Crea
 void USIK_CreateLeaderboard_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if(!SteamUserStats() || Var_LeaderboardName.IsEmpty())
 	{
 		UE_LOG(LogTemp, Error, TEXT("SteamUserStats() is nullptr or LeaderboardName is empty"));
@@ -70,8 +71,14 @@ void USIK_CreateLeaderboard_AsyncFunction::Activate()
 		return;
 	}
 	OnFindLeaderboardCallResult.Set(CallbackHandle, this, &USIK_CreateLeaderboard_AsyncFunction::OnFindLeaderboard);
+#else
+	OnFailure.Broadcast(-1);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_CreateLeaderboard_AsyncFunction::OnFindLeaderboard(LeaderboardFindResult_t* pResult, bool bIOFailure)
 {
 	auto Param = *pResult;
@@ -96,3 +103,4 @@ void USIK_CreateLeaderboard_AsyncFunction::OnFindLeaderboard(LeaderboardFindResu
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif

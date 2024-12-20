@@ -5,17 +5,6 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "SIK_SharedFile.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteamremotestorage.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steam_api.h>
-#include <isteamremotestorage.h>
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_FileWriteAsync_AsyncFunction.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFileWriteAsyncComplete, const TEnumAsByte<ESIK_Result>&, Result);
@@ -38,8 +27,10 @@ public:
 private:
 	FString Var_FileName;
 	TArray<uint8> Var_FileData;
-	void OnFileWriteAsyncComplete(RemoteStorageFileWriteAsyncComplete_t* RemoteStorageFileWriteAsyncComplete, bool bIOFailure);
 	virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
+	void OnFileWriteAsyncComplete(RemoteStorageFileWriteAsyncComplete_t* RemoteStorageFileWriteAsyncComplete, bool bIOFailure);
 	SteamAPICall_t CallbackHandle;
 	CCallResult<USIK_FileWriteAsync_AsyncFunction, RemoteStorageFileWriteAsyncComplete_t> OnFileWriteAsyncCallResult;
+#endif
 };

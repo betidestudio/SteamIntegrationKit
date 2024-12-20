@@ -14,6 +14,7 @@ USIK_StartPurchase_AsyncFunction* USIK_StartPurchase_AsyncFunction::StartPurchas
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_StartPurchase_AsyncFunction::OnStartPurchaseResult(SteamInventoryStartPurchaseResult_t* SteamInventoryStartPurchaseResult, bool bIOFailure)
 {
 	auto *RefData = SteamInventoryStartPurchaseResult;
@@ -32,10 +33,12 @@ void USIK_StartPurchase_AsyncFunction::OnStartPurchaseResult(SteamInventoryStart
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_StartPurchase_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInventory())
 	{
 		OnFailure.Broadcast(ESIK_Result::ResultFail, 0, 0);
@@ -59,4 +62,9 @@ void USIK_StartPurchase_AsyncFunction::Activate()
 		return;
 	}
 	CallResult.Set(CallbackHandle, this, &USIK_StartPurchase_AsyncFunction::OnStartPurchaseResult);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail, 0, 0);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

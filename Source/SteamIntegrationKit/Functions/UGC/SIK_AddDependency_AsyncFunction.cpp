@@ -13,6 +13,8 @@ USIK_AddDependency_AsyncFunction* USIK_AddDependency_AsyncFunction::AddDependenc
 
 void USIK_AddDependency_AsyncFunction::Activate()
 {
+    Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     if(!SteamUGC())
     {
         OnFailure.Broadcast(ESIK_Result::ResultFail, Var_ParentPublishedFileID, Var_ChildPublishedFileID);
@@ -29,8 +31,14 @@ void USIK_AddDependency_AsyncFunction::Activate()
         return;
     }
     CallResult.Set(CallbackHandle, this, &USIK_AddDependency_AsyncFunction::OnComplete);
+#else
+    OnFailure.Broadcast(ESIK_Result::ResultFail, Var_ParentPublishedFileID, Var_ChildPublishedFileID);
+    SetReadyToDestroy();
+    MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_AddDependency_AsyncFunction::OnComplete(AddUGCDependencyResult_t* pResult, bool bIOFailure)
 {
     auto Param = *pResult;
@@ -49,3 +57,4 @@ void USIK_AddDependency_AsyncFunction::OnComplete(AddUGCDependencyResult_t* pRes
     SetReadyToDestroy();
     MarkAsGarbage();
 }
+#endif

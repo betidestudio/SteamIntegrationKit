@@ -11,6 +11,7 @@ USIK_RequestLobbyList_AsyncFunction* USIK_RequestLobbyList_AsyncFunction::Reques
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_RequestLobbyList_AsyncFunction::OnLobbyListReceived(LobbyMatchList_t* LobbyMatches, bool bIOFailure)
 {
 	auto Param = *LobbyMatches;
@@ -28,10 +29,12 @@ void USIK_RequestLobbyList_AsyncFunction::OnLobbyListReceived(LobbyMatchList_t* 
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_RequestLobbyList_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamMatchmaking())
 	{
 		OnFailure.Broadcast(-1);
@@ -48,4 +51,9 @@ void USIK_RequestLobbyList_AsyncFunction::Activate()
 		return;
 	}
 	CallResult.Set(CallbackHandle, this, &USIK_RequestLobbyList_AsyncFunction::OnLobbyListReceived);
+#else
+	OnFailure.Broadcast(-1);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

@@ -17,6 +17,8 @@ USIK_PlayerDetails_AsyncFunction* USIK_PlayerDetails_AsyncFunction::RequestPlaye
 
 void USIK_PlayerDetails_AsyncFunction::Activate()
 {
+	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if (!SteamMatchmakingServers())
 	{
 		return;
@@ -24,8 +26,14 @@ void USIK_PlayerDetails_AsyncFunction::Activate()
 	FIPv4Address Var_Address;
 	FIPv4Address::Parse(Var_ServerIP, Var_Address);
 	ServerQueryHandle = SteamMatchmakingServers()->PlayerDetails(Var_Address.Value, Var_ServerPort, this);
+#else
+	OnPlayersFailedToRespond.Broadcast();
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_PlayerDetails_AsyncFunction::AddPlayerToList(const char* pchName, int nScore, float flTimePlayed)
 {
 	FString PlayerName = UTF8_TO_TCHAR(pchName);
@@ -50,3 +58,4 @@ void USIK_PlayerDetails_AsyncFunction::PlayersRefreshComplete()
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif

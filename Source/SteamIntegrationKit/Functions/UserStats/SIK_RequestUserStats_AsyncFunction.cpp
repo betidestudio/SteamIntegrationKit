@@ -12,6 +12,7 @@ USIK_RequestUserStats_AsyncFunction* USIK_RequestUserStats_AsyncFunction::Reques
 	return BlueprintNode;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_RequestUserStats_AsyncFunction::OnUserStatsReceived(UserStatsReceived_t* UserStatsReceived, bool bIOFailure)
 {
 	auto Param = *UserStatsReceived;
@@ -37,10 +38,12 @@ void USIK_RequestUserStats_AsyncFunction::OnUserStatsReceived(UserStatsReceived_
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_RequestUserStats_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if(!SteamUserStats())
 	{
 		OnFailure.Broadcast(ESIK_Result::ResultFail);
@@ -57,4 +60,9 @@ void USIK_RequestUserStats_AsyncFunction::Activate()
 		return;
 	}
 	m_OnUserStatsReceived.Set(m_CallbackHandle, this, &USIK_RequestUserStats_AsyncFunction::OnUserStatsReceived);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail);
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

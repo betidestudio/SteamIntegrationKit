@@ -59,7 +59,7 @@ FSIK_AccountID USIK_SharedFile::GetAccountID(FSIK_SteamId SteamId)
 #if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	return SteamId.GetSteamID().GetAccountID();
 #else
-	return -11;
+	return FSIK_AccountID();
 #endif
 }
 
@@ -68,7 +68,7 @@ TEnumAsByte<ESIK_Universe> USIK_SharedFile::GetUniverse(FSIK_SteamId SteamId)
 #if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	return static_cast<TEnumAsByte<ESIK_Universe>>(SteamId.GetSteamID().GetEUniverse());
 #else
-	return ESIK_Universe::k_EUniverseInvalid;
+	return UniverseInvalid;
 #endif
 }
 

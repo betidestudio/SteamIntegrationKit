@@ -19,6 +19,7 @@ USIK_RequestInternetServerList_AsyncFunction* USIK_RequestInternetServerList_Asy
 void USIK_RequestInternetServerList_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamMatchmakingServers())
 	{
 		return;
@@ -33,8 +34,14 @@ void USIK_RequestInternetServerList_AsyncFunction::Activate()
 	HServerListRequest Request = SteamMatchmakingServers()->RequestInternetServerList(VarAppId.GetAppID(), &KeyValuePairs, Filters.Num(), this);
 	FDateTime DateTime = FDateTime::UtcNow();
 	StartTime = DateTime.ToUnixTimestamp();
+#else
+	OnFailure.Broadcast(ESIK_MatchMakingServerResponse::ServerResponded, TArray<FSIK_FoundServers>());
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_RequestInternetServerList_AsyncFunction::ServerResponded(HServerListRequest hRequest, int iServer)
 {
 	UE_LOG(LogTemp, Warning, TEXT("ServerResponded"));
@@ -90,3 +97,4 @@ void USIK_RequestInternetServerList_AsyncFunction::RefreshComplete(HServerListRe
 	MarkAsGarbage();
 	});
 }
+#endif

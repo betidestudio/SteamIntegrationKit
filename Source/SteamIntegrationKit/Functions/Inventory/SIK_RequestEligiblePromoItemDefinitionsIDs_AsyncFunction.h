@@ -26,8 +26,11 @@ public:
 	FOnRequestEligiblePromoItemDefinitionsIDs OnFailure;
 private:
 	FSIK_SteamId Var_SteamID;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	void OnEligiblePromoItemDefinitionsIDsReceived(SteamInventoryEligiblePromoItemDefIDs_t* SteamInventoryEligiblePromoItemDefIDs, bool bIOFailure);
-	virtual void Activate() override;
 	SteamAPICall_t CallbackHandle;
 	CCallResult<USIK_RequestEligiblePromoItemDefinitionsIDs_AsyncFunction, SteamInventoryEligiblePromoItemDefIDs_t> CallResult;
+#endif
+	virtual void Activate() override;
+
 };

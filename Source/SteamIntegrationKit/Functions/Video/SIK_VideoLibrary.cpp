@@ -6,15 +6,18 @@
 
 void USIK_VideoLibrary::GetOPFSettings(FSIK_AppId AppID)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamVideo())
 	{
 		return;
 	}
 	SteamVideo()->GetOPFSettings(AppID.GetAppID());
+#endif
 }
 
 bool USIK_VideoLibrary::GetOPFStringForApp(FSIK_AppId AppID, FString& OutString)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamVideo())
 	{
 		return false;
@@ -25,22 +28,31 @@ bool USIK_VideoLibrary::GetOPFStringForApp(FSIK_AppId AppID, FString& OutString)
 	OutString = Buffer;
 	delete[] Buffer;
 	return bResult;
+#else
+	return false;
+#endif
 }
 
 void USIK_VideoLibrary::GetVideoURL(FSIK_AppId AppID)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamVideo())
 	{
 		return;
 	}
 	SteamVideo()->GetVideoURL(AppID.GetAppID());
+#endif
 }
 
 bool USIK_VideoLibrary::IsBroadcasting(int32& OutNumViewers)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamVideo())
 	{
 		return false;
 	}
 	return SteamVideo()->IsBroadcasting(&OutNumViewers);
+#else
+	return false;
+#endif
 }

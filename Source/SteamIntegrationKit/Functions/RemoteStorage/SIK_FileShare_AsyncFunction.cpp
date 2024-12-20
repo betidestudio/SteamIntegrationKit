@@ -12,6 +12,7 @@ USIK_FileShare_AsyncFunction* USIK_FileShare_AsyncFunction::FileShareAsync(const
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_FileShare_AsyncFunction::OnFileShare(RemoteStorageFileShareResult_t* RemoteStorageFileShareResult,
                                                bool bIOFailure)
 {
@@ -33,10 +34,12 @@ void USIK_FileShare_AsyncFunction::OnFileShare(RemoteStorageFileShareResult_t* R
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_FileShare_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if(!SteamRemoteStorage())
 	{
 		OnFailure.Broadcast(static_cast<ESIK_Result>(-1), TEXT(""), FSIK_UGCHandle());
@@ -53,4 +56,9 @@ void USIK_FileShare_AsyncFunction::Activate()
 		return;
 	}
 	OnFileShareCallResult.Set(CallbackHandle, this, &USIK_FileShare_AsyncFunction::OnFileShare);
+#else
+	OnFailure.Broadcast(static_cast<ESIK_Result>(-1), TEXT(""), FSIK_UGCHandle());
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

@@ -3,17 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steamtypes.h>
-#include <steam/isteammatchmaking.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steamtypes.h>
-#include <isteammatchmaking.h>
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "SIK_SharedFile.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "SIK_SteamCreateLobby_AsyncFunction.generated.h"
@@ -38,8 +27,10 @@ public:
 private:
 	int32 Var_nMaxMembers;
 	TEnumAsByte<ESIK_LobbyType> Var_LobbyType;
-	void OnCreateLobbyCallback(LobbyCreated_t* LobbyCreated, bool bIOFailure);
 	virtual void Activate() override;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	void OnCreateLobbyCallback(LobbyCreated_t* LobbyCreated, bool bIOFailure);
 	SteamAPICall_t CallbackHandle;
 	CCallResult<USIK_SteamCreateLobby_AsyncFunction, LobbyCreated_t> OnCreateLobbyCallResult;
+#endif
 };

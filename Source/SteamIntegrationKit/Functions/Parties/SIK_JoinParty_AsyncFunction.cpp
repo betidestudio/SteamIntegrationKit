@@ -2,7 +2,6 @@
 
 
 #include "SIK_JoinParty_AsyncFunction.h"
-
 #include "Async/Async.h"
 
 USIK_JoinParty_AsyncFunction* USIK_JoinParty_AsyncFunction::JoinParty(FSIK_PartyBeaconID SteamId)
@@ -12,6 +11,7 @@ USIK_JoinParty_AsyncFunction* USIK_JoinParty_AsyncFunction::JoinParty(FSIK_Party
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_JoinParty_AsyncFunction::OnJoinPartyCallback(JoinPartyCallback_t* JoinPartyCallback, bool bIOFailure)
 {
 	auto Param = *JoinPartyCallback;
@@ -19,7 +19,7 @@ void USIK_JoinParty_AsyncFunction::OnJoinPartyCallback(JoinPartyCallback_t* Join
 	{
 		if(bIOFailure)
 		{
-			OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PartyBeaconID(0), FSIK_SteamId(0), TEXT(""));
+			OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PartyBeaconID(), FSIK_SteamId(0), TEXT(""));
 		}
 		else
 		{
@@ -33,13 +33,15 @@ void USIK_JoinParty_AsyncFunction::OnJoinPartyCallback(JoinPartyCallback_t* Join
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_JoinParty_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if(!SteamParties())
 	{
-		OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PartyBeaconID(0), FSIK_SteamId(0), TEXT(""));
+		OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PartyBeaconID(), FSIK_SteamId(0), TEXT(""));
 		SetReadyToDestroy();
 		MarkAsGarbage();
 		return;
@@ -47,10 +49,15 @@ void USIK_JoinParty_AsyncFunction::Activate()
 	CallbackHandle = SteamParties()->JoinParty(Var_SteamId.GetPartyBeaconID());
 	if(CallbackHandle == k_uAPICallInvalid)
 	{
-		OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PartyBeaconID(0), FSIK_SteamId(0), TEXT(""));
+		OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PartyBeaconID(), FSIK_SteamId(0), TEXT(""));
 		SetReadyToDestroy();
 		MarkAsGarbage();
 		return;
 	}
 	JoinPartyCallResult.Set(CallbackHandle, this, &USIK_JoinParty_AsyncFunction::OnJoinPartyCallback);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_PartyBeaconID(), FSIK_SteamId(0), TEXT(""));
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

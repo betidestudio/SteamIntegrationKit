@@ -14,6 +14,7 @@ USIK_SteamCreateLobby_AsyncFunction* USIK_SteamCreateLobby_AsyncFunction::Create
 	return CreateLobby;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void USIK_SteamCreateLobby_AsyncFunction::OnCreateLobbyCallback(LobbyCreated_t* LobbyCreated, bool bIOFailure)
 {
 	auto Param = *LobbyCreated;
@@ -39,10 +40,12 @@ void USIK_SteamCreateLobby_AsyncFunction::OnCreateLobbyCallback(LobbyCreated_t* 
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_SteamCreateLobby_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamMatchmaking())
 	{
 		OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_SteamId(0));
@@ -59,4 +62,9 @@ void USIK_SteamCreateLobby_AsyncFunction::Activate()
 		return;
 	}
 	OnCreateLobbyCallResult.Set(CallbackHandle, this, &USIK_SteamCreateLobby_AsyncFunction::OnCreateLobbyCallback);
+#else
+	OnFailure.Broadcast(ESIK_Result::ResultFail, FSIK_SteamId(0));
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

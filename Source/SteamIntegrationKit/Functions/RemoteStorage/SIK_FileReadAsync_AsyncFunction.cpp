@@ -15,6 +15,7 @@ USIK_FileReadAsync_AsyncFunction* USIK_FileReadAsync_AsyncFunction::FileReadAsyn
 	return Node;
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_FileReadAsync_AsyncFunction::OnFileReadAsync(RemoteStorageFileReadAsyncComplete_t* RemoteStorageFileReadAsyncComplete, bool bIOFailure)
 {
 	auto Param = *RemoteStorageFileReadAsyncComplete;
@@ -40,10 +41,12 @@ void USIK_FileReadAsync_AsyncFunction::OnFileReadAsync(RemoteStorageFileReadAsyn
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
+#endif
 
 void USIK_FileReadAsync_AsyncFunction::Activate()
 {
 	Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	if(!SteamRemoteStorage())
 	{
 		OnFailure.Broadcast(static_cast<ESIK_Result>(-1), 0, 0, {});
@@ -60,4 +63,9 @@ void USIK_FileReadAsync_AsyncFunction::Activate()
 		return;
 	}
 	OnFileReadAsyncCallResult.Set(CallbackHandle, this, &USIK_FileReadAsync_AsyncFunction::OnFileReadAsync);
+#else
+	OnFailure.Broadcast(static_cast<ESIK_Result>(-1), 0, 0, {});
+	SetReadyToDestroy();
+	MarkAsGarbage();
+#endif
 }

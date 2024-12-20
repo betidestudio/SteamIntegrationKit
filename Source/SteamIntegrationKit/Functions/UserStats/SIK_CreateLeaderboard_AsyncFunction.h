@@ -4,17 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteamuserstats.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steam_api.h>
-#include <isteamuserstats.h>
-#include <steam_api_common.h>
-#endif
-THIRD_PARTY_INCLUDES_END
+#include "SIK_SharedFile.h"
 #include "SIK_CreateLeaderboard_AsyncFunction.generated.h"
 
 UENUM(BlueprintType)
@@ -53,11 +43,13 @@ public:
 
 	
 private:
-	CCallResult<USIK_CreateLeaderboard_AsyncFunction, LeaderboardFindResult_t> OnFindLeaderboardCallResult;
 	FString Var_LeaderboardName;
 	TEnumAsByte<ESIK_LeaderboardSortMethod> Var_SortMethod;
 	TEnumAsByte<ESIK_LeaderboardDisplayType> Var_DisplayType;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	SteamAPICall_t CallbackHandle;
 	void OnFindLeaderboard( LeaderboardFindResult_t *pResult, bool bIOFailure);
+	CCallResult<USIK_CreateLeaderboard_AsyncFunction, LeaderboardFindResult_t> OnFindLeaderboardCallResult;
+#endif
 	virtual void Activate() override;
 };

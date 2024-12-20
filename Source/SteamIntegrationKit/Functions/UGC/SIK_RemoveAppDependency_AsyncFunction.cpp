@@ -13,6 +13,8 @@ USIK_RemoveAppDependency_AsyncFunction* USIK_RemoveAppDependency_AsyncFunction::
 
 void USIK_RemoveAppDependency_AsyncFunction::Activate()
 {
+    Super::Activate();
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     if(!SteamUGC())
     {
         OnFailure.Broadcast(ResultFail, FSIK_PublishedFileId(0), FSIK_AppId(0));
@@ -28,8 +30,14 @@ void USIK_RemoveAppDependency_AsyncFunction::Activate()
         return;
     }
     CallResult.Set(CallbackHandle, this, &USIK_RemoveAppDependency_AsyncFunction::OnComplete);
+#else
+    OnFailure.Broadcast(ResultFail, FSIK_PublishedFileId(), FSIK_AppId(0));
+    SetReadyToDestroy();
+    MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_RemoveAppDependency_AsyncFunction::OnComplete(RemoveAppDependencyResult_t* CallbackData, bool bIOFailure)
 {
     auto Param = *CallbackData;
@@ -48,3 +56,4 @@ void USIK_RemoveAppDependency_AsyncFunction::OnComplete(RemoveAppDependencyResul
     SetReadyToDestroy();
     MarkAsGarbage();
 }
+#endif

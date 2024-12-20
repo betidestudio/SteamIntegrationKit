@@ -25,8 +25,11 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnRequestPrices OnFailure;
 private:
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	void OnPricesReceived(SteamInventoryRequestPricesResult_t* SteamInventoryRequestPricesResult, bool bIOFailure);
-	virtual void Activate() override;
 	SteamAPICall_t CallbackHandle;
 	CCallResult<USIK_RequestPrices_AsyncFunction, SteamInventoryRequestPricesResult_t> CallResult;
+#endif
+	virtual void Activate() override;
+
 };

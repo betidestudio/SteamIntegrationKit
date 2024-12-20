@@ -15,6 +15,7 @@ USIK_SubmitItemUpdate_AsyncFunction* USIK_SubmitItemUpdate_AsyncFunction::Submit
 
 void USIK_SubmitItemUpdate_AsyncFunction::Activate()
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
     if(!SteamUGC())
     {
         OnFailure.Broadcast(ESIK_Result::ResultFail, false);
@@ -31,8 +32,14 @@ void USIK_SubmitItemUpdate_AsyncFunction::Activate()
         return;
     }
     CallResult.Set(CallbackHandle, this, &USIK_SubmitItemUpdate_AsyncFunction::OnComplete);
+#else
+    OnFailure.Broadcast(ESIK_Result::ResultFail, false);
+    SetReadyToDestroy();
+    MarkAsGarbage();
+#endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 void USIK_SubmitItemUpdate_AsyncFunction::OnComplete(SubmitItemUpdateResult_t* CallbackData, bool bIOFailure)
 {
     auto Param = *CallbackData;
@@ -50,3 +57,4 @@ void USIK_SubmitItemUpdate_AsyncFunction::OnComplete(SubmitItemUpdateResult_t* C
     SetReadyToDestroy();
     MarkAsGarbage();
 }
+#endif
