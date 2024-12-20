@@ -5,6 +5,7 @@
 
 #include "OnlineSubsystem.h"
 #include "OnlineSubsystemSteam.h"
+#include "OnlineSubsystemUtils.h"
 #include "SIK_SharedFile.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #if !WITH_ENGINE_STEAM
@@ -56,7 +57,7 @@ TArray<FSIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndL
 		{
 			return TArray<FSIK_CurrentSessionInfo>();
 		}
-		if(	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get())
+		if(	IOnlineSubsystem* OnlineSub = Online::GetSubsystem(Context->GetWorld(), STEAM_SUBSYSTEM))
 		{
 			if (FOnlineSubsystemSteam* SteamRef = static_cast<FOnlineSubsystemSteam*>(OnlineSub))
 			{
@@ -81,14 +82,7 @@ TArray<FSIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndL
 
 bool USIK_SessionsSubsystem::IsSIKActive(UObject* Context)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get())
-	{
-		if(OnlineSubsystem->GetSubsystemName() == STEAM_SUBSYSTEM)
-		{
-			return true;
-		}
-	}
-	if(const IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get(STEAM_SUBSYSTEM))
+	if (const IOnlineSubsystem* OnlineSubsystem = Online::GetSubsystem(Context->GetWorld(), STEAM_SUBSYSTEM))
 	{
 		return true;
 	}

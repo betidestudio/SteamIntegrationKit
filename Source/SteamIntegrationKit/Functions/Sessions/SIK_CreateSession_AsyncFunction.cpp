@@ -76,7 +76,7 @@ void USIK_CreateSession_AsyncFunction::OnCreateSessionCompleted(FName SessionNam
 	{
 		if(bDelegateCalled == false)
 		{
-			const IOnlineSessionPtr Sessions = IOnlineSubsystem::Get()->GetSessionInterface();
+			const IOnlineSessionPtr Sessions = Online::GetSubsystem(GetWorld(), STEAM_SUBSYSTEM)->GetSessionInterface();
 			if(const FOnlineSession* CurrentSession = Sessions->GetNamedSession(VSessionName))
 			{
 				OnSuccess.Broadcast(CurrentSession->SessionInfo.Get()->GetSessionId().ToString());

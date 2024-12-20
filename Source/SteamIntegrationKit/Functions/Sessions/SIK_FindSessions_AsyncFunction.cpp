@@ -96,7 +96,7 @@ void USIK_FindSessions_AsyncFunction::OnFindSessionCompleted(bool bWasSuccess)
 	}
 	else
 	{
-		if (const IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get())
+		if (const IOnlineSubsystem* OnlineSub = Online::GetSubsystem(GetWorld(), STEAM_SUBSYSTEM))
 		{
 			TArray<FSSessionFindStruct> SessionResult_Array;
 			IOnlineSessionPtr Sessions = OnlineSub->GetSessionInterface();

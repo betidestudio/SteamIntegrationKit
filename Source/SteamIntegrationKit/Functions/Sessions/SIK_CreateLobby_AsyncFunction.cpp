@@ -12,7 +12,7 @@ void USIK_CreateLobby_AsyncFunction::Activate()
 
 void USIK_CreateLobby_AsyncFunction::CreateLobby()
 {
-	if(const IOnlineSubsystem *SubsystemRef = Online::GetSubsystem(this->GetWorld()))
+	if(const IOnlineSubsystem *SubsystemRef = Online::GetSubsystem(this->GetWorld(), STEAM_SUBSYSTEM))
 	{
 		if(const IOnlineSessionPtr SessionPtrRef = SubsystemRef->GetSessionInterface())
 		{
@@ -73,7 +73,7 @@ void USIK_CreateLobby_AsyncFunction::OnCreateLobbyCompleted(FName SessionName, b
 	{
 		if(bDelegateCalled == false)
 		{
-			const IOnlineSessionPtr Sessions = IOnlineSubsystem::Get()->GetSessionInterface();
+			const IOnlineSessionPtr Sessions = Online::GetSubsystem(GetWorld(), STEAM_SUBSYSTEM)->GetSessionInterface();
 			if(const FOnlineSession* CurrentSession = Sessions->GetNamedSession(VSessionName))
 			{
 				OnSuccess.Broadcast(CurrentSession->SessionInfo.Get()->GetSessionId().ToString());

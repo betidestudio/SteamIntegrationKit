@@ -21,7 +21,7 @@ void USIK_DestroySession_AsyncFunction::Activate()
 
 void USIK_DestroySession_AsyncFunction::DestroySession()
 {
-	if(const IOnlineSubsystem *SubsystemRef = IOnlineSubsystem::Get())
+	if(const IOnlineSubsystem *SubsystemRef = Online::GetSubsystem(GetWorld(), STEAM_SUBSYSTEM))
 	{
 		if(const IOnlineSessionPtr SessionPtrRef = SubsystemRef->GetSessionInterface())
 		{

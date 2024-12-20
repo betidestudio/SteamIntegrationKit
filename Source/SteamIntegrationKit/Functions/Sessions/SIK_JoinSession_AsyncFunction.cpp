@@ -22,7 +22,7 @@ void USIK_JoinSession_AsyncFunction::Activate()
 
 void USIK_JoinSession_AsyncFunction::JoinSession()
 {
-	if(const IOnlineSubsystem *SubsystemRef = Online::GetSubsystem(this->GetWorld()))
+	if(const IOnlineSubsystem *SubsystemRef = Online::GetSubsystem(this->GetWorld(), STEAM_SUBSYSTEM))
 	{
 		if(const IOnlineSessionPtr SessionPtrRef = SubsystemRef->GetSessionInterface())
 		{
@@ -63,7 +63,7 @@ void USIK_JoinSession_AsyncFunction::OnJoinSessionCompleted(FName SessionName, E
 	{
 		if (APlayerController* PlayerControllerRef = UGameplayStatics::GetPlayerController(Var_WorldContextObject, 0))
 		{
-			if (const IOnlineSubsystem* SubsystemRef = IOnlineSubsystem::Get())
+			if (const IOnlineSubsystem* SubsystemRef = Online::GetSubsystem(GetWorld(), STEAM_SUBSYSTEM))
 			{
 				const IOnlineSessionPtr SessionPtrRef = SubsystemRef->GetSessionInterface();
 				if (SessionPtrRef.IsValid())
