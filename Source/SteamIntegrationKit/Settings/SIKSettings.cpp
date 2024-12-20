@@ -72,43 +72,67 @@ USIKSettings::USIKSettings()
 #if WITH_EDITOR
 void USIKSettings::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-	if(GConfig)
-	{
-		GConfig->SetBool(TEXT("OnlineSubsystemSteam"), TEXT("bEnabled"), true, ProjectEngineIniPath);
-		GConfig->SetInt(TEXT("OnlineSubsystemSteam"), TEXT("SteamDevAppId"), SteamDevAppId, ProjectEngineIniPath);
-		GConfig->SetInt(TEXT("OnlineSubsystemSteam"), TEXT("SteamAppId"), SteamAppId, ProjectEngineIniPath);
-		GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("GameVersion"), *GameVersion, ProjectEngineIniPath);
-		GConfig->SetBool(TEXT("OnlineSubsystemSteam"), TEXT("bRelaunchInSteam"), bRelaunchInSteam, ProjectEngineIniPath);
-		GConfig->SetInt(TEXT("OnlineSubsystemSteam"), TEXT("GameServerPort"), GameServerPort, ProjectEngineIniPath);
-		GConfig->SetInt(TEXT("OnlineSubsystemSteam"), TEXT("P2PConnectionTimeout"), P2PConnectionTimeout, ProjectEngineIniPath);
-		GConfig->SetArray(TEXT("OnlineSubsystemSteam"), TEXT("MapsToCook"), MapsToCook, ProjectEngineIniPath);
-		if(FPlatformMisc::GetEnvironmentVariable(TEXT("SIK_STEAM_USERNAME")).IsEmpty())
-		{
-			bUseEnvironmentVariables = false;
-			GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("Username"), *Username, ProjectEngineIniPath);
-			GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("Password"), *Password, ProjectEngineIniPath);
-		}
-		else
-		{
-			Username = FPlatformMisc::GetEnvironmentVariable(TEXT("SIK_STEAM_USERNAME"));
-			Password = FPlatformMisc::GetEnvironmentVariable(TEXT("SIK_STEAM_PASSWORD"));
-			bUseEnvironmentVariables = true;
-		}
-		TArray<FString> StringDepotIds;
-		for(int32 DepotId : DepotIds)
-		{
-			StringDepotIds.Add(FString::FromInt(DepotId));
-		}
-		GConfig->SetArray(TEXT("OnlineSubsystemSteam"), TEXT("DepotIds"), StringDepotIds, ProjectEngineIniPath);
-		GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("BranchName"), *BranchName, ProjectEngineIniPath);
-		GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("ServerName"), *ServerName, ProjectEngineIniPath);
-		GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("ServerDescription"), *ServerDescription, ProjectEngineIniPath);
-		GConfig->SetString(TEXT("OnlineSubsystemSteam"), TEXT("ServerGameDir"), *ServerGameDir, ProjectEngineIniPath);
-		GConfig->Flush(false, ProjectEngineIniPath);
-		SaveConfig(CPF_Config, *ProjectEngineIniPath);
-	}
+    Super::PostEditChangeProperty(PropertyChangedEvent);
+
+    // Define the path and section
+    FString ConfigFilePath = FConfigCacheIni::NormalizeConfigIniPath(FPaths::Combine(FPaths::SourceConfigDir(), TEXT("DefaultEngine.ini")));
+	FString LocalSectionName = TEXT("OnlineSubsystemSteam");
+	
+    // Use FConfigFile for direct manipulation
+    FConfigFile ConfigFile;
+	ConfigFile.Read(*ConfigFilePath);
+    if (true)
+    {
+    	ConfigFile.SetBool(*LocalSectionName, TEXT("bEnabled"), true);
+    	ConfigFile.SetInt64(*LocalSectionName, TEXT("SteamDevAppId"), SteamDevAppId);
+        ConfigFile.SetString(*LocalSectionName, TEXT("SteamDevAppId"), *FString::FromInt(SteamDevAppId));
+        ConfigFile.SetString(*LocalSectionName, TEXT("SteamAppId"), *FString::FromInt(SteamAppId));
+        ConfigFile.SetString(*LocalSectionName, TEXT("GameVersion"), *GameVersion);
+        ConfigFile.SetString(*LocalSectionName, TEXT("bRelaunchInSteam"), bRelaunchInSteam ? TEXT("True") : TEXT("False"));
+        ConfigFile.SetString(*LocalSectionName, TEXT("GameServerPort"), *FString::FromInt(GameServerPort));
+        ConfigFile.SetString(*LocalSectionName, TEXT("P2PConnectionTimeout"), *FString::FromInt(P2PConnectionTimeout));
+        ConfigFile.SetArray(*LocalSectionName, TEXT("MapsToCook"), MapsToCook);
+
+        if (bUseEnvironmentVariables)
+        {
+            Username = FPlatformMisc::GetEnvironmentVariable(TEXT("SIK_STEAM_USERNAME"));
+            Password = FPlatformMisc::GetEnvironmentVariable(TEXT("SIK_STEAM_PASSWORD"));
+        }
+        else
+        {
+            ConfigFile.SetString(*LocalSectionName, TEXT("Username"), *Username);
+            ConfigFile.SetString(*LocalSectionName, TEXT("Password"), *Password);
+        }
+
+        // Handle DepotIds as an array
+        TArray<FString> StringDepotIds;
+        for (int32 DepotId : DepotIds)
+        {
+            StringDepotIds.Add(FString::FromInt(DepotId));
+        }
+        ConfigFile.SetArray(*LocalSectionName, TEXT("DepotIds"), StringDepotIds);
+
+        // Additional settings
+        ConfigFile.SetString(*LocalSectionName, TEXT("BranchName"), *BranchName);
+        ConfigFile.SetString(*LocalSectionName, TEXT("ServerName"), *ServerName);
+        ConfigFile.SetString(*LocalSectionName, TEXT("ServerDescription"), *ServerDescription);
+        ConfigFile.SetString(*LocalSectionName, TEXT("ServerGameDir"), *ServerGameDir);
+
+    	if (ConfigFile.Write(*ConfigFilePath))
+        {
+            UE_LOG(LogTemp, Log, TEXT("Successfully saved settings to [%s] in %s"), *LocalSectionName, *ConfigFilePath);
+        }
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("Failed to write settings to %s"), *ConfigFilePath);
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to read config file: %s"), *ConfigFilePath);
+    }
 }
+
 
 bool USIKSettings::CanEditChange(const FProperty* InProperty) const
 {
