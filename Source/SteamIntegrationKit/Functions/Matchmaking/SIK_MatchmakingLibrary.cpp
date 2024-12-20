@@ -2,7 +2,7 @@
 
 
 #include "SIK_MatchmakingLibrary.h"
-
+#include "Serialization/MemoryReader.h"
 #include "Interfaces/IPv4/IPv4Address.h"
 
 int32 USIK_MatchmakingLibrary::AddFavoriteGame(FSIK_AppId AppID, FString IP, int32 ConnPort, int32 QueryPort,
