@@ -4,16 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "SIK_SharedFile.h"
-THIRD_PARTY_INCLUDES_START
-#if WITH_ENGINE_STEAM
-#include <steam/steam_api.h>
-#include <steam/isteamuser.h>
-#include <steam/steam_api_common.h>
-#else
-#include <steamtypes.h>
-#include <isteamuser.h>
-#endif
-THIRD_PARTY_INCLUDES_END
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "HostMigrationSubsystem.generated.h"
 
@@ -37,6 +27,8 @@ public:
 private:
 	FSIK_SteamId CurrentLobbyId;
 	FSIK_SteamId CurrentOwner;
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	STEAM_CALLBACK_MANUAL(UHostMigrationSubsystem, OnLobbyDataUpdateCallback, LobbyDataUpdate_t, m_CallbackLobbyDataUpdate);
+#endif
 	
 };

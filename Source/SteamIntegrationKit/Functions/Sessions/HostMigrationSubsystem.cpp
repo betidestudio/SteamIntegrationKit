@@ -2,23 +2,24 @@
 
 
 #include "HostMigrationSubsystem.h"
-
 #include "Async/Async.h"
 
 
 void UHostMigrationSubsystem::StartHostMigration(FSIK_SteamId LobbyId)
 {
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!LobbyId.GetSteamID().IsValid())
 	{
 		UE_LOG(LogTemp, Error, TEXT("Invalid LobbyId"));
 		return;
 	}
 	CurrentLobbyId = LobbyId;
+#endif
 }
 
 UHostMigrationSubsystem::UHostMigrationSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackLobbyDataUpdate.Register(this, &UHostMigrationSubsystem::OnLobbyDataUpdateCallback);
 	if(IsRunningDedicatedServer())
 	{
@@ -29,11 +30,12 @@ UHostMigrationSubsystem::UHostMigrationSubsystem()
 
 UHostMigrationSubsystem::~UHostMigrationSubsystem()
 {
-#if ONLINESUBSYSTEMSTEAM_PACKAGE
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	m_CallbackLobbyDataUpdate.Unregister();
 #endif
 }
 
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 void UHostMigrationSubsystem::OnLobbyDataUpdateCallback(LobbyDataUpdate_t* pParam)
 {
 	if(!SteamMatchmaking() || !SteamUser())
@@ -75,3 +77,4 @@ void UHostMigrationSubsystem::OnLobbyDataUpdateCallback(LobbyDataUpdate_t* pPara
 		}
 	}
 }
+#endif
