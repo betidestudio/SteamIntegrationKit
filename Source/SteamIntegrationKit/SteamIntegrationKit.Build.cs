@@ -29,6 +29,7 @@ public class SteamIntegrationKit : ModuleRules
 			new string[]
 			{
 				"Core",
+				"CoreOnline",
 				"OnlineSubsystem",
 				"OnlineSubsystemUtils",
 				"Networking"

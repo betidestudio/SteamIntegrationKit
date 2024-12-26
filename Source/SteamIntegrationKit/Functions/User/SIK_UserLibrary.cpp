@@ -182,14 +182,25 @@ int32 USIK_UserLibrary::GetAuthSessionTicket(TArray<uint8>& Ticket, FSIK_SteamNe
 	}
 	uint32 TicketLength = 0;
 	HAuthTicket Result;
+	bool LocalCheckForSteamNetworkingIdentity = false;
+	if(Identity.m_eType.GetValue() == k_ESteamNetworkingIdentityType_Invalid)
+	{
+		LocalCheckForSteamNetworkingIdentity = true;		
+	}
 	SteamNetworkingIdentity SteamNetworkingIdentity = Identity.GetSteamNetworkingIdentity();
+	uint8 AuthToken[1024];
+	uint32 AuthTokenSize = 0;
+	Ticket.SetNum(1024);
 #if !WITH_ENGINE_STEAM || ENGINE_MINOR_VERSION > 3
-	Result = SteamUser()->GetAuthSessionTicket(Ticket.GetData(), Ticket.Num(), &TicketLength, &SteamNetworkingIdentity);
+	Result = SteamUser()->GetAuthSessionTicket(AuthToken, UE_ARRAY_COUNT(AuthToken), &AuthTokenSize, LocalCheckForSteamNetworkingIdentity ? nullptr : &SteamNetworkingIdentity);
+	Ticket.SetNum(AuthTokenSize);
+	FMemory::Memcpy(Ticket.GetData(), AuthToken, AuthTokenSize);
+	return Result;
 #else
 	Result = SteamUser()->GetAuthSessionTicket(Ticket.GetData(), Ticket.Num(), &TicketLength);
-#endif
 	Ticket.SetNum(TicketLength);
 	return Result;
+#endif
 #else
 	return 0;
 #endif

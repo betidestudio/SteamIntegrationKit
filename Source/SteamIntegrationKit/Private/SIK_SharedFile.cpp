@@ -4,6 +4,7 @@
 #include "SIK_SharedFile.h"
 #include "Online/CoreOnline.h"
 #include "Interfaces/IPluginManager.h"
+#include "GameFramework/OnlineReplStructs.h"
 #include "Misc/FileHelper.h"
 
 

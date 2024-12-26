@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "FindSessionsCallbackProxy.h"
 #include "OnlineKeyValuePair.h"
-#include "Online/CoreOnline.h"
 THIRD_PARTY_INCLUDES_START
 #if WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE
 #include "steam/steamclientpublic.h"
@@ -969,6 +968,7 @@ struct FSIK_SteamNetworkingIdentity
 		switch (m_eType)
 		{
 		case SteamNetworkingIdentityType_Invalid:
+			return SteamNetworkingIdentity;
 			break;
 		case SteamNetworkingIdentityType_SteamID:
 			SteamNetworkingIdentity.SetSteamID(m_steamID.GetSteamID());
