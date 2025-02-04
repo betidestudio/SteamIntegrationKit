@@ -5,6 +5,7 @@
 
 #include "FindSessionsCallbackProxy.h"
 #include "OnlineSubsystem.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "OnlineSubsystemUtils.h"
 #include "Online/OnlineSessionNames.h"
 
@@ -40,7 +41,11 @@ void USIK_FindSessions_AsyncFunction::FindSession()
 			SessionSearch->MaxSearchResults = I_MaxResults;
 			if(E_MatchType == ESMatchType::MT_Lobby)
 			{
+#if ENGINE_MINOR_VERSION >= 5
+				SessionSearch->QuerySettings.Set("SEARCH_PRESENCE", true, EOnlineComparisonOp::Equals);
+#else
 				SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+#endif
 			}
 			if(B_bEmptyServerOnly)
 			{
