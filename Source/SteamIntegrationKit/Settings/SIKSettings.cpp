@@ -143,5 +143,3 @@ bool USIKSettings::CanEditChange(const FProperty* InProperty) const
 	return Super::CanEditChange(InProperty);
 }
 #endif
-
-#undef LOCTEXT_NAMESPACE

@@ -19,7 +19,7 @@ class STEAMINTEGRATIONKIT_API USIK_RequestLANServerList_AsyncFunction : public U
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, DisplayName="Request LAN Server List", Category = "Steam Integration Kit || SDK Functions || Matchmaking Servers")
+	UFUNCTION(BlueprintCallable, DisplayName="Request LAN Server List", Category = "Steam Integration Kit || SDK Functions || Matchmaking Servers",meta=(BlueprintInternalUseOnly = "true"))
 	static USIK_RequestLANServerList_AsyncFunction* RequestLANServerList(FSIK_AppId AppId, float TimeOut = 10.0f);
 
 	UPROPERTY(BlueprintAssignable)

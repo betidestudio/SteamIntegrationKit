@@ -19,7 +19,7 @@ class STEAMINTEGRATIONKIT_API USIK_RequestFavoritesServerList_AsyncFunction : pu
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, DisplayName="Request Favorites Server List", Category = "Steam Integration Kit || SDK Functions || Matchmaking Servers")
+	UFUNCTION(BlueprintCallable, DisplayName="Request Favorites Server List", Category = "Steam Integration Kit || SDK Functions || Matchmaking Servers", meta=(AutoCreateRefTerm="Filters", BlueprintInternalUseOnly = "true"))
 	static USIK_RequestFavoritesServerList_AsyncFunction* RequestFavoritesServerList(FSIK_AppId AppId, const TMap<FString, FString>& Filters, float TimeOut = 10.0f);
 
 	UPROPERTY(BlueprintAssignable)

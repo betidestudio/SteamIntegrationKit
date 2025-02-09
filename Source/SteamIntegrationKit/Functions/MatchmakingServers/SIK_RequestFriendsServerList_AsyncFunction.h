@@ -18,7 +18,7 @@ class STEAMINTEGRATIONKIT_API USIK_RequestFriendsServerList_AsyncFunction : publ
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, DisplayName="Request Friends Server List", Category = "Steam Integration Kit || SDK Functions || Matchmaking Servers", meta=(AutoCreateRefTerm="Filters"))
+	UFUNCTION(BlueprintCallable, DisplayName="Request Friends Server List", Category = "Steam Integration Kit || SDK Functions || Matchmaking Servers", meta=(AutoCreateRefTerm="Filters", BlueprintInternalUseOnly = "true"))
 	static USIK_RequestFriendsServerList_AsyncFunction* RequestFriendsServerList(FSIK_AppId AppId, const TMap<FString, FString>& Filters, float TimeOut = 10.0f);
 
 	UPROPERTY(BlueprintAssignable)

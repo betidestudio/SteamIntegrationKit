@@ -19,7 +19,7 @@ class STEAMINTEGRATIONKIT_API USIK_RequestSpectatorServerList_AsyncFunction : pu
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, DisplayName="Request Spectator Server List", Category = "Steam Integration Kit || SDK Functions || Matchmaking Servers")
+	UFUNCTION(BlueprintCallable, DisplayName="Request Spectator Server List", Category = "Steam Integration Kit || SDK Functions || Matchmaking Servers",meta=(AutoCreateRefTerm="Filters", BlueprintInternalUseOnly = "true"))
 	static USIK_RequestSpectatorServerList_AsyncFunction* RequestSpectatorServerList(FSIK_AppId AppId, const TMap<FString, FString>& Filters, float TimeOut = 10.0f);
 
 	UPROPERTY(BlueprintAssignable)

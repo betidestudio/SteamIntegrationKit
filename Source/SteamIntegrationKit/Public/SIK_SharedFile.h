@@ -755,6 +755,9 @@ struct FSIK_FoundServers
 	FSIK_AppId AppID = 0;
 
 	UPROPERTY(BlueprintReadWrite, Category="Steam Integration Kit")
+	FSIK_SteamId ServerID = 0;
+
+	UPROPERTY(BlueprintReadWrite, Category="Steam Integration Kit")
 	int32 Players;
 
 	UPROPERTY(BlueprintReadWrite, Category="Steam Integration Kit")
@@ -823,6 +826,8 @@ struct FSIK_FoundServers
 		ServerVersion = ServerItem.m_nServerVersion;
 		ServerName = ServerItem.GetName();
 		GameTags = ServerItem.m_szGameTags;
+		ServerID = ServerItem.m_steamID;
+		ServerNetAddress = ServerItem.m_NetAdr;
 	}
 #endif
 };
