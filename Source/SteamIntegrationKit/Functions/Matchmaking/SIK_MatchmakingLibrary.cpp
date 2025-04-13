@@ -198,7 +198,7 @@ void USIK_MatchmakingLibrary::GetLobbyChatEntry(FSIK_SteamId SteamID, int32 Chat
 	{
 		FMemoryReader Reader(Var_ChatEntry);
 		Reader << ChatEntry;
-		Reader.Flush();
+		Reader.Close();
 	}
 	ChatEntryType = static_cast<ESIK_LobbyChatEntryType>(Var_ChatEntryType);
 #endif
