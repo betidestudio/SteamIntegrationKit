@@ -129,7 +129,18 @@ void USIK_FindSessions_AsyncFunction::OnFindSessionCompleted(bool bWasSuccess)
 						bool IsServer = LocalArraySettings.Contains("IsDedicatedServer") ? true : false;
 						FSSessionFindStruct LocalStruct;
 						LocalStruct.SessionName = "GameSession";
-						LocalStruct.CurrentNumberOfPlayers = (SessionResult.OnlineResult.Session.SessionSettings.NumPublicConnections + SessionResult.OnlineResult.Session.SessionSettings.NumPrivateConnections) - (SessionResult.OnlineResult.Session.NumOpenPublicConnections + SessionResult.OnlineResult.Session.NumOpenPrivateConnections);
+						
+						// Get current players count from session data
+						if (LocalArraySettings.Contains("NumConnections"))
+						{
+							LocalStruct.CurrentNumberOfPlayers = LocalArraySettings["NumConnections"].IntValue;
+						}
+						else
+						{
+							// Fallback calculation 
+							LocalStruct.CurrentNumberOfPlayers = (SessionResult.OnlineResult.Session.SessionSettings.NumPublicConnections + SessionResult.OnlineResult.Session.SessionSettings.NumPrivateConnections) - (SessionResult.OnlineResult.Session.NumOpenPublicConnections + SessionResult.OnlineResult.Session.NumOpenPrivateConnections);
+						}
+						
 						LocalStruct.MaxNumberOfPlayers = SessionResult.OnlineResult.Session.SessionSettings.NumPublicConnections + SessionResult.OnlineResult.Session.SessionSettings.NumPrivateConnections;
 						LocalStruct.SessionResult = SessionResult;
 						LocalStruct.SessionSettings = LocalArraySettings;
