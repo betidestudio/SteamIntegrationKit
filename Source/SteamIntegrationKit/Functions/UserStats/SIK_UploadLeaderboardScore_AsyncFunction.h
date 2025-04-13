@@ -46,7 +46,7 @@ class STEAMINTEGRATIONKIT_API USIK_UploadLeaderboardScore_AsyncFunction : public
 public:
 
 	UFUNCTION(BlueprintCallable, DisplayName="Upload Steam Leaderboard Score",meta = (BlueprintInternalUseOnly = "true",Keywords="UploadLeaderboardScore"), Category="Steam Integration Kit || SDK Functions || User Stats")
-	static USIK_UploadLeaderboardScore_AsyncFunction* UploadLeaderboardScore(int32 LeaderboardId, TEnumAsByte<ESIK_LeaderboardUploadScoreMethod> UploadScoreMethod, int32 Score);
+	static USIK_UploadLeaderboardScore_AsyncFunction* UploadLeaderboardScore(int32 LeaderboardId, TEnumAsByte<ESIK_LeaderboardUploadScoreMethod> UploadScoreMethod, int32 Score, const TArray<int32>& ScoreDetails);
 
 	UPROPERTY(BlueprintAssignable)
 	FLeaderboardScoreUploaded_Delegate OnSuccess;
@@ -58,6 +58,7 @@ private:
 	TEnumAsByte<ESIK_LeaderboardUploadScoreMethod> Var_UploadScoreMethod;
 	int32 Var_LeaderboardId;
 	int32 Var_Score;
+	TArray<int32> Var_ScoreDetails;
 	virtual void Activate() override;
 #if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)	
 	void OnUploadLeaderboardScore(LeaderboardScoreUploaded_t* LeaderboardScoreUploaded, bool bIOFailure);

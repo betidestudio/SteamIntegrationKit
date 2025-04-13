@@ -1,17 +1,16 @@
-﻿// Copyright (c) 2024 Betide Studio. All Rights Reserved.
-
+// Copyright (c) 2024 Betide Studio. All Rights Reserved.
 
 #include "SIK_UploadLeaderboardScore_AsyncFunction.h"
-
 #include "Async/Async.h"
 
 USIK_UploadLeaderboardScore_AsyncFunction* USIK_UploadLeaderboardScore_AsyncFunction::UploadLeaderboardScore(
-	int32 LeaderboardId, TEnumAsByte<ESIK_LeaderboardUploadScoreMethod> UploadScoreMethod, int32 Score)
+	int32 LeaderboardId, TEnumAsByte<ESIK_LeaderboardUploadScoreMethod> UploadScoreMethod, int32 Score, const TArray<int32>& ScoreDetails)
 {
 	USIK_UploadLeaderboardScore_AsyncFunction* Node = NewObject<USIK_UploadLeaderboardScore_AsyncFunction>();
 	Node->Var_LeaderboardId = LeaderboardId;
 	Node->Var_UploadScoreMethod = UploadScoreMethod;
 	Node->Var_Score = Score;
+	Node->Var_ScoreDetails = ScoreDetails;
 	return Node;
 }
 
@@ -60,8 +59,21 @@ void USIK_UploadLeaderboardScore_AsyncFunction::Activate()
 		MarkAsGarbage();
 		return;
 	}
+	
 	ELeaderboardUploadScoreMethod Var_ScoreMethod = static_cast<ELeaderboardUploadScoreMethod>(Var_UploadScoreMethod.GetValue());
-	CallbackHandle = SteamUserStats()->UploadLeaderboardScore(Var_LeaderboardId, Var_ScoreMethod, Var_Score, nullptr, 0);
+	
+	int32* ScoreDetailsPtr = nullptr;
+	int32 ScoreDetailsCount = 0;
+	
+	// If we have score details, use them
+	if(Var_ScoreDetails.Num() > 0)
+	{
+		ScoreDetailsPtr = Var_ScoreDetails.GetData();
+		ScoreDetailsCount = Var_ScoreDetails.Num();
+	}
+	
+	CallbackHandle = SteamUserStats()->UploadLeaderboardScore(Var_LeaderboardId, Var_ScoreMethod, Var_Score, ScoreDetailsPtr, ScoreDetailsCount);
+	
 	if(CallbackHandle == k_uAPICallInvalid)
 	{
 		OnFailure.Broadcast(FSIK_LeaderboardScoreUploaded());

@@ -29,6 +29,12 @@ struct FDownloadedLeaderboardEntry
 
 	UPROPERTY(BlueprintReadOnly,Category="Steam Integration Kit || User Stats")
 	int32 Score = 0;
+	
+	UPROPERTY(BlueprintReadOnly,Category="Steam Integration Kit || User Stats")
+	int64 UGCHandle = 0;
+	
+	UPROPERTY(BlueprintReadOnly,Category="Steam Integration Kit || User Stats")
+	TArray<int32> ScoreDetails;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FLeaderboardScoresDownloaded, const TArray<FDownloadedLeaderboardEntry>&, LeaderboardEntries);

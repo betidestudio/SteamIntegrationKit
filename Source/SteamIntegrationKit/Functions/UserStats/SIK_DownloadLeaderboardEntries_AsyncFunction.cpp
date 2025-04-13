@@ -1,10 +1,7 @@
-﻿// Copyright (c) 2024 Betide Studio. All Rights Reserved.
-
+// Copyright (c) 2024 Betide Studio. All Rights Reserved.
 
 #include "SIK_DownloadLeaderboardEntries_AsyncFunction.h"
-
 #include "Async/Async.h"
-
 
 void USIK_DownloadLeaderboardEntries_AsyncFunction::Activate()
 {
@@ -62,14 +59,27 @@ void USIK_DownloadLeaderboardEntries_AsyncFunction::OnDownloadLeaderboardEntries
 		TArray<FDownloadedLeaderboardEntry> LeaderboardEntries;
 		for (int index = 0; index < Param.m_cEntryCount; index++)
 		{
-		
+			const int32 MAX_DETAILS = 32;
+			int32 scoreDetails[MAX_DETAILS] = {0};
 			LeaderboardEntry_t leaderboardEntry;
-			if(SteamUserStats()->GetDownloadedLeaderboardEntry(Param.m_hSteamLeaderboardEntries, index, &leaderboardEntry, nullptr, 0))
+			if(SteamUserStats()->GetDownloadedLeaderboardEntry(Param.m_hSteamLeaderboardEntries, index, &leaderboardEntry, scoreDetails, MAX_DETAILS))
 			{
 				FDownloadedLeaderboardEntry Entry;
 				Entry.GlobalRank = leaderboardEntry.m_nGlobalRank;
 				Entry.Score = leaderboardEntry.m_nScore;
 				Entry.SteamID = leaderboardEntry.m_steamIDUser;
+				Entry.UGCHandle = leaderboardEntry.m_hUGC;
+				
+				// Convert score details to array
+				if (leaderboardEntry.m_cDetails > 0)
+				{
+					Entry.ScoreDetails.SetNum(leaderboardEntry.m_cDetails);
+					for (int32 i = 0; i < leaderboardEntry.m_cDetails; i++)
+					{
+						Entry.ScoreDetails[i] = scoreDetails[i];
+					}
+				}
+				
 				LeaderboardEntries.Add(Entry);
 			}
 		}
