@@ -383,31 +383,6 @@ struct FSIKAttribute
 	}
 };
 
-
-USTRUCT(BlueprintType)
-struct FSSessionFindStruct
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadWrite, Category="EOS Struct")
-	FBlueprintSessionResult SessionResult = FBlueprintSessionResult();
-
-	UPROPERTY(BlueprintReadWrite, Category="EOS Struct")
-	TMap<FString, FSIKAttribute> SessionSettings = TMap<FString, FSIKAttribute>();
-
-	UPROPERTY(BlueprintReadWrite, Category="EOS Struct")
-	FString SessionName = FString();
-
-	UPROPERTY(BlueprintReadWrite, Category="EOS Struct")
-	int32 CurrentNumberOfPlayers = 0;
-
-	UPROPERTY(BlueprintReadWrite, Category="EOS Struct")
-	int32 MaxNumberOfPlayers = 0;
-
-	UPROPERTY(BlueprintReadWrite, Category="EOS Struct")
-	bool bIsDedicatedServer = false;
-};
-
 USTRUCT(BlueprintType)
 struct FSIK_SteamId
 {
@@ -452,6 +427,34 @@ struct FSIK_SteamId
 #endif
 };
 
+
+
+USTRUCT(BlueprintType)
+struct FSSessionFindStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite, Category="EOS Struct")
+	FBlueprintSessionResult SessionResult = FBlueprintSessionResult();
+
+	UPROPERTY(BlueprintReadWrite, Category="EOS Struct")
+	TMap<FString, FSIKAttribute> SessionSettings = TMap<FString, FSIKAttribute>();
+
+	UPROPERTY(BlueprintReadWrite, Category="EOS Struct")
+	FString SessionName = FString();
+
+	UPROPERTY(BlueprintReadWrite, Category="EOS Struct")
+	int32 CurrentNumberOfPlayers = 0;
+
+	UPROPERTY(BlueprintReadWrite, Category="EOS Struct")
+	int32 MaxNumberOfPlayers = 0;
+
+	UPROPERTY(BlueprintReadWrite, Category="EOS Struct")
+	bool bIsDedicatedServer = false;
+
+	UPROPERTY(BlueprintReadWrite, Category="EOS Struct")
+	FSIK_SteamId LobbyId = FSIK_SteamId();
+};
 
 USTRUCT(BlueprintType)
 struct FSIK_AuthTicket
