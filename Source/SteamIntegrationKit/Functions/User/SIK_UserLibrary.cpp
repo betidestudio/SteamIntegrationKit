@@ -188,10 +188,10 @@ int32 USIK_UserLibrary::GetAuthSessionTicket(TArray<uint8>& Ticket, FSIK_SteamNe
 		LocalCheckForSteamNetworkingIdentity = true;		
 	}
 	SteamNetworkingIdentity SteamNetworkingIdentity = Identity.GetSteamNetworkingIdentity();
-	uint8 AuthToken[1024];
 	uint32 AuthTokenSize = 0;
 	Ticket.SetNum(1024);
 #if !WITH_ENGINE_STEAM || ENGINE_MINOR_VERSION > 3
+	uint8 AuthToken[1024];
 	Result = SteamUser()->GetAuthSessionTicket(AuthToken, UE_ARRAY_COUNT(AuthToken), &AuthTokenSize, LocalCheckForSteamNetworkingIdentity ? nullptr : &SteamNetworkingIdentity);
 	Ticket.SetNum(AuthTokenSize);
 	FMemory::Memcpy(Ticket.GetData(), AuthToken, AuthTokenSize);
