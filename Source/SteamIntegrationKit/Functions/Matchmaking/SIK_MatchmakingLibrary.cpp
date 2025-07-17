@@ -4,6 +4,7 @@
 #include "SIK_MatchmakingLibrary.h"
 #include "Serialization/MemoryReader.h"
 #include "Interfaces/IPv4/IPv4Address.h"
+#include "Containers/StringConv.h"
 
 int32 USIK_MatchmakingLibrary::AddFavoriteGame(FSIK_AppId AppID, FString IP, int32 ConnPort, int32 QueryPort,
                                                TArray<int32> Flags, int32 Time32LastPlayedOnServer)
@@ -179,28 +180,62 @@ FSIK_SteamId USIK_MatchmakingLibrary::GetLobbyByIndex(int32 LobbyIndex)
 #endif
 }
 
-void USIK_MatchmakingLibrary::GetLobbyChatEntry(FSIK_SteamId SteamID, int32 ChatID, FSIK_SteamId& SteamIDUser,
-	FString& ChatEntry, TEnumAsByte<ESIK_LobbyChatEntryType>& ChatEntryType)
+void USIK_MatchmakingLibrary::GetLobbyChatEntry(FSIK_SteamId LobbyID, int32 ChatID, FSIK_SteamId& OutSteamIDUser,
+	FString& OutChatEntry, TEnumAsByte<ESIK_LobbyChatEntryType>& OutEntryType)
 {
 #if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
-	if(!SteamMatchmaking())
+	// 1) Sanity‑check the Steam interface
+	if (!SteamMatchmaking())
 	{
+		OutSteamIDUser = FSIK_SteamId();
+		OutChatEntry   = TEXT("");
+		OutEntryType   = static_cast<ESIK_LobbyChatEntryType>(k_EChatEntryTypeInvalid);
 		return;
 	}
-	CSteamID Var_SteamIDUser;
-	EChatEntryType Var_ChatEntryType;
-	TArray<uint8> Var_ChatEntry;
-	Var_ChatEntry.SetNum(4096);
-	auto ReturnVal = SteamMatchmaking()->GetLobbyChatEntry(SteamID.GetSteamID(), ChatID, &Var_SteamIDUser, Var_ChatEntry.GetData(), Var_ChatEntry.Num(), &Var_ChatEntryType);
-	Var_ChatEntry.SetNum(ReturnVal);
-	SteamIDUser = Var_SteamIDUser;
-	if(Var_ChatEntry.Num() > 0)
+
+	// 2)  Reject negative indices
+	if (ChatID < 0)
 	{
-		FMemoryReader Reader(Var_ChatEntry);
-		Reader << ChatEntry;
-		Reader.Close();
+		OutSteamIDUser = FSIK_SteamId();
+		OutChatEntry   = TEXT("");
+		OutEntryType   = static_cast<ESIK_LobbyChatEntryType>(k_EChatEntryTypeInvalid);
+		return;
 	}
-	ChatEntryType = static_cast<ESIK_LobbyChatEntryType>(Var_ChatEntryType);
+
+	CSteamID LobbySteamID = LobbyID.GetSteamID();
+
+	// 3) Allocate a fixed 4 KB buffer (Based on steam docs)
+	constexpr int32 MaxBuf = 4096;
+	TArray<uint8> Buffer;
+	Buffer.AddUninitialized(MaxBuf);
+
+	CSteamID        SenderSteamID;
+	EChatEntryType  SteamType;
+
+	// 4) Pull the entry
+	int32 BytesRead = SteamMatchmaking()->GetLobbyChatEntry(
+		LobbySteamID,
+		ChatID,
+		&SenderSteamID,
+		Buffer.GetData(),
+		Buffer.Num(),
+		&SteamType);
+
+	// 5) Fill required out‑params
+	OutSteamIDUser = FSIK_SteamId(SenderSteamID.ConvertToUint64());
+	OutEntryType   = static_cast<ESIK_LobbyChatEntryType>(SteamType);
+
+	// 6) Decode UTF‑8 safely
+	if (BytesRead > 0)
+	{
+		const ANSICHAR* Raw = reinterpret_cast<const ANSICHAR*>(Buffer.GetData());
+		FUTF8ToTCHAR    Converter(Raw, BytesRead);      // size‑aware conversion
+		OutChatEntry = FString(Converter.Length(), Converter.Get());
+	}
+	else
+	{
+		OutChatEntry = TEXT("");
+	}
 #endif
 }
 
@@ -399,7 +434,16 @@ bool USIK_MatchmakingLibrary::SendLobbyChatMessage(FSIK_SteamId LobbyID, FString
 	{
 		return false;
 	}
-	return SteamMatchmaking()->SendLobbyChatMsg(LobbyID.GetSteamID(), TCHAR_TO_ANSI(*Message), Message.Len());
+	// Convert FString → UTF‑8 (null‑terminated)
+	const FTCHARToUTF8 UTF8(*Message);
+	const int32 ByteLen = UTF8.Length();
+	
+	// Steam: include the terminating NUL in cbMsg
+	return SteamMatchmaking()->SendLobbyChatMsg(
+		LobbyID.GetSteamID(),
+		UTF8.Get(),
+		ByteLen + 1
+	);
 #else
 	return false;
 #endif

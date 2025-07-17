@@ -25,6 +25,9 @@ struct FDownloadedLeaderboardEntry
 	FSIK_SteamId SteamID;
 
 	UPROPERTY(BlueprintReadOnly,Category="Steam Integration Kit || User Stats")
+	int32 LeaderboardId = 0;
+
+	UPROPERTY(BlueprintReadOnly,Category="Steam Integration Kit || User Stats")
 	int32 GlobalRank = 0;
 
 	UPROPERTY(BlueprintReadOnly,Category="Steam Integration Kit || User Stats")

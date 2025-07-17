@@ -57,6 +57,7 @@ void USIK_DownloadLeaderboardEntries_AsyncFunction::OnDownloadLeaderboardEntries
 			return;
 		}
 		TArray<FDownloadedLeaderboardEntry> LeaderboardEntries;
+		
 		for (int index = 0; index < Param.m_cEntryCount; index++)
 		{
 			const int32 MAX_DETAILS = 32;
@@ -69,7 +70,7 @@ void USIK_DownloadLeaderboardEntries_AsyncFunction::OnDownloadLeaderboardEntries
 				Entry.Score = leaderboardEntry.m_nScore;
 				Entry.SteamID = leaderboardEntry.m_steamIDUser;
 				Entry.UGCHandle = leaderboardEntry.m_hUGC;
-				
+				Entry.LeaderboardId = Param.m_hSteamLeaderboard;
 				// Convert score details to array
 				if (leaderboardEntry.m_cDetails > 0)
 				{
