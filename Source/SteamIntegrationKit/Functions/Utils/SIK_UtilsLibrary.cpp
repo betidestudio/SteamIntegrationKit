@@ -2,6 +2,9 @@
 
 
 #include "SIK_UtilsLibrary.h"
+#include "GameFramework/SaveGame.h"
+#include "Serialization/MemoryWriter.h"
+#include "Serialization/MemoryReader.h"
 
 bool USIK_UtilsLibrary::IsControllerConnected()
 {
@@ -253,6 +256,166 @@ bool USIK_UtilsLibrary::InitFilterText()
 #else
 	return false;
 #endif
+}
+
+int32 USIK_UtilsLibrary::FilterText(TEnumAsByte<ESIK_TextFilteringContext> Context, FSIK_SteamId SourceSteamId, const FString& InputMessage, FString& OutFilteredText)
+{
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	if(!SteamUtils())
+	{
+		OutFilteredText = InputMessage;
+		return 0;
+	}
+	
+	// Convert input to UTF-8
+	FTCHARToUTF8 UTF8Input(*InputMessage);
+	
+	// Allocate buffer for filtered text (same size as input + null terminator)
+	TArray<char> FilteredBuffer;
+	FilteredBuffer.SetNum(UTF8Input.Length() + 1);
+	
+	// Call Steam API
+	int32 FilteredChars = SteamUtils()->FilterText(
+		static_cast<ETextFilteringContext>(Context.GetValue()),
+		SourceSteamId.GetSteamID(),
+		UTF8Input.Get(),
+		FilteredBuffer.GetData(),
+		FilteredBuffer.Num()
+	);
+	
+	// Convert result back to FString
+	OutFilteredText = UTF8_TO_TCHAR(FilteredBuffer.GetData());
+	
+	return FilteredChars;
+#else
+	OutFilteredText = InputMessage;
+	return 0;
+#endif
+}
+
+TArray<uint8> USIK_UtilsLibrary::SaveGameObjectToByteArray(USaveGame* SaveGameObject)
+{
+	TArray<uint8> ByteArray;
+	
+	if (!SaveGameObject)
+	{
+		return ByteArray;
+	}
+	
+	// Create a memory writer
+	FMemoryWriter MemoryWriter(ByteArray);
+	
+	// Serialize the save game object
+	SaveGameObject->Serialize(MemoryWriter);
+	
+	return ByteArray;
+}
+
+USaveGame* USIK_UtilsLibrary::ByteArrayToSaveGameObject(const TArray<uint8>& Data, TSubclassOf<USaveGame> SaveGameClass)
+{
+	if (Data.Num() == 0 || !SaveGameClass)
+	{
+		return nullptr;
+	}
+	
+	// Create a new instance of the save game class
+	USaveGame* SaveGameObject = NewObject<USaveGame>(GetTransientPackage(), SaveGameClass);
+	
+	if (!SaveGameObject)
+	{
+		return nullptr;
+	}
+	
+	// Create a memory reader
+	FMemoryReader MemoryReader(Data);
+	
+	// Deserialize the save game object
+	SaveGameObject->Serialize(MemoryReader);
+	
+	return SaveGameObject;
+}
+
+// UGC Validation Utilities
+bool USIK_UtilsLibrary::IsValidUGCTag(const FString& TagName)
+{
+	if (TagName.IsEmpty() || TagName.Len() > 255)
+	{
+		return false;
+	}
+	
+	// Check for invalid characters (commas are not allowed)
+	if (TagName.Contains(TEXT(",")))
+	{
+		return false;
+	}
+	
+	// Check for printable characters only
+	for (const TCHAR& Char : TagName)
+	{
+		if (!FChar::IsPrint(Char))
+		{
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+FString USIK_UtilsLibrary::SanitizeUGCTag(const FString& TagName)
+{
+	FString Sanitized = TagName;
+	
+	// Remove commas
+	Sanitized = Sanitized.Replace(TEXT(","), TEXT(""));
+	
+	// Remove non-printable characters
+	FString Result;
+	for (const TCHAR& Char : Sanitized)
+	{
+		if (FChar::IsPrint(Char))
+		{
+			Result += Char;
+		}
+	}
+	
+	// Truncate to 255 characters
+	if (Result.Len() > 255)
+	{
+		Result = Result.Left(255);
+	}
+	
+	return Result;
+}
+
+bool USIK_UtilsLibrary::ValidateUGCTagsArray(const TArray<FString>& Tags, TArray<FString>& InvalidTags)
+{
+	InvalidTags.Empty();
+	
+	for (const FString& Tag : Tags)
+	{
+		if (!IsValidUGCTag(Tag))
+		{
+			InvalidTags.Add(Tag);
+		}
+	}
+	
+	return InvalidTags.Num() == 0;
+}
+
+TArray<FString> USIK_UtilsLibrary::SanitizeUGCTagsArray(const TArray<FString>& Tags)
+{
+	TArray<FString> SanitizedTags;
+	
+	for (const FString& Tag : Tags)
+	{
+		FString Sanitized = SanitizeUGCTag(Tag);
+		if (!Sanitized.IsEmpty())
+		{
+			SanitizedTags.Add(Sanitized);
+		}
+	}
+	
+	return SanitizedTags;
 }
 
 bool USIK_UtilsLibrary::IsSteamInBigPictureMode()

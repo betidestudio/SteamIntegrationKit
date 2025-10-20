@@ -66,6 +66,28 @@ public:
 	UFUNCTION(BlueprintCallable, DisplayName = "Init Filter Text", meta=(Keywords="InitFilterText"), Category="Steam Integration Kit || SDK Functions || Utils")
 	static bool InitFilterText();
 
+	UFUNCTION(BlueprintCallable, DisplayName = "Filter Text", meta=(Keywords="FilterText", ToolTip="Filters text using Steam's content filtering system for Workshop content, chat, and names"), Category="Steam Integration Kit || SDK Functions || Utils")
+	static int32 FilterText(TEnumAsByte<ESIK_TextFilteringContext> Context, FSIK_SteamId SourceSteamId, const FString& InputMessage, FString& OutFilteredText);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Save Game Object to Byte Array", meta=(Keywords="SaveGameToByteArray", ToolTip="Converts a Save Game Object to Byte Array for Steam Cloud storage"), Category="Steam Integration Kit || Helper Functions || Utils")
+	static TArray<uint8> SaveGameObjectToByteArray(USaveGame* SaveGameObject);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Byte Array to Save Game Object", meta=(Keywords="ByteArrayToSaveGame", ToolTip="Converts Byte Array back to Save Game Object from Steam Cloud data"), Category="Steam Integration Kit || Helper Functions || Utils")
+	static USaveGame* ByteArrayToSaveGameObject(const TArray<uint8>& Data, TSubclassOf<USaveGame> SaveGameClass);
+
+	// UGC Validation Utilities
+	UFUNCTION(BlueprintCallable, DisplayName = "Is Valid UGC Tag", meta=(Keywords="IsValidUGCTag", ToolTip="Checks if a UGC tag meets Steam's requirements: ≤255 chars, no commas, printable characters only"), Category="Steam Integration Kit || Helper Functions || UGC")
+	static bool IsValidUGCTag(const FString& TagName);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Sanitize UGC Tag", meta=(Keywords="SanitizeUGCTag", ToolTip="Cleans a UGC tag by removing commas, non-printable chars, and truncating to 255 chars"), Category="Steam Integration Kit || Helper Functions || UGC")
+	static FString SanitizeUGCTag(const FString& TagName);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Validate UGC Tags Array", meta=(Keywords="ValidateUGCTagsArray", ToolTip="Validates an array of UGC tags and returns invalid ones for debugging"), Category="Steam Integration Kit || Helper Functions || UGC")
+	static bool ValidateUGCTagsArray(const TArray<FString>& Tags, TArray<FString>& InvalidTags);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Sanitize UGC Tags Array", meta=(Keywords="SanitizeUGCTagsArray", ToolTip="Sanitizes an array of UGC tags, removing invalid ones and cleaning valid ones"), Category="Steam Integration Kit || Helper Functions || UGC")
+	static TArray<FString> SanitizeUGCTagsArray(const TArray<FString>& Tags);
+
 	UFUNCTION(BlueprintCallable, DisplayName = "Is Steam In Big Picture Mode", meta=(Keywords="IsSteamInBigPictureMode"), Category="Steam Integration Kit || SDK Functions || Utils")
 	static bool IsSteamInBigPictureMode();
 

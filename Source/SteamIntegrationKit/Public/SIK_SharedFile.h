@@ -1498,26 +1498,34 @@ enum ESIK_WorkshopEnumerationType
 
 
 UENUM(BlueprintType)
+enum ESIK_TextFilteringContext
+{
+	TextFilteringContextUnknown = 0 UMETA(DisplayName = "Unknown"),
+	TextFilteringContextGameContent = 1 UMETA(DisplayName = "Game Content"),
+	TextFilteringContextChat = 2 UMETA(DisplayName = "Chat"),
+	TextFilteringContextName = 3 UMETA(DisplayName = "Name"),
+};
+
+UENUM(BlueprintType)
 enum ESIK_WorkshopFileType
 {
-	WorkshopFileTypeFirst = 0 UMETA(DisplayName = "First"),
-	WorkshopFileTypeCommunity = 1 UMETA(DisplayName = "Community"),
-	WorkshopFileTypeMicrotransaction = 2 UMETA(DisplayName = "Microtransaction"),
-	WorkshopFileTypeCollection = 3 UMETA(DisplayName = "Collection"),
-	WorkshopFileTypeArt = 4 UMETA(DisplayName = "Art"),
-	WorkshopFileTypeVideo = 5 UMETA(DisplayName = "Video"),
-	WorkshopFileTypeScreenshot = 6 UMETA(DisplayName = "Screenshot"),
-	WorkshopFileTypeGame = 7 UMETA(DisplayName = "Game"),
-	WorkshopFileTypeSoftware = 8 UMETA(DisplayName = "Software"),
-	WorkshopFileTypeConcept = 9 UMETA(DisplayName = "Concept"),
-	WorkshopFileTypeWebGuide = 10 UMETA(DisplayName = "Web Guide"),
-	WorkshopFileTypeIntegratedGuide = 11 UMETA(DisplayName = "Integrated Guide"),
-	WorkshopFileTypeMerch = 12 UMETA(DisplayName = "Merch"),
-	WorkshopFileTypeControllerBinding = 13 UMETA(DisplayName = "Controller Binding"),
-	WorkshopFileTypeSteamworksAccessInvite = 14 UMETA(DisplayName = "Steamworks Access Invite"),
-	WorkshopFileTypeSteamVideo = 15 UMETA(DisplayName = "Steam Video"),
-	WorkshopFileTypeGameManagedItem = 16 UMETA(DisplayName = "Game Managed Item"),
-	WorkshopFileTypeMax = 17 UMETA(DisplayName = "Max"),
+	WorkshopFileTypeCommunity = 0 UMETA(DisplayName = "Community"),
+	WorkshopFileTypeMicrotransaction = 1 UMETA(DisplayName = "Microtransaction"),
+	WorkshopFileTypeCollection = 2 UMETA(DisplayName = "Collection"),
+	WorkshopFileTypeArt = 3 UMETA(DisplayName = "Art"),
+	WorkshopFileTypeVideo = 4 UMETA(DisplayName = "Video"),
+	WorkshopFileTypeScreenshot = 5 UMETA(DisplayName = "Screenshot"),
+	WorkshopFileTypeGame = 6 UMETA(DisplayName = "Game"),
+	WorkshopFileTypeSoftware = 7 UMETA(DisplayName = "Software"),
+	WorkshopFileTypeConcept = 8 UMETA(DisplayName = "Concept"),
+	WorkshopFileTypeWebGuide = 9 UMETA(DisplayName = "Web Guide"),
+	WorkshopFileTypeIntegratedGuide = 10 UMETA(DisplayName = "Integrated Guide"),
+	WorkshopFileTypeMerch = 11 UMETA(DisplayName = "Merch"),
+	WorkshopFileTypeControllerBinding = 12 UMETA(DisplayName = "Controller Binding"),
+	WorkshopFileTypeSteamworksAccessInvite = 13 UMETA(DisplayName = "Steamworks Access Invite"),
+	WorkshopFileTypeSteamVideo = 14 UMETA(DisplayName = "Steam Video"),
+	WorkshopFileTypeGameManagedItem = 15 UMETA(DisplayName = "Game Managed Item"),
+	WorkshopFileTypeMax = 16 UMETA(DisplayName = "Max"),
 };
 
 UENUM(BlueprintType)

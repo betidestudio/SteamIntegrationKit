@@ -89,15 +89,27 @@ bool USIK_UGCLibrary::AddRequiredTagGroup(FSIK_UGCQueryHandle QueryHandle, const
 	{
 		return false;
 	}
+	
+	if(TagNames.Num() == 0)
+	{
+		return SteamUGC()->AddRequiredTagGroup(QueryHandle.GetUGCQueryHandle(), nullptr);
+	}
+	
+	// Store persistent strings to avoid dangling pointers
+	TArray<FString> PersistentTagNames;
 	TArray<const char*> TagNamesArray;
+	
 	for(const FString& TagName : TagNames)
 	{
-		TagNamesArray.Add(TCHAR_TO_UTF8(*TagName));
+		PersistentTagNames.Add(TagName); // Keep the FString alive
+		TagNamesArray.Add(TCHAR_TO_UTF8(*PersistentTagNames.Last()));
 	}
-	SteamParamStringArray_t* ParamArray = new SteamParamStringArray_t();
-	ParamArray->m_ppStrings = TagNamesArray.GetData();
-	ParamArray->m_nNumStrings = TagNamesArray.Num();
-	return SteamUGC()->AddRequiredTagGroup(QueryHandle.GetUGCQueryHandle(), ParamArray);
+	
+	SteamParamStringArray_t ParamArray;
+	ParamArray.m_ppStrings = TagNamesArray.GetData();
+	ParamArray.m_nNumStrings = TagNamesArray.Num();
+	
+	return SteamUGC()->AddRequiredTagGroup(QueryHandle.GetUGCQueryHandle(), &ParamArray);
 #else
 	return false;
 #endif
@@ -672,15 +684,27 @@ bool USIK_UGCLibrary::SetItemTags(FSIK_UGCUpdateHandle UpdateHandle, const TArra
 	{
 		return false;
 	}
-	SteamParamStringArray_t* ParamArray = new SteamParamStringArray_t();
+	
+	if(Tags.Num() == 0)
+	{
+		return SteamUGC()->SetItemTags(UpdateHandle.GetUGCUpdateHandle(), nullptr);
+	}
+	
+	// Store persistent strings to avoid dangling pointers
+	TArray<FString> PersistentTags;
 	TArray<const char*> TagsArray;
+	
 	for(const FString& Tag : Tags)
 	{
-		TagsArray.Add(TCHAR_TO_UTF8(*Tag));
+		PersistentTags.Add(Tag); // Keep the FString alive
+		TagsArray.Add(TCHAR_TO_UTF8(*PersistentTags.Last()));
 	}
-	ParamArray->m_ppStrings = TagsArray.GetData();
-	ParamArray->m_nNumStrings = TagsArray.Num();
-	return SteamUGC()->SetItemTags(UpdateHandle.GetUGCUpdateHandle(), ParamArray);
+	
+	SteamParamStringArray_t ParamArray;
+	ParamArray.m_ppStrings = TagsArray.GetData();
+	ParamArray.m_nNumStrings = TagsArray.Num();
+	
+	return SteamUGC()->SetItemTags(UpdateHandle.GetUGCUpdateHandle(), &ParamArray);
 #else
 	return false;
 #endif
