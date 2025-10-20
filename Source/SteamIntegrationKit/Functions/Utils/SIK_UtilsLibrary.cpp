@@ -2,9 +2,12 @@
 
 
 #include "SIK_UtilsLibrary.h"
+#include "Templates/SubclassOf.h"
 #include "GameFramework/SaveGame.h"
 #include "Serialization/MemoryWriter.h"
 #include "Serialization/MemoryReader.h"
+#include "Serialization/ObjectAndNameAsStringProxyArchive.h"
+#include "Kismet/GameplayStatics.h"
 
 bool USIK_UtilsLibrary::IsControllerConnected()
 {
@@ -301,13 +304,12 @@ TArray<uint8> USIK_UtilsLibrary::SaveGameObjectToByteArray(USaveGame* SaveGameOb
 	{
 		return ByteArray;
 	}
+
+	FMemoryWriter MemWriter(ByteArray, /*bIsPersistent*/ true);
+	FObjectAndNameAsStringProxyArchive Ar(MemWriter, /*bLoadIfFindFails*/ true);
+	Ar.ArIsSaveGame = true;
 	
-	// Create a memory writer
-	FMemoryWriter MemoryWriter(ByteArray);
-	
-	// Serialize the save game object
-	SaveGameObject->Serialize(MemoryWriter);
-	
+	SaveGameObject->Serialize(Ar);
 	return ByteArray;
 }
 
@@ -317,21 +319,30 @@ USaveGame* USIK_UtilsLibrary::ByteArrayToSaveGameObject(const TArray<uint8>& Dat
 	{
 		return nullptr;
 	}
-	
-	// Create a new instance of the save game class
-	USaveGame* SaveGameObject = NewObject<USaveGame>(GetTransientPackage(), SaveGameClass);
-	
+
+#if ENGINE_MAJOR_VERSION >= 5
+	if (USaveGame* Loaded = UGameplayStatics::LoadGameFromMemory(Data))
+	{
+		// Check if the loaded object is of the correct class
+		if (Loaded && Loaded->GetClass()->IsChildOf(SaveGameClass.Get()))
+		{
+			return Loaded;
+		}
+		// If class doesn't match, we'll fall back to manual deserialization
+	}
+#endif
+
+	USaveGame* SaveGameObject = NewObject<USaveGame>((UObject*)GetTransientPackage(), SaveGameClass.Get(), NAME_None, RF_NoFlags, nullptr, false, nullptr);
 	if (!SaveGameObject)
 	{
 		return nullptr;
 	}
-	
-	// Create a memory reader
-	FMemoryReader MemoryReader(Data);
-	
-	// Deserialize the save game object
-	SaveGameObject->Serialize(MemoryReader);
-	
+
+	FMemoryReader MemReader(Data, /*bIsPersistent*/ true);
+	FObjectAndNameAsStringProxyArchive Ar(MemReader, /*bLoadIfFindFails*/ true);
+	Ar.ArIsSaveGame = true;
+
+	SaveGameObject->Serialize(Ar);
 	return SaveGameObject;
 }
 

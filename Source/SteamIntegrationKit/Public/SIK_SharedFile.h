@@ -1760,7 +1760,7 @@ struct FSIK_SteamUGCDetails
 	TEnumAsByte<ESIK_Result> Result = ESIK_Result::ResultFail;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Steam Integration Kit")
-	TEnumAsByte<ESIK_WorkshopFileType> FileType = ESIK_WorkshopFileType::WorkshopFileTypeFirst;
+    TEnumAsByte<ESIK_WorkshopFileType> FileType = ESIK_WorkshopFileType::WorkshopFileTypeCommunity;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Steam Integration Kit")
 	FSIK_SteamId Owner = FSIK_SteamId();
@@ -1835,7 +1835,7 @@ struct FSIK_SteamUGCDetails
 	{
 		PublishedFileId = FSIK_PublishedFileId();
 		Result = ESIK_Result::ResultFail;
-		FileType = ESIK_WorkshopFileType::WorkshopFileTypeFirst;
+        FileType = ESIK_WorkshopFileType::WorkshopFileTypeCommunity;
 		Owner = FSIK_SteamId();
 		CreatorAppID = FSIK_AppId();
 		ConsumerAppID = FSIK_AppId();
