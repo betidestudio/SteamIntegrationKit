@@ -20,19 +20,18 @@ void USIK_JoinLobby_AsyncFunction::OnLobbyEnter(LobbyEnter_t* LobbyEnter, bool b
 	{
 		if(bIOFailure)
 		{
-			OnFailure.Broadcast(ESIK_Result::ResultFail, false, ESIK_ChatRoomEnterResponse::None);
+			OnFailure.Broadcast(false, ESIK_ChatRoomEnterResponse::ChatRoomEnterResponseError);
 		}
 		else
 		{
 			TEnumAsByte<ESIK_ChatRoomEnterResponse> ChatRoomEnterResponse = static_cast<ESIK_ChatRoomEnterResponse>(Param.m_EChatRoomEnterResponse);
-			TEnumAsByte<ESIK_Result> Result = static_cast<ESIK_Result>(Param.m_EChatRoomEnterResponse);
 			if(Param.m_EChatRoomEnterResponse == k_EChatRoomEnterResponseSuccess)
 			{
-				OnSuccess.Broadcast(Result, Param.m_bLocked, ChatRoomEnterResponse);
+				OnSuccess.Broadcast(Param.m_bLocked, ChatRoomEnterResponse);
 			}
 			else
 			{
-				OnFailure.Broadcast(ESIK_Result::ResultFail, false, ChatRoomEnterResponse);
+				OnFailure.Broadcast(false, ChatRoomEnterResponse);
 			}
 		}
 	});
@@ -48,7 +47,7 @@ void USIK_JoinLobby_AsyncFunction::Activate()
 #if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamMatchmaking())
 	{
-		OnFailure.Broadcast(ESIK_Result::ResultFail, false, ESIK_ChatRoomEnterResponse::None);
+		OnFailure.Broadcast(false, ESIK_ChatRoomEnterResponse::ChatRoomEnterResponseError);
 		SetReadyToDestroy();
 		MarkAsGarbage();
 		return;
@@ -56,7 +55,7 @@ void USIK_JoinLobby_AsyncFunction::Activate()
 	CallbackHandle = SteamMatchmaking()->JoinLobby(Var_LobbyId.GetSteamID());
 	if(CallbackHandle == k_uAPICallInvalid)
 	{
-		OnFailure.Broadcast(ESIK_Result::ResultFail, false, ESIK_ChatRoomEnterResponse::None);
+		OnFailure.Broadcast(false, ESIK_ChatRoomEnterResponse::ChatRoomEnterResponseError);
 		SetReadyToDestroy();
 		MarkAsGarbage();
 		return;
