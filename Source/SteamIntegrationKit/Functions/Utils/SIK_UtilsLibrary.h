@@ -121,5 +121,64 @@ public:
 
 	UFUNCTION(BlueprintCallable, DisplayName = "Set Game Launcher Mode", meta=(Keywords="SetGameLauncherMode"), Category="Steam Integration Kit || SDK Functions || Utils")
 	static void SetGameLauncherMode(bool bLauncherMode);
+
+	// Steam Lobby Auto-Join Functions
+	UFUNCTION(BlueprintCallable, DisplayName = "Check For Steam Lobby Invite", meta=(Keywords="CheckSteamLobbyInvite", ToolTip="Parses +connect_lobby argument from command line and returns Steam ID"), Category="Steam Integration Kit || Helper Functions || Steam Lobby")
+	static bool CheckForSteamLobbyInvite(FSIK_SteamId& OutSteamLobbyId);
+
+	// EasySaveStruct Integration - JSON Serialization Functions
+	UFUNCTION(BlueprintCallable, CustomThunk, DisplayName = "Serialize Struct To JSON", meta=(CustomStructureParam = "InStruct", Keywords="SerializeStructToJSON", ToolTip="Converts any struct to JSON string for saving or networking"), Category="Steam Integration Kit || Helper Functions || JSON Serialization")
+	static bool SerializeStructToJSON(const int32& InStruct, FString& OutJsonString);
+
+	UFUNCTION(BlueprintCallable, CustomThunk, DisplayName = "Deserialize JSON To Struct", meta=(CustomStructureParam = "OutStruct", Keywords="DeserializeJSONToStruct", ToolTip="Converts JSON string back to any struct"), Category="Steam Integration Kit || Helper Functions || JSON Serialization")
+	static bool DeserializeJSONToStruct(const FString& InJsonString, int32& OutStruct);
+
+	UFUNCTION(BlueprintCallable, CustomThunk, DisplayName = "Serialize Struct Array To JSON", meta=(SetParam = "InStructArray", Keywords="SerializeStructArrayToJSON", ToolTip="Converts array of structs to JSON string"), Category="Steam Integration Kit || Helper Functions || JSON Serialization")
+	static bool SerializeStructArrayToJSON(const TArray<int32>& InStructArray, FString& OutJsonString);
+
+	UFUNCTION(BlueprintCallable, CustomThunk, DisplayName = "Deserialize JSON To Struct Array", meta=(SetParam = "OutStructArray", Keywords="DeserializeJSONToStructArray", ToolTip="Converts JSON string back to array of structs"), Category="Steam Integration Kit || Helper Functions || JSON Serialization")
+	static bool DeserializeJSONToStructArray(const FString& InJsonString, TArray<int32>& OutStructArray);
+
+	// EasySaveStruct Integration - File I/O Functions
+	UFUNCTION(BlueprintCallable, DisplayName = "Read Text File", meta=(Keywords="ReadTextFile", ToolTip="Reads entire text file content as string"), Category="Steam Integration Kit || Helper Functions || File I/O")
+	static FString ReadTextFile(const FString& FilePath);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Write Text File", meta=(Keywords="WriteTextFile", ToolTip="Writes string content to text file"), Category="Steam Integration Kit || Helper Functions || File I/O")
+	static bool WriteTextFile(const FString& Content, const FString& FilePath);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Does File Exist", meta=(Keywords="DoesFileExist", ToolTip="Checks if file exists on disk"), Category="Steam Integration Kit || Helper Functions || File I/O")
+	static bool DoesFileExist(const FString& FilePath);
+
+	// JSON API Helper Functions
+	UFUNCTION(BlueprintCallable, DisplayName = "String Array To JSON", meta=(Keywords="StringArrayToJSON", ToolTip="Converts array of strings to JSON array format"), Category="Steam Integration Kit || Helper Functions || JSON Serialization")
+	static FString StringArrayToJSON(const TArray<FString>& StringArray);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "JSON To String Array", meta=(Keywords="JSONToStringArray", ToolTip="Converts JSON array back to array of strings"), Category="Steam Integration Kit || Helper Functions || JSON Serialization")
+	static TArray<FString> JSONToStringArray(const FString& JsonString);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Build JSON Object", meta=(Keywords="BuildJSONObject", ToolTip="Builds a simple JSON object from key-value pairs"), Category="Steam Integration Kit || Helper Functions || JSON Serialization")
+	static FString BuildJSONObject(const TMap<FString, FString>& KeyValuePairs);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Parse JSON Value", meta=(Keywords="ParseJSONValue", ToolTip="Extracts a string value from a JSON object by key"), Category="Steam Integration Kit || Helper Functions || JSON Serialization")
+	static FString ParseJSONValue(const FString& JsonString, const FString& Key);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Escape JSON String", meta=(Keywords="EscapeJSONString", ToolTip="Properly escapes special characters for JSON"), Category="Steam Integration Kit || Helper Functions || JSON Serialization")
+	static FString EscapeJSONString(const FString& InputString);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Is Valid JSON", meta=(Keywords="IsValidJSON", ToolTip="Checks if a string is valid JSON format"), Category="Steam Integration Kit || Helper Functions || JSON Serialization")
+	static bool IsValidJSON(const FString& JsonString);
+
+	// EasySaveStruct Integration - Generic Helper Functions (Internal)
+	static bool ConvertStructToJSONString(const FStructProperty* InStruct, FString& OutJsonString, void* StructPtr);
+	static bool ConvertJSONStringToStruct(const FString& InJsonString, FStructProperty* OutStruct, void* StructPtr);
+	static bool ConvertStructArrayToJSONString(const FArrayProperty* InArrayProperty, bool ShowLog, FString& OutJsonString, void* StructArrayPtr);
+	static bool ConvertJSONStringToStructArray(const FString& InJsonString, bool ShowLog, FArrayProperty* OutStructArray, void* StructArrayPtr);
+
+private:
+	// Custom thunk function declarations for Blueprint integration
+	DECLARE_FUNCTION(execSerializeStructToJSON);
+	DECLARE_FUNCTION(execDeserializeJSONToStruct);
+	DECLARE_FUNCTION(execSerializeStructArrayToJSON);
+	DECLARE_FUNCTION(execDeserializeJSONToStructArray);
 	
 };

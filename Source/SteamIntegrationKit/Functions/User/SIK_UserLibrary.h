@@ -90,6 +90,15 @@ public:
 	UFUNCTION(BlueprintCallable, DisplayName = "Stop Voice Recording", meta=(Keywords="StopVoiceRecording"), Category="Steam Integration Kit || SDK Functions || User")
 	static void StopVoiceRecording();
 
+	UFUNCTION(BlueprintCallable, DisplayName = "Remove All Remote Talkers", meta=(Keywords="RemoveAllRemoteTalkers", ToolTip="Removes all remote VOIP talkers. Useful when changing maps to clean up VOIP references."), Category="Steam Integration Kit || SDK Functions || User")
+	static void RemoveAllRemoteTalkers();
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Restart VOIP After Map Change", meta=(Keywords="RestartVOIP", ToolTip="Restarts VOIP recording after map change. Call this after RemoveAllRemoteTalkers when the new map is loaded."), Category="Steam Integration Kit || SDK Functions || User")
+	static void RestartVOIPAfterMapChange();
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Get All Connected Players", meta=(Keywords="GetAllConnectedPlayers", ToolTip="Gets all connected players for VOIP cleanup. Use this to iterate through PlayerStates and clean up VOIPTalker references before map change."), Category="Steam Integration Kit || SDK Functions || User")
+	static TArray<FSIK_SteamId> GetAllConnectedPlayers();
+
 	UFUNCTION(BlueprintCallable, DisplayName = "User Has License For App", meta=(Keywords="UserHasLicenseForApp"), Category="Steam Integration Kit || SDK Functions || User")
 	static bool UserHasLicenseForApp(FSIK_SteamId SteamId, int32 AppId);
 

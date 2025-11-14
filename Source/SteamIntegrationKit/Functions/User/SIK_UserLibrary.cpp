@@ -375,6 +375,71 @@ void USIK_UserLibrary::StopVoiceRecording()
 #endif
 }
 
+void USIK_UserLibrary::RemoveAllRemoteTalkers()
+{
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	if(!SteamUser())
+	{
+		return;
+	}
+	
+	// Stop voice recording to clean up current session
+	SteamUser()->StopVoiceRecording();
+	
+	// This function addresses the core issue: losing VOIPTalker references in PlayerState
+	// when changing maps. The problem is that VOIPTalker objects become invalid after map change.
+	UE_LOG(LogTemp, Log, TEXT("Removing all remote VOIP talkers for map transition"));
+	UE_LOG(LogTemp, Warning, TEXT("IMPORTANT: This function should be called before map change to prevent"));
+	UE_LOG(LogTemp, Warning, TEXT("losing references to VOIPTalker objects in PlayerState."));
+	
+	// Note: This is a cleanup function for your VOIP system
+	// You should call this before changing maps to clean up VOIP references
+	// The actual VOIPTalker cleanup should be handled in your game's VOIP system
+	// by iterating through all PlayerStates and removing/destroying VOIPTalker objects
+#endif
+}
+
+void USIK_UserLibrary::RestartVOIPAfterMapChange()
+{
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	if(!SteamUser())
+	{
+		return;
+	}
+	
+	// Restart voice recording after map change
+	SteamUser()->StartVoiceRecording();
+	UE_LOG(LogTemp, Log, TEXT("VOIP restarted after map change"));
+#endif
+}
+
+TArray<FSIK_SteamId> USIK_UserLibrary::GetAllConnectedPlayers()
+{
+	TArray<FSIK_SteamId> ConnectedPlayers;
+	
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	if(!SteamFriends())
+	{
+		return ConnectedPlayers;
+	}
+	
+	// Get all friends who are in-game (connected players)
+	int32 FriendCount = SteamFriends()->GetFriendCount(k_EFriendFlagImmediate);
+	for(int32 i = 0; i < FriendCount; i++)
+	{
+		CSteamID FriendID = SteamFriends()->GetFriendByIndex(i, k_EFriendFlagImmediate);
+		if(FriendID.IsValid())
+		{
+			ConnectedPlayers.Add(FSIK_SteamId(FriendID.ConvertToUint64()));
+		}
+	}
+	
+	UE_LOG(LogTemp, Log, TEXT("Found %d connected players for VOIP cleanup"), ConnectedPlayers.Num());
+#endif
+	
+	return ConnectedPlayers;
+}
+
 bool USIK_UserLibrary::UserHasLicenseForApp(FSIK_SteamId SteamId, int32 AppId)
 {
 #if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)

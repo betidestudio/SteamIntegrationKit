@@ -8,6 +8,10 @@
 #include "Serialization/MemoryReader.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/CommandLine.h"
+#include "JsonObjectConverter.h"
+#include "Misc/FileHelper.h"
+#include "HAL/PlatformFileManager.h"
 
 bool USIK_UtilsLibrary::IsControllerConnected()
 {
@@ -320,7 +324,7 @@ USaveGame* USIK_UtilsLibrary::ByteArrayToSaveGameObject(const TArray<uint8>& Dat
 		return nullptr;
 	}
 
-#if ENGINE_MAJOR_VERSION >= 5
+#if ENGINE_VERSION >= 50000
 	if (USaveGame* Loaded = UGameplayStatics::LoadGameFromMemory(Data))
 	{
 		// Check if the loaded object is of the correct class
@@ -563,6 +567,478 @@ void USIK_UtilsLibrary::SetGameLauncherMode(bool bLauncherMode)
 	}
 	SteamUtils()->SetGameLauncherMode(bLauncherMode);
 #endif
+}
+
+bool USIK_UtilsLibrary::CheckForSteamLobbyInvite(FSIK_SteamId& OutSteamLobbyId)
+{
+	// Get the command line
+	FString CommandLine = FCommandLine::Get();
+	
+	// Parse into array (space-delimited, culling empties)
+	TArray<FString> CommandLineArgs;
+	CommandLine.ParseIntoArray(CommandLineArgs, TEXT(" "), true);
+	
+	// Find "+connect_lobby" argument
+	int32 ConnectLobbyIndex = CommandLineArgs.Find(TEXT("+connect_lobby"));
+	
+	if (ConnectLobbyIndex != INDEX_NONE && ConnectLobbyIndex + 1 < CommandLineArgs.Num())
+	{
+		// Get the lobby ID (next token after +connect_lobby)
+		FString LobbyIdString = CommandLineArgs[ConnectLobbyIndex + 1];
+		
+		// Strip any quotes around the ID
+		LobbyIdString = LobbyIdString.Replace(TEXT("\""), TEXT(""));
+		LobbyIdString = LobbyIdString.Replace(TEXT("'"), TEXT(""));
+		
+		// Convert to Steam ID
+		uint64 LobbyIdInt64 = FCString::Strtoui64(*LobbyIdString, nullptr, 10);
+		OutSteamLobbyId = FSIK_SteamId(LobbyIdInt64);
+		
+		UE_LOG(LogTemp, Log, TEXT("Steam Integration Kit: Found Steam lobby invite: %s (SteamID: %llu)"), *LobbyIdString, LobbyIdInt64);
+		return true;
+	}
+	
+	return false;
+}
+
+// EasySaveStruct Integration - Generic Helper Functions
+bool USIK_UtilsLibrary::ConvertStructToJSONString(const FStructProperty* InStruct, FString& OutJsonString, void* StructPtr)
+{
+	// Pin check 
+	if (!(InStruct && StructPtr))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("InStruct: %s"), InStruct ? *InStruct->GetName() : TEXT("nullptr"));
+		UE_LOG(LogTemp, Warning, TEXT("StructPtr: %p"), StructPtr);
+		UE_LOG(LogTemp, Error, TEXT("Input Pin is not a struct."));
+		return false;
+	}
+	
+	// Convert struct to JSON string
+	return FJsonObjectConverter::UStructToJsonObjectString(InStruct->Struct, StructPtr, OutJsonString);
+}
+
+bool USIK_UtilsLibrary::ConvertJSONStringToStruct(const FString& InJsonString, FStructProperty* OutStruct, void* StructPtr)
+{
+	// Pin check
+	if (!(OutStruct && StructPtr))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Output Pin is not a struct."));
+		return false;
+	}
+
+	// JSON string deserialize
+	const TSharedRef<TJsonReader<>>& Reader = TJsonReaderFactory<>::Create(InJsonString);
+	TSharedPtr<FJsonObject> Object;
+	if (!(FJsonSerializer::Deserialize(Reader, /*out*/ Object) && Object.IsValid()))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Input string can not parse to json object, with error code : %s"), *Reader->GetErrorMessage());
+		return false;
+	}
+
+	// Convert JSON object to struct
+	return FJsonObjectConverter::JsonObjectToUStruct(Object.ToSharedRef(), OutStruct->Struct, StructPtr);
+}
+
+bool USIK_UtilsLibrary::ConvertStructArrayToJSONString(const FArrayProperty* InArrayProperty, bool ShowLog, FString& OutJsonString, void* StructArrayPtr)
+{
+	OutJsonString.Empty();
+	
+	// Check input array property validity
+	if (!InArrayProperty || !StructArrayPtr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid input array property or struct array pointer."));
+		return false;
+	}
+	
+	TArray<FString> OutJsonArray;
+	FStructProperty* InnerStructProperty = CastField<FStructProperty>(InArrayProperty->Inner);
+
+	if (!InnerStructProperty)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Inner struct property is null. Input must be an array of USTRUCT types, not basic types like string or int."));
+		return false;
+	}
+	FScriptArrayHelper ArrayHelper(InArrayProperty, StructArrayPtr);
+	
+	for (int32 Index = 0; Index < ArrayHelper.Num(); ++Index)
+	{
+		// Get array element address
+		void* ElementPtr = ArrayHelper.GetRawPtr(Index);
+
+		// Convert to JSON string
+		FString JsonString;
+		if (ConvertStructToJSONString(InnerStructProperty, JsonString, ElementPtr))
+		{
+			// Add to output array
+			OutJsonArray.Add(JsonString);
+		}
+		else
+		{
+			// Conversion failed, log error
+			UE_LOG(LogTemp, Error, TEXT("Failed to convert struct element to JSON. Index: %d"), Index);
+		}
+	}
+	
+	OutJsonString.Append(TEXT("["));
+	OutJsonString += FString::Join(OutJsonArray, TEXT(","));
+	OutJsonString.Append(TEXT("]"));
+	
+	if (ShowLog)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("StructArrayToJson=== \n %s"), *OutJsonString);
+	}
+	
+	// Successfully converted all elements
+	return true;
+}
+
+bool USIK_UtilsLibrary::ConvertJSONStringToStructArray(const FString& InJsonString, bool ShowLog, FArrayProperty* OutStructArray, void* StructArrayPtr)
+{
+	// Check input array property validity
+	if (!OutStructArray || !StructArrayPtr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid input array property or struct array pointer."));
+		return false;
+	}
+
+	// Parse JSON string to TArray type
+	TArray<TSharedPtr<FJsonValue>> JsonArray;
+	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(InJsonString);
+	
+	if (ShowLog)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("StringToStructArray=== \n%s"), *InJsonString);
+	}
+	
+	if (!FJsonSerializer::Deserialize(Reader, JsonArray))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to parse JSON."));
+		return false;
+	}
+
+	// Get inner struct property
+	FStructProperty* InnerStructProperty = CastField<FStructProperty>(OutStructArray->Inner);
+
+	if (!InnerStructProperty)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Inner struct property is null."));
+		return false;
+	}
+	
+	// Set array size
+	FScriptArrayHelper ArrayHelper(OutStructArray, StructArrayPtr);
+	ArrayHelper.AddUninitializedValues(JsonArray.Num());
+
+	for (int32 Index = 0; Index < JsonArray.Num(); ++Index)
+	{
+		TSharedPtr<FJsonObject> JsonObject = JsonArray[Index]->AsObject();
+
+		if (JsonObject.IsValid())
+		{
+			// Create struct instance
+			void* StructPtr = ArrayHelper.GetRawPtr(Index);
+			InnerStructProperty->InitializeValue(StructPtr);
+
+			// Convert JSON object to struct
+			if (!FJsonObjectConverter::JsonObjectToUStruct(JsonObject.ToSharedRef(), InnerStructProperty->Struct, StructPtr))
+			{
+				UE_LOG(LogTemp, Error, TEXT("Failed to convert JSON object to struct."));
+				return false;
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Invalid JSON object at index %d."), Index);
+			return false;
+		}
+	}
+	return true;
+}
+
+// EasySaveStruct Integration - File I/O Functions
+FString USIK_UtilsLibrary::ReadTextFile(const FString& FilePath)
+{
+	if (!DoesFileExist(FilePath))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("File does not exist: %s"), *FilePath);
+		return FString();
+	}
+	
+	FString Result;
+	if (FFileHelper::LoadFileToString(Result, *FilePath))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Successfully read file: %s"), *FilePath);
+		return Result;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to read file: %s"), *FilePath);
+		return FString();
+	}
+}
+
+bool USIK_UtilsLibrary::WriteTextFile(const FString& Content, const FString& FilePath)
+{
+	bool Result = FFileHelper::SaveStringToFile(Content, *FilePath);
+	if (Result)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Successfully wrote file: %s"), *FilePath);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to write file: %s"), *FilePath);
+	}
+	return Result;
+}
+
+bool USIK_UtilsLibrary::DoesFileExist(const FString& FilePath)
+{
+	bool bExists = FPlatformFileManager::Get().GetPlatformFile().FileExists(*FilePath);
+	if (bExists)
+	{
+		UE_LOG(LogTemp, Log, TEXT("File exists: %s"), *FilePath);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("File does not exist: %s"), *FilePath);
+	}
+	return bExists;
+}
+
+// JSON API Helper Functions
+FString USIK_UtilsLibrary::StringArrayToJSON(const TArray<FString>& StringArray)
+{
+	TArray<FString> EscapedStrings;
+	
+	for (const FString& Str : StringArray)
+	{
+		EscapedStrings.Add(TEXT("\"") + EscapeJSONString(Str) + TEXT("\""));
+	}
+	
+	FString Result = TEXT("[");
+	Result += FString::Join(EscapedStrings, TEXT(","));
+	Result += TEXT("]");
+	
+	UE_LOG(LogTemp, Log, TEXT("StringArrayToJSON: %s"), *Result);
+	
+	return Result;
+}
+
+TArray<FString> USIK_UtilsLibrary::JSONToStringArray(const FString& JsonString)
+{
+	TArray<FString> Result;
+	
+	if (!IsValidJSON(JsonString))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid JSON string provided to JSONToStringArray"));
+		return Result;
+	}
+	
+	const TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
+	TArray<TSharedPtr<FJsonValue>> JsonArray;
+	
+	if (FJsonSerializer::Deserialize(Reader, JsonArray))
+	{
+		for (const TSharedPtr<FJsonValue>& Value : JsonArray)
+		{
+			if (Value.IsValid())
+			{
+				Result.Add(Value->AsString());
+			}
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to parse JSON array: %s"), *JsonString);
+	}
+	
+	return Result;
+}
+
+FString USIK_UtilsLibrary::BuildJSONObject(const TMap<FString, FString>& KeyValuePairs)
+{
+	TArray<FString> Pairs;
+	
+	for (const auto& Pair : KeyValuePairs)
+	{
+		FString EscapedKey = EscapeJSONString(Pair.Key);
+		FString EscapedValue = EscapeJSONString(Pair.Value);
+		Pairs.Add(FString::Printf(TEXT("\"%s\":\"%s\""), *EscapedKey, *EscapedValue));
+	}
+	
+	FString Result = TEXT("{");
+	Result += FString::Join(Pairs, TEXT(","));
+	Result += TEXT("}");
+	
+	UE_LOG(LogTemp, Log, TEXT("BuildJSONObject: %s"), *Result);
+	
+	return Result;
+}
+
+FString USIK_UtilsLibrary::ParseJSONValue(const FString& JsonString, const FString& Key)
+{
+	if (!IsValidJSON(JsonString))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid JSON string provided to ParseJSONValue"));
+		return FString();
+	}
+	
+	const TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
+	TSharedPtr<FJsonObject> Object;
+	
+	if (FJsonSerializer::Deserialize(Reader, Object) && Object.IsValid())
+	{
+		FString Result;
+		if (Object->TryGetStringField(*Key, Result))
+		{
+			return Result;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Key '%s' not found in JSON object"), *Key);
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to parse JSON object: %s"), *JsonString);
+	}
+	
+	return FString();
+}
+
+FString USIK_UtilsLibrary::EscapeJSONString(const FString& InputString)
+{
+	FString Escaped = InputString;
+	
+	// Escape backslashes first (must be done before other escapes)
+	Escaped = Escaped.Replace(TEXT("\\"), TEXT("\\\\"));
+	
+	// Escape double quotes
+	Escaped = Escaped.Replace(TEXT("\""), TEXT("\\\""));
+	
+	// Escape newlines
+	Escaped = Escaped.Replace(TEXT("\n"), TEXT("\\n"));
+	
+	// Escape carriage returns
+	Escaped = Escaped.Replace(TEXT("\r"), TEXT("\\r"));
+	
+	// Escape tabs
+	Escaped = Escaped.Replace(TEXT("\t"), TEXT("\\t"));
+	
+	return Escaped;
+}
+
+bool USIK_UtilsLibrary::IsValidJSON(const FString& JsonString)
+{
+	const TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
+	TSharedPtr<FJsonValue> Value;
+	
+	bool bValid = FJsonSerializer::Deserialize(Reader, Value) && Value.IsValid();
+	
+	if (!bValid)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid JSON: %s"), *JsonString);
+	}
+	
+	return bValid;
+}
+
+// EasySaveStruct Integration - Blueprint Stub Functions (Custom Thunk Handlers)
+bool USIK_UtilsLibrary::SerializeStructToJSON(const int32& InStruct, FString& OutJsonString)
+{
+	// We should never hit this! Stubs to avoid NoExport on the class.
+	check(0);
+	return false;
+}
+
+bool USIK_UtilsLibrary::DeserializeJSONToStruct(const FString& InJsonString, int32& OutStruct)
+{
+	// We should never hit this! Stubs to avoid NoExport on the class.
+	check(0);
+	return false;
+}
+
+bool USIK_UtilsLibrary::SerializeStructArrayToJSON(const TArray<int32>& InStructArray, FString& OutJsonString)
+{
+	// We should never hit this! Stubs to avoid NoExport on the class.
+	check(0);
+	return false;
+}
+
+bool USIK_UtilsLibrary::DeserializeJSONToStructArray(const FString& InJsonString, TArray<int32>& InStructArray)
+{
+	// We should never hit this! Stubs to avoid NoExport on the class.
+	check(0);
+	return false;
+}
+
+// EasySaveStruct Integration - Custom Thunk Function Implementations
+DEFINE_FUNCTION(USIK_UtilsLibrary::execSerializeStructToJSON)
+{
+	// Get input variable
+	Stack.StepCompiledIn<FStructProperty>(NULL);
+	
+	void* StructPtr = Stack.MostRecentPropertyAddress;
+	FStructProperty* InStruct = CastField<FStructProperty>(Stack.MostRecentProperty);
+	// Get output variable
+	P_GET_PROPERTY_REF(FStrProperty, OutJsonString);
+	P_FINISH;
+
+	bool bSuccess = false;
+	P_NATIVE_BEGIN;
+	bSuccess = ConvertStructToJSONString(InStruct, OutJsonString, StructPtr);
+	P_NATIVE_END;
+	*(bool*)RESULT_PARAM = bSuccess;
+}
+
+DEFINE_FUNCTION(USIK_UtilsLibrary::execDeserializeJSONToStruct)
+{
+	// Get input variable
+	P_GET_PROPERTY_REF(FStrProperty, InJsonString);
+	// Get output variable
+	Stack.StepCompiledIn<FStructProperty>(NULL);
+	void* StructPtr = Stack.MostRecentPropertyAddress;
+	FStructProperty* OutStruct = CastField<FStructProperty>(Stack.MostRecentProperty);
+	P_FINISH;
+	
+	bool bSuccess = false;
+	P_NATIVE_BEGIN;
+	bSuccess = ConvertJSONStringToStruct(InJsonString, OutStruct, StructPtr);
+	P_NATIVE_END;
+	*(bool*)RESULT_PARAM = bSuccess;
+}
+
+DEFINE_FUNCTION(USIK_UtilsLibrary::execSerializeStructArrayToJSON)
+{
+	Stack.StepCompiledIn<FArrayProperty>(NULL);
+	void* StructPtr = Stack.MostRecentPropertyAddress;
+	FArrayProperty* InArrayProperty = CastField<FArrayProperty>(Stack.MostRecentProperty);
+	// Get output variable
+	P_GET_PROPERTY_REF(FStrProperty, OutJsonString);
+	P_FINISH;
+	
+	bool bSuccess = false;
+	P_NATIVE_BEGIN;
+	bSuccess = ConvertStructArrayToJSONString(InArrayProperty, false, OutJsonString, StructPtr);
+	P_NATIVE_END;
+	*(bool*)RESULT_PARAM = bSuccess;
+}
+
+DEFINE_FUNCTION(USIK_UtilsLibrary::execDeserializeJSONToStructArray)
+{
+	// Get input variable
+	P_GET_PROPERTY_REF(FStrProperty, InJsonString);
+	// Get output variable
+	Stack.StepCompiledIn<FArrayProperty>(NULL);
+	FArrayProperty* InArrayProperty = CastField<FArrayProperty>(Stack.MostRecentProperty);
+	void* StructPtr = Stack.MostRecentPropertyAddress;
+	P_FINISH;
+	
+	bool bSuccess = false;
+	P_NATIVE_BEGIN;
+	bSuccess = ConvertJSONStringToStructArray(InJsonString, false, InArrayProperty, StructPtr);
+	P_NATIVE_END;
+	*(bool*)RESULT_PARAM = bSuccess;
 }
 
 

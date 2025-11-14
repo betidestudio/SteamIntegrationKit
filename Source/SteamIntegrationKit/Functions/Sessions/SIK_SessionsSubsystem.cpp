@@ -11,6 +11,11 @@
 #if !WITH_ENGINE_STEAM
 #include "OnlineSubsystemSteam/Private/OnlineSessionInterfaceSteam.h"
 #endif
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+#include <isteammatchmaking.h>
+#include <isteamuser.h>
+#include <steam_api_common.h>
+#endif
 
 void USIK_SessionsSubsystem::Func_OnSessionUserInviteAccepted(bool bWasSuccessful, int ControllerId, TSharedPtr<const FUniqueNetId> UniqueNetId,
 	const FOnlineSessionSearchResult& OnlineSessionSearchResult)
@@ -51,11 +56,13 @@ USIK_SessionsSubsystem::~USIK_SessionsSubsystem()
 TArray<FSIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndLobbies(UObject* Context)
 {
 #if !WITH_ENGINE_STEAM
+	TArray<FSIK_CurrentSessionInfo> SessionNames;
+	
 	if(Context)
 	{
 		if(!Context->GetWorld())
 		{
-			return TArray<FSIK_CurrentSessionInfo>();
+			return SessionNames;
 		}
 		if(	IOnlineSubsystem* OnlineSub = Online::GetSubsystem(Context->GetWorld(), STEAM_SUBSYSTEM))
 		{
@@ -63,17 +70,91 @@ TArray<FSIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndL
 			{
 				if(FOnlineSessionSteamPtr SteamSessionPtr = StaticCastSharedPtr<FOnlineSessionSteam>(SteamRef->GetSessionInterface()))
 				{
-					TArray<FSIK_CurrentSessionInfo> SessionNames;
+					// First, add all sessions from the Sessions array (SIK-created lobbies)
 					for(auto& SessionEntry : SteamSessionPtr->Sessions)
 					{
-						SessionNames.Add(FSIK_CurrentSessionInfo(SessionEntry.SessionName.ToString(), SessionEntry.SessionInfo.Get()->ToString()));
+						if(SessionEntry.SessionInfo.IsValid())
+						{
+							FOnlineSessionInfoSteam* SessionInfo = (FOnlineSessionInfoSteam*)SessionEntry.SessionInfo.Get();
+							if(SessionInfo->SessionId.IsValid())
+							{
+								// Extract the Steam ID from SessionId (FUniqueNetIdSteam contains CSteamID)
+								FString SessionIdString = SessionInfo->SessionId->ToString();
+								FSIK_SteamId LobbySteamId(SessionIdString);
+								SessionNames.Add(FSIK_CurrentSessionInfo(SessionEntry.SessionName.ToString(), LobbySteamId));
+							}
+						}
 					}
+					
+					// Then, query Steam directly for all lobbies the user is a member of
+					// This includes lobbies created via SDK methods (SteamMatchmaking()->CreateLobby)
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+					if(SteamMatchmaking())
+					{
+						// Steam allows up to 64 lobbies to be tracked
+						// Iterate through indices and check if we're a member
+						for(int32 LobbyIdx = 0; LobbyIdx < 64; LobbyIdx++)
+						{
+							CSteamID LobbyID = SteamMatchmaking()->GetLobbyByIndex(LobbyIdx);
+							if(LobbyID.IsValid())
+							{
+								// Verify we're actually a member by checking if we can access lobby members
+								int32 NumMembers = SteamMatchmaking()->GetNumLobbyMembers(LobbyID);
+								if(NumMembers > 0)
+								{
+									// Check if we're actually in this lobby by looking for our Steam ID in members
+									CSteamID OurSteamID = SteamUser()->GetSteamID();
+									bool bIsMember = false;
+									for(int32 MemberIdx = 0; MemberIdx < NumMembers; MemberIdx++)
+									{
+										CSteamID MemberID = SteamMatchmaking()->GetLobbyMemberByIndex(LobbyID, MemberIdx);
+										if(MemberID == OurSteamID)
+										{
+											bIsMember = true;
+											break;
+										}
+									}
+									
+									if(bIsMember)
+									{
+										// Check if this lobby is already in our SessionNames list
+										FSIK_SteamId LobbySteamId = FSIK_SteamId(LobbyID);
+										bool bAlreadyAdded = false;
+										for(const FSIK_CurrentSessionInfo& ExistingSession : SessionNames)
+										{
+											// Compare lobby IDs to avoid duplicates
+											FString ExistingLobbyIdString = ExistingSession.LobbyId.ToString();
+											FString NewLobbyIdString = LobbySteamId.ToString();
+											if(ExistingLobbyIdString == NewLobbyIdString)
+											{
+												bAlreadyAdded = true;
+												break;
+											}
+										}
+										
+										// Add if not already in the list
+										if(!bAlreadyAdded)
+										{
+											SessionNames.Add(FSIK_CurrentSessionInfo(TEXT("SDK_Lobby"), LobbySteamId));
+										}
+									}
+								}
+							}
+							else
+							{
+								// No more lobbies at this index or beyond
+								break;
+							}
+						}
+					}
+#endif
+					
 					return SessionNames;
 				}
 			}
 		}
 	}
-	return TArray<FSIK_CurrentSessionInfo>();
+	return SessionNames;
 #else
 	UE_LOG(LogTemp, Error, TEXT("GetAllJoinedSessionsAndLobbies is not supported in GitHub version"));
 	return TArray<FSIK_CurrentSessionInfo>();

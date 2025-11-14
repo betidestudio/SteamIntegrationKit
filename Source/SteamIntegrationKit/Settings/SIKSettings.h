@@ -71,11 +71,25 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | One Click Deploy")
 	FString BranchName;
 
-	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Deployer Account Information", meta=(EditCondition="!bUseEnvironmentVariables"))
+	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Deployer Account Information", meta=(DisplayName="Username", ToolTip="Steam username. Will be stored in SIK_STEAM_USERNAME environment variable."))
 	FString Username;
 
-	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Deployer Account Information", meta=(EditCondition="!bUseEnvironmentVariables"))
+	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Deployer Account Information", meta=(DisplayName="Password", ToolTip="Steam password. Will be stored in SIK_STEAM_PASSWORD environment variable."))
 	FString Password;
+
+#if WITH_EDITORONLY_DATA
+	// Button for secure credential storage (using bool property for UDeveloperSettings)
+	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Deployer Account Information", meta = (DisplayName = "☐ Save Credentials to System", ToolTip = "Click to save credentials"))
+	bool bSaveToSystem = false;
+
+	// Function declaration for secure credential storage
+	void SaveCredentialsToSystem();
+
+private:
+	bool SaveCredentialsToSystem_Windows();
+	bool SaveCredentialsToSystem_Mac();
+	bool SaveCredentialsToSystem_Linux();
+#endif
 
 	//Valve recommends that this be a build ID, although it is typical to use your AppID (as a string), or a light product name without any extra symbols.
 	UPROPERTY(EditAnywhere, Category = "Marketplace Version Settings | Server Settings")
@@ -93,6 +107,7 @@ private:
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 	virtual bool CanEditChange(const FProperty* InProperty) const override;
+	virtual void PostInitProperties() override;
 #endif
 	UPROPERTY()
 	bool bUseEnvironmentVariables = false;

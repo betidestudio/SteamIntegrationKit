@@ -90,5 +90,11 @@ public class SteamIntegrationKit : ModuleRules
 			PublicDefinitions.Add("WITH_ENGINE_STEAM=0");
 			PublicDependencyModuleNames.Add("SteamSdk");
 		}
+
+		// Add Windows Crypto API library for encrypted registry functions
+		if (Target.Platform == UnrealTargetPlatform.Win64)
+		{
+			PublicAdditionalLibraries.Add("crypt32.lib");
+		}
 	}
 }
