@@ -2,6 +2,7 @@
 
 
 #include "SIK_UtilsLibrary.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "Templates/SubclassOf.h"
 #include "GameFramework/SaveGame.h"
 #include "Serialization/MemoryWriter.h"
@@ -324,7 +325,6 @@ USaveGame* USIK_UtilsLibrary::ByteArrayToSaveGameObject(const TArray<uint8>& Dat
 		return nullptr;
 	}
 
-#if ENGINE_VERSION >= 50000
 	if (USaveGame* Loaded = UGameplayStatics::LoadGameFromMemory(Data))
 	{
 		// Check if the loaded object is of the correct class
@@ -334,7 +334,6 @@ USaveGame* USIK_UtilsLibrary::ByteArrayToSaveGameObject(const TArray<uint8>& Dat
 		}
 		// If class doesn't match, we'll fall back to manual deserialization
 	}
-#endif
 
 	USaveGame* SaveGameObject = NewObject<USaveGame>((UObject*)GetTransientPackage(), SaveGameClass.Get(), NAME_None, RF_NoFlags, nullptr, false, nullptr);
 	if (!SaveGameObject)
