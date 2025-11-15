@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "FindSessionsCallbackProxy.h"
 #include "OnlineKeyValuePair.h"
 THIRD_PARTY_INCLUDES_START
