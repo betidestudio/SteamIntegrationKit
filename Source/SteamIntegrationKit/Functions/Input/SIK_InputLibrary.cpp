@@ -2,6 +2,8 @@
 
 
 #include "SIK_InputLibrary.h"
+#include "HAL/Platform.h"
+#include "Misc/ScopeLock.h"
 
 void USIK_InputLibrary::ActivateActionSet(FSIK_InputHandle InputHandle, FSIK_InputActionSetHandle ActionSetHandle)
 {
@@ -110,12 +112,35 @@ int64 USIK_InputLibrary::GetAnalogActionOrigins(FSIK_InputHandle InputHandle, FS
 	{
 		return 0;
 	}
+	// Clear output array first to avoid stale data
+	OriginsOut.Empty();
+	
 	TArray<EInputActionOrigin> LocalOrigins;
 	LocalOrigins.SetNum(STEAM_INPUT_MAX_ORIGINS);
-	auto Result = SteamInput()->GetAnalogActionOrigins(InputHandle.Result, ActionSetHandle.Result, AnalogActionHandle.Result, LocalOrigins.GetData());
-	for(auto Origin : LocalOrigins)
+	// Initialize array to None to ensure no uninitialized values
+	for(int32 i = 0; i < LocalOrigins.Num(); i++)
 	{
-		OriginsOut.Add(static_cast<ESIK_InputActionOrigin>(Origin));
+		LocalOrigins[i] = k_EInputActionOrigin_None;
+	}
+	
+	auto Result = SteamInput()->GetAnalogActionOrigins(InputHandle.Result, ActionSetHandle.Result, AnalogActionHandle.Result, LocalOrigins.GetData());
+	
+	// Debug logging to see what Steam is actually returning - Will be removed in future when we are sure it is working
+	UE_LOG(LogTemp, Warning, TEXT("[SIK] GetAnalogActionOrigins: Result count = %d, InputHandle = %llu, ActionSetHandle = %llu, AnalogActionHandle = %llu"), 
+		Result, InputHandle.Result, ActionSetHandle.Result, AnalogActionHandle.Result);
+	
+	// Only process the valid origins returned by Steam (Result contains the count)
+	for(int32 i = 0; i < Result && i < LocalOrigins.Num(); i++)
+	{
+		// Debug logging for each origin
+		UE_LOG(LogTemp, Warning, TEXT("[SIK] GetAnalogActionOrigins: Origin[%d] = %d (raw Steam value)"), i, (int32)LocalOrigins[i]);
+		
+		if(LocalOrigins[i] != k_EInputActionOrigin_None)
+		{
+			ESIK_InputActionOrigin ConvertedOrigin = static_cast<ESIK_InputActionOrigin>(LocalOrigins[i]);
+			UE_LOG(LogTemp, Warning, TEXT("[SIK] GetAnalogActionOrigins: Adding origin[%d] = %d (converted to ESIK enum)"), i, (int32)ConvertedOrigin);
+			OriginsOut.Add(ConvertedOrigin);
+		}
 	}
 	return Result;
 #else
@@ -463,17 +488,44 @@ int64 USIK_InputLibrary::GetDigitalActionOrigins(FSIK_InputHandle InputHandle,
 #if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
 	if(!SteamInput())
 	{
+		OriginsOut.Empty();
 		return 0;
 	}
+	// Clear output array first to avoid stale data
+	OriginsOut.Empty();
+	
 	TArray<EInputActionOrigin> LocalOrigins;
 	LocalOrigins.SetNum(STEAM_INPUT_MAX_ORIGINS);
-	auto Result = SteamInput()->GetDigitalActionOrigins(InputHandle.Result, ActionSetHandle.Result, DigitalActionHandle.Result, LocalOrigins.GetData());
-	for(auto Origin : LocalOrigins)
+	// Initialize array to None to ensure no uninitialized values
+	for(int32 i = 0; i < LocalOrigins.Num(); i++)
 	{
-		OriginsOut.Add(static_cast<ESIK_InputActionOrigin>(Origin));
+		LocalOrigins[i] = k_EInputActionOrigin_None;
+	}
+	
+	auto Result = SteamInput()->GetDigitalActionOrigins(InputHandle.Result, ActionSetHandle.Result, DigitalActionHandle.Result, LocalOrigins.GetData());
+	
+	// Debug logging to see what Steam is actually returning
+	UE_LOG(LogTemp, Warning, TEXT("[SIK] GetDigitalActionOrigins: Result count = %d, InputHandle = %llu, ActionSetHandle = %llu, DigitalActionHandle = %llu"), 
+		Result, InputHandle.Result, ActionSetHandle.Result, DigitalActionHandle.Result);
+	
+	// Only process the valid origins returned by Steam (Result contains the count)
+	// Steam API returns the number of origins filled in the array
+	for(int32 i = 0; i < Result && i < LocalOrigins.Num(); i++)
+	{
+		// Debug logging for each origin
+		UE_LOG(LogTemp, Warning, TEXT("[SIK] GetDigitalActionOrigins: Origin[%d] = %d (raw Steam value)"), i, (int32)LocalOrigins[i]);
+		
+		// Only add non-None origins
+		if(LocalOrigins[i] != k_EInputActionOrigin_None)
+		{
+			ESIK_InputActionOrigin ConvertedOrigin = static_cast<ESIK_InputActionOrigin>(LocalOrigins[i]);
+			UE_LOG(LogTemp, Warning, TEXT("[SIK] GetDigitalActionOrigins: Adding origin[%d] = %d (converted to ESIK enum)"), i, (int32)ConvertedOrigin);
+			OriginsOut.Add(ConvertedOrigin);
+		}
 	}
 	return Result;
 #else
+	OriginsOut.Empty();
 	return 0;
 #endif
 }
