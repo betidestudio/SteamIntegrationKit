@@ -4,7 +4,9 @@
 #include "SIK_SharedFile.h"
 #include "Online/CoreOnline.h"
 #include "Interfaces/IPluginManager.h"
+#if ENGINE_MAJOR_VERSION >= 5
 #include "GameFramework/OnlineReplStructs.h"
+#endif
 #include "Misc/FileHelper.h"
 
 
@@ -109,6 +111,7 @@ bool USIK_SharedFile::IsEqualGameId(FSIK_GameID GameId1, FSIK_GameID GameId2)
 #endif
 }
 
+#if ENGINE_MAJOR_VERSION >= 5
 FSIK_SteamId USIK_SharedFile::GetSteamIdFromUniqueNetId(const FUniqueNetIdRepl& UniqueNetId)
 {
 	if(!UniqueNetId.IsValid())
@@ -123,3 +126,4 @@ FSIK_SteamId USIK_SharedFile::GetSteamIdFromUniqueNetId(const FUniqueNetIdRepl& 
 	}
 	return FSIK_SteamId(UniqueNetId.GetUniqueNetId().ToSharedRef()->ToString());
 }
+#endif

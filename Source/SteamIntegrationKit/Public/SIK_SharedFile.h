@@ -60,10 +60,15 @@ THIRD_PARTY_INCLUDES_END
 #include "GameFramework/SaveGame.h"
 #if ENGINE_MAJOR_VERSION >= 5
 #include "GameFramework/OnlineReplStructs.h"
+#else
+// Forward declaration for UE4
+class FUniqueNetId;
+struct FUniqueNetIdRepl; // Forward declaration to allow function declaration
 #endif
 #include "Interfaces/IPv4/IPv4Address.h"
 #include "UObject/Object.h"
 #include "SIK_SharedFile.generated.h"
+
 
 UENUM(BlueprintType)
 enum ESIK_BeginAuthSessionResult
@@ -3109,12 +3114,6 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
 	static bool IsEqualGameId(FSIK_GameID GameId1, FSIK_GameID GameId2);
 	
-#if ENGINE_MAJOR_VERSION >= 5
 	UFUNCTION(BlueprintPure, Category = "Steam Integration Kit || Helper Functions")
 	static FSIK_SteamId GetSteamIdFromUniqueNetId(const FUniqueNetIdRepl& UniqueNetId);
-#else
-	// UE 4.27: Regular C++ function (not UFUNCTION due to UHT limitation - FUniqueNetIdRepl not available)
-	static FSIK_SteamId GetSteamIdFromUniqueNetId(const TSharedPtr<const FUniqueNetId>& UniqueNetId);
-#endif
-	
 };

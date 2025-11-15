@@ -76,7 +76,7 @@ TArray<FSIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndL
 						if(SessionEntry.SessionInfo.IsValid())
 						{
 							FOnlineSessionInfoSteam* SessionInfo = (FOnlineSessionInfoSteam*)SessionEntry.SessionInfo.Get();
-							if(SessionInfo->SessionId.IsValid())
+							if(SessionInfo->SessionId->IsValid())
 							{
 								// Extract the Steam ID from SessionId (FUniqueNetIdSteam contains CSteamID)
 								FString SessionIdString = SessionInfo->SessionId->ToString();
@@ -123,8 +123,8 @@ TArray<FSIK_CurrentSessionInfo> USIK_SessionsSubsystem::GetAllJoinedSessionsAndL
 										for(const FSIK_CurrentSessionInfo& ExistingSession : SessionNames)
 										{
 											// Compare lobby IDs to avoid duplicates
-											FString ExistingLobbyIdString = ExistingSession.LobbyId.ToString();
-											FString NewLobbyIdString = LobbySteamId.ToString();
+											FString ExistingLobbyIdString = FString::Printf(TEXT("%llu"), ExistingSession.LobbyId.Result);
+											FString NewLobbyIdString = FString::Printf(TEXT("%llu"), LobbySteamId.Result);
 											if(ExistingLobbyIdString == NewLobbyIdString)
 											{
 												bAlreadyAdded = true;
