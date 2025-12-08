@@ -513,9 +513,19 @@ int32 USIK_UGCLibrary::GetSubscribedItems(TArray<FSIK_PublishedFileId>& Publishe
 	{
 		return 0;
 	}
-	PublishedFileId_t PublishedFileIDsArray[50];
-	int32 NumEntries = SteamUGC()->GetSubscribedItems(PublishedFileIDsArray, MaxEntries);
-	for(int32 i = 0; i < NumEntries; i++)
+	// Clamp MaxEntries to a reasonable value to prevent excessive memory allocation
+	// Steam API accepts uint32 (up to ~4.2 billion), but we use a practical safety limit
+	// Most users have < 1000 subscribed items, but we allow up to 10000 for edge cases
+	const int32 ClampedMaxEntries = FMath::Clamp(MaxEntries, 0, 10000);
+	
+	// Use dynamic array instead of fixed-size array to prevent buffer overflow
+	TArray<PublishedFileId_t> PublishedFileIDsArray;
+	PublishedFileIDsArray.SetNum(ClampedMaxEntries);
+	
+	int32 NumEntries = SteamUGC()->GetSubscribedItems(PublishedFileIDsArray.GetData(), ClampedMaxEntries);
+	
+	// Only process the number of entries actually returned by Steam
+	for(int32 i = 0; i < NumEntries && i < ClampedMaxEntries; i++)
 	{
 		PublishedFileIDs.Add(FSIK_PublishedFileId(PublishedFileIDsArray[i]));
 	}
