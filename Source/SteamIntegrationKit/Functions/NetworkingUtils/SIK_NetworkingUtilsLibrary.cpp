@@ -2,6 +2,7 @@
 
 
 #include "SIK_NetworkingUtilsLibrary.h"
+#include "Misc/ConfigCacheIni.h"
 
 void USIK_NetworkingUtilsLibrary::InitRelayNetworkAccess()
 {
@@ -11,6 +12,23 @@ void USIK_NetworkingUtilsLibrary::InitRelayNetworkAccess()
 		return;
 	}
 	SteamNetworkingUtils()->InitRelayNetworkAccess();
+	
+	// Configure ICE transport for P2P connections based on DefaultEngine.ini setting
+	// Default to disabled (0) if not specified in config
+	bool bICEEnabled = false;
+	if (GConfig)
+	{
+		GConfig->GetBool(TEXT("OnlineSubsystemSteam"), TEXT("bEnableP2PTransportICE"), bICEEnabled, GEngineIni);
+	}
+	
+	int32 ICEEnabledValue = bICEEnabled ? 1 : 0;
+	SteamNetworkingUtils()->SetConfigValue(
+		k_ESteamNetworkingConfig_P2P_Transport_ICE_Enable,
+		k_ESteamNetworkingConfig_Global,
+		0,
+		k_ESteamNetworkingConfig_Int32,
+		&ICEEnabledValue
+	);
 #endif
 }
 
@@ -176,5 +194,25 @@ int32 USIK_NetworkingUtilsLibrary::GetPOPList(int32 ListSize, TArray<FSIK_SteamN
 	return Result;
 #else
 	return -1;
+#endif
+}
+
+bool USIK_NetworkingUtilsLibrary::SetP2PTransportICEEnabled(bool bEnabled)
+{
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	if(!SteamNetworkingUtils())
+	{
+		return false;
+	}
+	int32 Value = bEnabled ? 1 : 0;
+	return SteamNetworkingUtils()->SetConfigValue(
+		k_ESteamNetworkingConfig_P2P_Transport_ICE_Enable,
+		k_ESteamNetworkingConfig_Global,
+		0,
+		k_ESteamNetworkingConfig_Int32,
+		&Value
+	);
+#else
+	return false;
 #endif
 }

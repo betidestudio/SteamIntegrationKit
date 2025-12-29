@@ -51,6 +51,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Steam Integration Kit || SDK Functions || Networking Utils")
 	static int32 GetPOPList(int32 ListSize, TArray<FSIK_SteamNetworkingPOPID>& OutPOPIDList);
-	
+
+	UFUNCTION(BlueprintCallable, Category = "Steam Integration Kit || SDK Functions || Networking Utils")
+	static bool SetP2PTransportICEEnabled(bool bEnabled);
+
+	UFUNCTION(BlueprintCallable, Category = "Steam Integration Kit || SDK Functions || Networking Utils")
+	static bool GetP2PTransportICEEnabled();
 
 };

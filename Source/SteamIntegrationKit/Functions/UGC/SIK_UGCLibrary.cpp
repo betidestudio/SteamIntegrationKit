@@ -514,7 +514,7 @@ int32 USIK_UGCLibrary::GetSubscribedItems(TArray<FSIK_PublishedFileId>& Publishe
 		return 0;
 	}
 	// Clamp MaxEntries to a reasonable value to prevent excessive memory allocation
-	// Steam API accepts uint32 (up to ~4.2 billion), but we use a practical safety limit
+	// Steam API accepts uint32 (up to ~4.2 billion), but we use a practical safety limit (Consider editing this part if you need to support more than 10.000 subscribed items)
 	// Most users have < 1000 subscribed items, but we allow up to 10000 for edge cases
 	const int32 ClampedMaxEntries = FMath::Clamp(MaxEntries, 0, 10000);
 	
