@@ -216,3 +216,27 @@ bool USIK_NetworkingUtilsLibrary::SetP2PTransportICEEnabled(bool bEnabled)
 	return false;
 #endif
 }
+
+bool USIK_NetworkingUtilsLibrary::GetP2PTransportICEEnabled()
+{
+#if (WITH_ENGINE_STEAM && ONLINESUBSYSTEMSTEAM_PACKAGE) || (WITH_STEAMKIT && !WITH_ENGINE_STEAM)
+	if(!SteamNetworkingUtils())
+	{
+		return false;
+	}
+	int32 Value = 0;
+	ESteamNetworkingConfigDataType DataType;
+	size_t Size = sizeof(Value);
+	ESteamNetworkingGetConfigValueResult Result = SteamNetworkingUtils()->GetConfigValue(
+		k_ESteamNetworkingConfig_P2P_Transport_ICE_Enable,
+		k_ESteamNetworkingConfig_Global,
+		0,
+		&DataType,
+		&Value,
+		&Size
+	);
+	return Result == k_ESteamNetworkingGetConfigValue_OK && Value == 1;
+#else
+	return false;
+#endif
+}
